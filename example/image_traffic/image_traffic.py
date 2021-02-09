@@ -58,7 +58,7 @@ def request_image(uri: str, path_save: str) -> None:
 if __name__ == "__main__":
     me = "hoge"
     URI = f"http://localhost:8000/{me}/image"
-    PATH_SAVE = "recieved.jpg"
+    PATH_SAVE = "received.jpg"
     
     form = ServerForm("", 8000, app, "image_traffic.log")
     executer = TestExecutor(request_image, (URI, PATH_SAVE))

@@ -24,8 +24,7 @@ class UpsideDownEndpoint(Endpoint):
 
     @data_format(input=UnpsideDownRequest, output=UpsideDownResponse)
     def do_GET(self, req_body: UnpsideDownRequest) -> None:
-        token = req_body.token
-        result = token[::-1]
+        result = req_body.token[::-1]
 
         body = {"result": result}
         self.send_json(body)
