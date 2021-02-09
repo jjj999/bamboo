@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+peewee = "*"
+psycopg2 = "*"
+falcon = "*"
+hug = "*"
+flask = "*"
+
+[packages]
+
+[requires]
+python_version = "3.8"
