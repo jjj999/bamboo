@@ -18,8 +18,6 @@ from bamboo.location import (
     FlexibleLocation, is_flexible_uri, NumLocation, StringLocation,
 )
 
-from bamboo.model import ModelBase, ControllerBase
-
 from bamboo.router import Router
 
 from bamboo.stick import (

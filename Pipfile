@@ -9,6 +9,7 @@ psycopg2 = "*"
 falcon = "*"
 hug = "*"
 flask = "*"
+requests = "*"
 
 [packages]
 

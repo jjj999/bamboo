@@ -9,7 +9,6 @@ from bamboo import App, Endpoint, data_format
 from bamboo.api import JsonApiData
 from bamboo.base import HTTPStatus
 from bamboo.error import ErrInfoBase
-from bamboo.model import ModelBase, ControllerBase
 import bamboo.request as req
 from bamboo.stick import Callback_t
 from bamboo.test import ServerForm, TestExecutor
