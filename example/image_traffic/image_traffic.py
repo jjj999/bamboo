@@ -61,6 +61,5 @@ if __name__ == "__main__":
     PATH_SAVE = "received.jpg"
     
     form = ServerForm("", 8000, app, "image_traffic.log")
-    executer = TestExecutor(request_image, (URI, PATH_SAVE))
-    executer.add_forms(form)
-    executer.exec()
+    executer = TestExecutor(form)
+    executer.exec(request_image, (URI, PATH_SAVE))

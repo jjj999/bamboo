@@ -6,7 +6,7 @@ from bamboo import App, Endpoint
 from bamboo.api import JsonApiData
 from bamboo.request import http_request
 from bamboo.stick import data_format
-from bamboo.test import MultiServerHolder, ServerForm, TestExecutor
+from bamboo.test import  ServerForm, TestExecutor
 from bamboo.util.time import get_datetime_rfc822
 
 
@@ -58,10 +58,10 @@ class TestHTTPRequest(unittest.TestCase):
         form_1 = ServerForm("", 8000, app_1, "serverlog_1.log")
         form_2 = ServerForm("", 8001, app_2, "serverlog_2.log")
         form_3 = ServerForm("", 8002, app_3, "serverlog_3.log")
-        self.holder = MultiServerHolder(form_1, form_2, form_3).start_serve()
+        self.executor = TestExecutor(form_1, form_2, form_3).start_serve()
 
     def tearDown(self) -> None:
-        self.holder.close()
+        self.executor.close()
 
     def test_get_info(self):
         for url in self.urls_info:

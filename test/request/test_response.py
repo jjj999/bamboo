@@ -7,7 +7,7 @@ from bamboo import App, Endpoint
 from bamboo.api import JsonApiData
 from bamboo.request import Response
 from bamboo.stick import data_format
-from bamboo.test import MultiServerHolder, ServerForm, TestExecutor
+from bamboo.test import ServerForm, TestExecutor
 from bamboo.util.time import get_datetime_rfc822
 
 
@@ -55,10 +55,10 @@ class TestResponse(unittest.TestCase):
         self.path_image_ideal = "elephant.jpg"
         
         form = ServerForm("", 8000, app, "test_response.log")
-        self.holder = MultiServerHolder(form).start_serve()
+        self.executor = TestExecutor(form).start_serve()
     
     def tearDown(self) -> None:
-        self.holder.close()
+        self.executor.close()
 
     def test_body(self):
         with open(self.path_image_ideal, "rb") as f:
