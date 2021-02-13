@@ -2,12 +2,19 @@
 from typing import Dict, List, Optional, Type
 
 from bamboo.endpoint import Endpoint
-from bamboo.location import FlexibleLocation, Uri_t, is_flexible_uri
+from bamboo.location import (
+    FlexibleLocation, Uri_t, is_flexible_uri, is_duplicated_uri,
+)
 
 
 # Type definition
 HTTPMethod_t = str
 Uri2Endpoints_t = Dict[Uri_t, Type[Endpoint]]
+
+
+class DuplicatedUriRegisteredError(Exception):
+    """Raised if duplicated URI is registered."""
+    pass
 
 
 class Router:
@@ -17,6 +24,11 @@ class Router:
         self.uris_flexible: List[Uri_t] = []
     
     def register(self, uri: Uri_t, endpoint: Type[Endpoint]) -> None:
+        for uri_registered in self.uri2endpoint.keys():
+            if is_duplicated_uri(uri_registered, uri):
+                raise DuplicatedUriRegisteredError(
+                    "Duplicated URIs were detected.")
+        
         if is_flexible_uri(uri):
             self.uris_flexible.append(uri)
         self.uri2endpoint[uri] = endpoint

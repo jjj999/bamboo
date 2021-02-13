@@ -22,6 +22,21 @@ def is_flexible_uri(uri: Uri_t) -> bool:
     return False
 
 
+def is_duplicated_uri(uri_1: Uri_t, uri_2: Uri_t) -> bool:
+    if len(uri_1) == len(uri_2):
+        for loc_1, loc_2 in zip(uri_1, uri_2):
+            if isinstance(loc_1, FlexibleLocation):
+                continue
+            if isinstance(loc_2, FlexibleLocation):
+                continue
+            
+            if loc_1 != loc_2:
+                break
+        else:
+            return True
+    return False
+
+
 class NumLocation(FlexibleLocation):
     
     def __init__(self, digit: int) -> None:

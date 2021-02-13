@@ -48,7 +48,7 @@ class TestExecutor:
         for form in forms:
             self._forms.append(form)
             
-    def exec(self) -> None:
+    def exec(self, waiting: float = 0.05) -> None:
         children: List[Process] = []
         for form in self._forms:
             child = Process(target=serve_at, args=(form,))
@@ -57,7 +57,7 @@ class TestExecutor:
             
         try:
             # Sleep until all server will launch
-            time.sleep(0.005)
+            time.sleep(waiting)
             self._f_client(*self._args)
         finally:
             for child in children:
