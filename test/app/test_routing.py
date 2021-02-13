@@ -47,9 +47,9 @@ class TestRouting(unittest.TestCase):
             app.route(uri)(MockEndpoint)
             forms.append(ServerForm("", 8000 + i, app, "test_routing.log"))
         
-        executor = TestExecutor(client)
+        executor = TestExecutor()
         executor.add_forms(*forms)
-        executor.exec()
+        executor.exec(client)
         
     def _test_duplicated_uris(self, patterns: List[Uri_t]):
         router = Router()
