@@ -1,12 +1,13 @@
 
 from __future__ import annotations
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import (
+    Any, Callable, Dict, List, Optional, Tuple, Type, Union,
+)
 
-from bamboo.endpoint import Endpoint
+from bamboo.endpoint import Endpoint, _get_bamboo_attr
 from bamboo.error import DEFAULT_NOT_FOUND_ERROR
 from bamboo.location import Location, Uri_t
 from bamboo.router import Router
-from bamboo.stick import _get_bamboo_attr
 
 
 ATTR_VERSION = _get_bamboo_attr("version")
@@ -88,7 +89,8 @@ class App:
         self._router = Router()
         self._is_version_isnert = is_version_insert
     
-    def __call__(self, environ: Dict[str, Any], start_response: Callable) -> List[bytes]:
+    def __call__(self, environ: Dict[str, Any],
+                 start_response: Callable) -> List[bytes]:
         method = environ.get("REQUEST_METHOD").upper()
         path = environ.get("PATH_INFO")
         
@@ -118,7 +120,8 @@ class App:
         return self._router.search_endpoint(endpoint)
     
     def route(self, *locs: Location, parcel: Parcel_t = (),
-              version: Union[int, Tuple[int], None] = None) -> Callable[[Type[Endpoint]], Type[Endpoint]]:
+              version: Union[int, Tuple[int], None] = None
+              ) -> Callable[[Type[Endpoint]], Type[Endpoint]]:
 
         def register_endpoint(endpoint: Type[Endpoint]) -> Type[Endpoint]:
             # parcel setting
@@ -134,7 +137,8 @@ class App:
             if self._is_version_isnert and len(_version):
                 _version = ver_config.get(self)
                 if len(_version):
-                    uri_list = [(f"{self.TAG_VERSION}{ver_num}",) + locs for ver_num in _version]
+                    uri_list = [(f"{self.TAG_VERSION}{ver_num}",) + locs 
+                                for ver_num in _version]
                     for uri_version_included in uri_list:
                         self._router.register(uri_version_included, endpoint)
             else:

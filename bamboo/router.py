@@ -60,4 +60,5 @@ class Router:
         return None
     
     def search_endpoint(self, endpoint: Type[Endpoint]) -> List[Uri_t]:
-        return [uri for uri, point in self.uri2endpoint.items() if point is endpoint]
+        return [uri for uri, point in self.uri2endpoint.items() 
+                if point is endpoint]

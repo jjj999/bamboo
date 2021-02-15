@@ -62,7 +62,8 @@ class SerialString:
             raise ValueError("'length' must be bigger than 0.")
         
         if begin and len(begin) != length:
-            raise ValueError(f"The length of 'begin' {begin} doesn't match {length}.")
+            raise ValueError(
+                f"The length of 'begin' {begin} doesn't match {length}.")
 
         self._is_full = False
         self._is_first = False
@@ -116,7 +117,8 @@ class CircularString:
             raise ValueError("'length' must be bigger than 0.")
         
         if begin and len(begin) != length:
-            raise ValueError(f"The length of 'begin' {begin} doesn't match {length}.")
+            raise ValueError(
+                f"The length of 'begin' {begin} doesn't match {length}.")
 
         if begin:
             self._string = [CircularChar(b) for b in begin]
@@ -152,7 +154,9 @@ class CircularString:
     def back(self, down: bool = True) -> str:
         result = deque()
         
-        def challenge(string: List[CircularChar], is_carry_down: bool) -> None:
+        def challenge(string: List[CircularChar], 
+                      is_carry_down: bool
+                      ) -> None:
             next_down = False
             if is_carry_down:
                 char = string[-1].back(down=down)

@@ -59,7 +59,7 @@ class TestUnionData(JsonApiData):
     
 data_union = json.dumps({
     "name": "hogehoge", "age": None,
-})
+}).encode()
     
 
 class TestJsonApiData(unittest.TestCase):

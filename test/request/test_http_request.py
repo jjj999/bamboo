@@ -1,10 +1,9 @@
 
 import unittest
 
-from bamboo import App, Endpoint
+from bamboo import App, Endpoint, data_format
 from bamboo.api import JsonApiData
 from bamboo.request import http_request
-from bamboo.stick import data_format
 from bamboo.test import ServerForm, TestExecutor
 from bamboo.util.time import get_datetime_rfc822
 

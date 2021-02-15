@@ -28,7 +28,8 @@ class CommonNasEndpoint(Endpoint):
 
 class SimpleNasApp(App):
     
-    def __init__(self, doc_root: str, endpoint: Type[CommonNasEndpoint]) -> None:
+    def __init__(self, doc_root: str, 
+                 endpoint: Type[CommonNasEndpoint]) -> None:
         super().__init__()  
         
         if doc_root[-1] == "/":
@@ -39,7 +40,8 @@ class SimpleNasApp(App):
         self._files = get_all_files(self._doc_root)
         self._restricted_files: Set[str] = set()
                 
-    def __call__(self, environ: Dict[str, Any], start_response: Callable) -> List[bytes]:
+    def __call__(self, environ: Dict[str, Any], 
+                 start_response: Callable) -> List[bytes]:
         method = environ.get("REQUEST_METHOD").upper()
         path = self._doc_root + environ.get("PATH_INFO")
         if path in self._restricted_files:
@@ -59,4 +61,5 @@ class SimpleNasApp(App):
         return super().__call__(environ, start_response)
 
     def restrict_uri(self, *locs: Location) -> None:
-        self._restricted_files.add(os.path.join(self._doc_root, "/".join(locs)))
+        path = os.path.join(self._doc_root, "/".join(locs))
+        self._restricted_files.add(path)

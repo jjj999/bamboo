@@ -1,6 +1,8 @@
 
 
-from typing import Any, Callable, Generic, Optional, Type, TypeVar, Union
+from typing import (
+    Any, Callable, Generic, Optional, Type, TypeVar, Union,
+)
 
 
 def joint_funcs(*func: Callable[[], None]) -> Callable[[], None]:

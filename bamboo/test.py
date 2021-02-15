@@ -146,7 +146,7 @@ class TestExecutor:
         args : Tuple[Any, ...], optional
             Arguments of the func, by default ()
         waiting : float, optional
-            Waiting time after running the server applications, by default 0.05
+            Waiting time after running the applications, by default 0.05
         """
         with self.start_serve(waiting=waiting):
             func(*args)

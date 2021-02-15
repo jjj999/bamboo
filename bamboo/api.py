@@ -1,33 +1,19 @@
 
 from __future__ import annotations
-from abc import ABCMeta, abstractmethod
 import json
 from typing import (
     Any, Dict, Sequence, Union, get_args, get_origin, get_type_hints,
 )
 
 
-class ApiData(metaclass=ABCMeta):
-    
-    def __init__(self, body) -> None:
-        pass
-    
-    @abstractmethod
-    def _attach(self, data) -> None:
-        pass
-    
-    
-class BinaryApiData(ApiData):
-    
-    raw: bytes
-    
-    def __init__(self, body: bytes) -> None:
-        super().__init__(body)
+class ApiData:
+
+    def __init__(self, raw: Union[bytes, Any]) -> None:
+        self._raw = raw
         
-        self._attach(body)
-    
-    def _attach(self, body: bytes) -> BinaryApiData:
-        setattr(self, "raw", body)
+    @property
+    def raw(self):
+        return self._raw
 
 
 _NoneType = type(None)
@@ -118,7 +104,8 @@ def _attach_jsonable_list(val: list, val_type) -> list:
         elif issubclass(inner_val_type, JsonApiData):
             return [inner_val_type(item) for item in val]
         else:
-            return [_attach_jsonable_list(item, inner_val_type) for item in val]
+            return [_attach_jsonable_list(item, inner_val_type)
+                    for item in val]
     else:
         return val 
 
@@ -130,12 +117,12 @@ class JsonApiData(ApiData):
             raise NotJsonableAnnotationError(
                 "Not 'jsonable' type was included of type hints.")
             
-    def __init__(self, body: Union[bytes, str, dict]) -> None:
-        super().__init__(body)
+    def __init__(self, raw: Union[bytes, str, dict]) -> None:
+        super().__init__(raw)
 
-        data = body        
-        if isinstance(body, (bytes, str)):
-            data = json.loads(body)
+        data = raw
+        if isinstance(raw, (bytes, str)):
+            data = json.loads(raw)
         self._attach(data)
 
     def _attach(self, data: Dict[str, Any]) -> None:
@@ -148,7 +135,8 @@ class JsonApiData(ApiData):
             val = data[key_rec]
             val_type_def = annotations[key_def]
             if not _validate_jsonable(val, val_type_def):
-                raise TypeError("Invalid type was detected in received json data.")
+                raise TypeError(
+                    "Invalid type was detected in received json data.")
             
             origin = get_origin(val_type_def)
             if origin is None:       
@@ -158,12 +146,14 @@ class JsonApiData(ApiData):
                     setattr(self, key_def, val)
             else:
                 if origin == list:
-                    setattr(self, key_def, _attach_jsonable_list(val, val_type_def))
+                    setattr(self, key_def, 
+                            _attach_jsonable_list(val, val_type_def))
                 elif origin == Union:
                     possible = get_args(val_type_def)[0]
                     if isinstance(val, json_value_types_args):
                         setattr(self, key_def, val)
                     elif isinstance(val, list):
-                        setattr(self, key_def, _attach_jsonable_list(val, possible))
+                        setattr(self, key_def, 
+                                _attach_jsonable_list(val, possible))
                     else:
                         setattr(self, key_def, possible(val))
