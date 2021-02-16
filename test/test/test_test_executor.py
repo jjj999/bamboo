@@ -4,7 +4,7 @@ import unittest
 
 from bamboo import App, Endpoint, data_format
 from bamboo.api import JsonApiData
-from bamboo.request import http_request
+from bamboo.request import http
 from bamboo.test import  ServerForm, TestExecutor
 from bamboo.util.time import get_datetime_rfc822
 
@@ -64,7 +64,7 @@ class TestHTTPRequest(unittest.TestCase):
 
     def test_get_info(self):
         for url in self.urls_info:
-            res = http_request(url, "GET", datacls=InfoResponse)
+            res = http.request(url, "GET", datacls=InfoResponse)
             data = res.attach()
             
             self.assertTrue(isinstance(data, InfoResponse))
@@ -76,7 +76,7 @@ class TestHTTPRequest(unittest.TestCase):
             image_ideal = f.read()
         
         for url in self.urls_image:
-            res = http_request(url, "GET")
+            res = http.request(url, "GET")
             data = res.body
             self.assertEqual(image_ideal, data)
 

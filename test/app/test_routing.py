@@ -7,7 +7,7 @@ import unittest
 from bamboo.app import App
 from bamboo.endpoint import Endpoint
 from bamboo.location import NumLocation, StringLocation, Uri_t
-from bamboo.request import http_get
+from bamboo.request import http
 from bamboo.router import DuplicatedUriRegisteredError, Router
 from bamboo.test import ServerForm, TestExecutor
 
@@ -38,7 +38,7 @@ class TestRouting(unittest.TestCase):
         
         def client():
             for i, uri in enumerate(URIS):
-                res = http_get(f"http://localhost:{8000 + i}/{uri}")
+                res = http.get(f"http://localhost:{8000 + i}/{uri}")
                 self.assertEqual(res.body, IDEAL_RESNPONSE)
                 
         forms = []
