@@ -7,10 +7,10 @@ from typing import List, Optional, Tuple, Type
 
 from bamboo import App, Endpoint, data_format
 from bamboo.api import JsonApiData
+from bamboo.endpoint import Callback_t
 from bamboo.base import HTTPStatus
 from bamboo.error import ErrInfoBase
-import bamboo.request as req
-from bamboo.stick import Callback_t
+from bamboo.request import http
 from bamboo.test import ServerForm, TestExecutor
 from peewee import (
     BigAutoField, CharField, DateTimeField, ForeignKeyField, 
@@ -514,7 +514,7 @@ def request_user_register(uris: Uris) -> str:
     email = input("メールアドレスを入力してください : ")
     name = input("お好きなユーザー名を登録してください : ")
 
-    res = req.http_post(uris.user, json={"email": email, "name": name})
+    res = http.post(uris.user, json={"email": email, "name": name})
     if res.ok:
         print("ユーザー登録が完了しました．\n")
         return email
@@ -527,7 +527,7 @@ def request_user_delete(uris: Uris, email: str) -> None:
         print("削除を中止します．\n")
         return
     
-    res = req.http_delete(uris.user, json={"email": email})
+    res = http.delete(uris.user, json={"email": email})
     if res.ok:
         print("削除が完了しました．\n")
     else:
@@ -545,7 +545,7 @@ def print_tweets(tweets: List[SingleTweet]) -> None:
         
         
 def request_tweets_all(uris: Uris, email: str) -> None:
-    res = req.http_get(uris.tweet, json={"email": None}, datacls=TweetsGetOutput)
+    res = http.get(uris.tweet, json={"email": None}, datacls=TweetsGetOutput)
     if res.ok:
         data = res.attach()
         print_tweets(data.tweets)
@@ -554,7 +554,7 @@ def request_tweets_all(uris: Uris, email: str) -> None:
         
         
 def request_tweets_history(uris: Uris, email: str) -> None:
-    res = req.http_get(uris.tweet, json={"email": email}, datacls=TweetsGetOutput)
+    res = http.get(uris.tweet, json={"email": email}, datacls=TweetsGetOutput)
     if res.ok:
         data = res.attach()
         print_tweets(data.tweets)
@@ -564,7 +564,7 @@ def request_tweets_history(uris: Uris, email: str) -> None:
 
 def request_tweet_post(uris: Uris, email: str) -> None:
     content = input("ツイート内容 >> ")
-    res = req.http_post(uris.tweet, json={"email": email, "content": content}, datacls=TweetPostOutput)
+    res = http.post(uris.tweet, json={"email": email, "content": content}, datacls=TweetPostOutput)
     if res.ok:
         data = res.attach()
         print(f"投稿が完了しました．ID: {data.id}\n")
@@ -575,7 +575,7 @@ def request_tweet_post(uris: Uris, email: str) -> None:
 def request_tweet_update(uris: Uris, email: str) -> None:
     id = int(input("編集したいツイートID: "))
     content = input("新しいツイート内容 >> ")
-    res = req.http_put(uris.tweet, json={"id": id, "new_content": content})
+    res = http.put(uris.tweet, json={"id": id, "new_content": content})
     if res.ok:
         print(f"投稿が完了しました．\n")
     else:
@@ -584,7 +584,7 @@ def request_tweet_update(uris: Uris, email: str) -> None:
 
 def request_tweet_delete(uris: Uris, email: str) -> None:
     id = int(input("削除したいツイートID: "))
-    res = req.http_delete(uris.tweet, json={"id": id, "email": email})
+    res = http.delete(uris.tweet, json={"id": id, "email": email})
     if res.ok:
         print("削除が完了しました．\n")
     elif res.status == 403:

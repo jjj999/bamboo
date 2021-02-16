@@ -2,7 +2,7 @@
 import sys
 
 from bamboo.api import JsonApiData
-from bamboo.request import http_get
+from bamboo.request import http
 
 
 class UpsideDownResponse(JsonApiData):
@@ -12,7 +12,7 @@ class UpsideDownResponse(JsonApiData):
 
 def request(uri: str, token: str) -> None:
     body = {"token": token}
-    res = http_get(uri, json=body, datacls=UpsideDownResponse)
+    res = http.get(uri, json=body, datacls=UpsideDownResponse)
     
     print("Headers")
     print("-------")

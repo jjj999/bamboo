@@ -2,7 +2,7 @@
 from bamboo import App, Endpoint, data_format
 from bamboo.api import JsonApiData
 from bamboo.location import StringLocation
-from bamboo.request import http_get
+from bamboo.request import http
 from bamboo.test import ServerForm, TestExecutor
 from bamboo.util.convert import encode_binary, decode2binary
 from bamboo.util.time import get_datetime_rfc822
@@ -39,7 +39,7 @@ class MockServeImageEndpoint(Endpoint):
 
 
 def request_image(uri: str, path_save: str) -> None:
-    res = http_get(uri, datacls=MockResponseData)
+    res = http.get(uri, datacls=MockResponseData)
 
     if res.ok:
         data = res.attach()
