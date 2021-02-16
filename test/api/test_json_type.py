@@ -1,8 +1,10 @@
 
-from typing import List, get_type_hints
+from typing import List
 import unittest
 
-from bamboo.api import is_jsonable, JsonApiData
+from bamboo.api import (
+    JsonApiDataBuilder, JsonApiData, NotJsonableAnnotationError
+)
 
 
 class TestInnerApi(JsonApiData):
@@ -19,28 +21,34 @@ class TestOuterApi(JsonApiData):
 class TestJsonable(unittest.TestCase):
     
     def test_int(self):
-        self.assertTrue(is_jsonable([int]))
+        JsonApiDataBuilder.check_jsonable(int)
     
     def test_float(self):
-        self.assertTrue(is_jsonable([float]))
+        JsonApiDataBuilder.check_jsonable(float)
     
     def test_str(self):
-        self.assertTrue(is_jsonable([str]))
+        JsonApiDataBuilder.check_jsonable(str)
     
     def test_bool(self):
-        self.assertTrue(is_jsonable([bool]))
+        JsonApiDataBuilder.check_jsonable(bool)
     
     def test_NoneType(self):
-        self.assertTrue(is_jsonable([type(None)]))
+        JsonApiDataBuilder.check_jsonable(type(None))
     
     def test_list(self):
-        self.assertTrue(is_jsonable([List[int]]))
-        self.assertFalse(is_jsonable([List]))
-        self.assertFalse(is_jsonable([List[dict]]))
+        JsonApiDataBuilder.check_jsonable(List[int])
+
+        with self.assertRaises(NotJsonableAnnotationError) as err:
+            JsonApiDataBuilder.check_jsonable(List)
+        self.assertIsInstance(err.exception, NotJsonableAnnotationError)
+        
+        with self.assertRaises(NotJsonableAnnotationError) as err:
+            JsonApiDataBuilder.check_jsonable(List[dict])
+        self.assertIsInstance(err.exception, NotJsonableAnnotationError)
     
     def test_jsonapi(self):
-        self.assertTrue(is_jsonable(get_type_hints(TestOuterApi).values()))
-    
-    
+        JsonApiDataBuilder.is_jsonable_api(TestOuterApi)
+
+
 if __name__ == "__main__":
     unittest.main()

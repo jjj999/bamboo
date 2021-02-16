@@ -4,7 +4,7 @@ import json
 from typing import List, Optional
 import unittest
 
-from bamboo.api import JsonApiData
+from bamboo.api import JsonApiData, ValidationFailedError
 
 
 class TestInnerData(JsonApiData):
@@ -13,9 +13,9 @@ class TestInnerData(JsonApiData):
     age: int
     email: str
     
-    
+
 data_inner = json.dumps({
-    "name": "hogehoge", "age": 18, "email": "hoge@hoge.com"
+    "age": 18, "email": "hoge@hoge.com", "name": "hogehoge"
 }).encode()
 
 
@@ -60,6 +60,14 @@ class TestUnionData(JsonApiData):
 data_union = json.dumps({
     "name": "hogehoge", "age": None,
 }).encode()
+
+data_invalid_type = json.dumps({
+    "name": 19, "age": 20,
+})
+
+data_key_not_included = json.dumps({
+    "name": "hogehoge", "Age": 30,
+})
     
 
 class TestJsonApiData(unittest.TestCase):
@@ -91,6 +99,16 @@ class TestJsonApiData(unittest.TestCase):
         data = TestUnionData(data_union)
         self.assertEqual(data.name, "hogehoge")
         self.assertEqual(data.age, None)
+        
+    def test_invalid_type(self):
+        with self.assertRaises(ValidationFailedError) as err:
+            data = TestUnionData(data_invalid_type)
+        self.assertIsInstance(err.exception, ValidationFailedError)
+        
+    def test_key_not_included(self):
+        with self.assertRaises(ValidationFailedError) as err:
+            data = TestUnionData(data_key_not_included)
+        self.assertIsInstance(err.exception, ValidationFailedError)
 
 
 if __name__ == "__main__":
