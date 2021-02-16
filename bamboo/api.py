@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 import json
 from typing import (
-    Any, Dict, List, Sequence, Type, TypeVar, Union, get_args,
+    Any, Dict, Sequence, Type, TypeVar, Union, get_args,
     get_origin, get_type_hints,
 )
 
@@ -24,6 +24,11 @@ class ApiData(metaclass=ABCMeta):
     -----
     This class is an abstract class. So, don't initilize it and specify it 
     as an argument of the `data_format` decorator.
+    
+    Subclasses of this class should validate if raw data given to `__init__` 
+    methods has expected formats. If the validation failes, the classes MUST 
+    raise `ValidataionFailedError` to announce the failure to the 
+    `data_format` decorator.
     """
 
     @abstractmethod
@@ -370,6 +375,12 @@ class JsonApiData(ApiData):
         """
         super().__init__(raw)
 
-        data = json.loads(raw)
+        try:
+            data = json.loads(raw)
+        except json.decoder.JSONDecodeError:
+            raise ValidationFailedError(
+                "Decoding raw data failed."
+                "The raw data had invalid JSON format.")
+
         self.__dict__.update(
             JsonApiDataBuilder.build(self.__class__, data).__dict__)

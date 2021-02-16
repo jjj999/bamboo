@@ -7,9 +7,8 @@ from typing import (
     Any, Callable, Dict, List, Optional, Tuple, Type,
 )
 from urllib.parse import parse_qs
-from wsgiref.headers import Headers
 
-from bamboo.api import ApiData
+from bamboo.api import ApiData, ValidationFailedError
 from bamboo.base import HTTPMethods, HTTPStatus
 from bamboo.error import (
     DEFAULT_HEADER_NOT_FOUND_ERROR, DEFAULT_NOT_APPLICABLE_IP_ERROR,
@@ -303,16 +302,7 @@ def data_format(input: Optional[Type[ApiData]] = None,
                 body = self.body
                 try:
                     data = input(body)
-                except TypeError:
-                    self.send_err(attach_err)
-                    return
-                except KeyError:
-                    self.send_err(attach_err)
-                    return
-                except json.decoder.JSONDecodeError:
-                    self.send_err(attach_err)
-                    return
-                except Exception:
+                except ValidationFailedError:
                     self.send_err(attach_err)
                     return
                 
