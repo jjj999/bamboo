@@ -51,7 +51,7 @@ class BinaryApiData(ApiData):
     """API data with no format.
     
     This class can be used to describe raw data with no data format. So, 
-    any recieved data from clients is acceptable on the class.
+    any received data from clients is acceptable on the class.
     
     Attributes
     ----------
@@ -345,7 +345,7 @@ class JsonApiData(ApiData):
         users: List[User]
     ```
     
-    - Validating recieved data
+    - Validating received data
     
     ```
     class MockEndpoint(Endpoint):

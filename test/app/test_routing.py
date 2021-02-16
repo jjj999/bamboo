@@ -6,7 +6,7 @@ import unittest
 
 from bamboo.app import App
 from bamboo.endpoint import Endpoint
-from bamboo.location import NumLocation, StringLocation, Uri_t
+from bamboo.location import AsciiDigitLocation, AnyStringLocation, Uri_t
 from bamboo.request import http
 from bamboo.router import DuplicatedUriRegisteredError, Router
 from bamboo.test import ServerForm, TestExecutor
@@ -59,12 +59,12 @@ class TestRouting(unittest.TestCase):
         self.assertIsInstance(err.exception, DuplicatedUriRegisteredError)
             
     def test_duplicated_uris(self):
-        PATTERNS_1 = [("test", "hoge", StringLocation()),
+        PATTERNS_1 = [("test", "hoge", AnyStringLocation()),
                       ("test", "hoge", "image")]
-        PATTERNS_2 = [(StringLocation(), NumLocation(4)),
+        PATTERNS_2 = [(AnyStringLocation(), AsciiDigitLocation(4)),
                       ("hoge", "hoge")]
-        PATTERNS_3 = [(StringLocation(), "test", StringLocation()),
-                      ("hoge", StringLocation(), "image")]
+        PATTERNS_3 = [(AnyStringLocation(), "test", AnyStringLocation()),
+                      ("hoge", AnyStringLocation(), "image")]
         
         self._test_duplicated_uris(PATTERNS_1)
         self._test_duplicated_uris(PATTERNS_2)

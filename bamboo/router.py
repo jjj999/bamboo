@@ -18,12 +18,28 @@ class DuplicatedUriRegisteredError(Exception):
 
 
 class Router:
+    """Operator of routing request to `Endpoint` by URI.
+    """
     
     def __init__(self) -> None:
         self.uri2endpoint: Uri2Endpoints_t = {}
         self.uris_flexible: List[Uri_t] = []
     
     def register(self, uri: Uri_t, endpoint: Type[Endpoint]) -> None:
+        """Register combination of URI and `Endpoint`.
+
+        Parameters
+        ----------
+        uri : Uri_t
+            URI pattern of the `Endpoint`
+        endpoint : Type[Endpoint]
+            `Endpoint` class to be registered
+
+        Raises
+        ------
+        DuplicatedUriRegisteredError
+            Raised if given URI pattern matches one already registered
+        """
         for uri_registered in self.uri2endpoint.keys():
             if is_duplicated_uri(uri_registered, uri):
                 raise DuplicatedUriRegisteredError(
@@ -34,6 +50,18 @@ class Router:
         self.uri2endpoint[uri] = endpoint
     
     def validate(self, uri: str) -> Optional[Type[Endpoint]]:
+        """Validate specified `uri` and retrieved `Endpoint`.
+
+        Parameters
+        ----------
+        uri : str
+            Path of URI
+
+        Returns
+        -------
+        Optional[Type[Endpoint]]
+            `Endpoint` if specified `uri` is valid, else `None`
+        """
         uri = tuple(uri[1:].split("/"))
         endpoint = self.uri2endpoint.get(uri)
         if endpoint:
@@ -59,6 +87,18 @@ class Router:
         # Could not find it
         return None
     
-    def search_endpoint(self, endpoint: Type[Endpoint]) -> List[Uri_t]:
+    def search_uris(self, endpoint: Type[Endpoint]) -> List[Uri_t]:
+        """Search URI patterns of specified `endpoint`.
+
+        Parameters
+        ----------
+        endpoint : Type[Endpoint]
+            `Endpoint` whose URI patterns to be retrieved
+
+        Returns
+        -------
+        List[Uri_t]
+            Result of searching
+        """
         return [uri for uri, point in self.uri2endpoint.items() 
                 if point is endpoint]

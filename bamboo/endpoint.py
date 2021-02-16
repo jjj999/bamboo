@@ -14,6 +14,7 @@ from bamboo.error import (
     DEFAULT_HEADER_NOT_FOUND_ERROR, DEFAULT_NOT_APPLICABLE_IP_ERROR,
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR, ErrInfoBase,
 )
+from bamboo.util.ip import is_valid_ipv4
 
 
 class BodyAlreadySetError(Exception):
@@ -158,7 +159,7 @@ class Endpoint:
         **params : Optional[str]
             MIME parameters added to the field
         """
-        params = [f'; {key}="{val}"' for key, val in params.items()]
+        params = [f'; {header}="{val}"' for header, val in params.items()]
         params = "".join(params)
         self._headers.append((name, value + params))
     
@@ -168,7 +169,7 @@ class Endpoint:
         Parameters
         ----------
         **headers : str
-            Header's info whose key is the field name.
+            Header's info whose header is the field name.
             
         Notes
         -----
@@ -257,11 +258,83 @@ class Endpoint:
 # Signature of the callback of response method on sub classes of 
 # the Endpoint class.
 Callback_t = Callable[[Endpoint, Tuple[Any, ...]], None]
-
+CallbackDecorator_t = Callable[[Callback_t], Callback_t]
 
 def _get_bamboo_attr(attr: str) -> str:
     return f"__bamboo_{attr}__"
 
+
+# Error Information ----------------------------------------------------------
+
+ATTR_ERRORS = _get_bamboo_attr("errors")
+
+
+def get_errors_info(callback: Callback_t) -> List[Type[ErrInfoBase]]:
+    """Retrieve errors may occur at specified `callback`.
+
+    Parameters
+    ----------
+    callback : Callback_t
+        Response method implemented on `Endpoint`
+
+    Returns
+    -------
+    List[Type[ErrInfoBase]]
+        `list` of error classes may occur
+    """
+    if hasattr(callback, ATTR_ERRORS):
+        return getattr(callback, ATTR_ERRORS)
+    return []
+
+
+def may_occurs(*errors: Type[ErrInfoBase]) -> CallbackDecorator_t:
+    """Register error classes to callback on `Endpoint`.
+    
+    Parameters
+    ----------
+    *errors : Type[ErrInfoBase]
+        Error classes which may occuur
+
+    Returns
+    -------
+    CallbackDecorator_t
+        Decorator to register error classes to callback
+        
+    Examples
+    --------
+    ```
+    class MockErrInfo(ErrInfo):
+        http_status = HTTPStatus.INTERNAL_SERVER_ERROR
+        
+        @classmethod
+        def get_body(cls) -> bytes:
+            return b"Intrernal server error occured"
+            
+    class MockEndpoint(Endpoint):
+        
+        @may_occurs(MockErrInfo)
+        def do_GET(self) -> None:
+            # Do something...
+            
+            # It is possible to send error response.
+            if is_some_flag():
+                self.send_err(MockErrInfo)
+
+            self.send_body(status=HTTPStatus.OK)
+    ```
+    """
+    def attach_err_info(callback: Callback_t) -> Callback_t:
+        if not hasattr(callback, ATTR_ERRORS):
+            setattr(callback, ATTR_ERRORS, set())
+        
+        registered = getattr(callback, ATTR_ERRORS)
+        for err in errors:
+            registered.add(err)
+            
+        return callback
+    return attach_err_info
+
+# ----------------------------------------------------------------------------
 
 # Data Format   --------------------------------------------------------------
 
@@ -270,14 +343,40 @@ ATTR_DATA_FORMAT = _get_bamboo_attr("data_format")
 
 @dataclass
 class DataFormatInfo:
+    """`dataclass` with information of data format at callbacks on `Endpoint`.
     
+    Attributes
+    ----------
+    input : Optional[Type[ApiData]]
+        Input data format, by default `None`
+    output : Optional[Type[ApiData]]
+        Output data format, by default `None`
+    is_validate : bool
+        If input data is to be validate, by default `True`
+    err_validate : Type[ErrInfoBase]
+        Error class raised when validation failes, 
+        by default `DEFUALT_INCORRECT_DATA_FORMAT_ERROR`
+    """
     input: Optional[Type[ApiData]] = None
     output: Optional[Type[ApiData]] = None
-    is_attach: bool = True
-    decode_err: Type[ErrInfoBase] = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
+    is_validate: bool = True
+    err_validate: Type[ErrInfoBase] = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
     
     
 def get_data_format_info(callback: Callback_t) -> Optional[DataFormatInfo]:
+    """Retrieve information of data format at `callback` on `Endpoint`.
+
+    Parameters
+    ----------
+    callback : Callback_t
+        Response method implemented on `Endpoint`
+
+    Returns
+    -------
+    Optional[DataFormatInfo]
+        Information of data format at the `callback`. If the `callback` is 
+        not decorated by `data_format` decorator, then returns `None`.
+    """
     if hasattr(callback, ATTR_DATA_FORMAT):
         info = getattr(callback, ATTR_DATA_FORMAT)
         return DataFormatInfo(**info)
@@ -286,24 +385,71 @@ def get_data_format_info(callback: Callback_t) -> Optional[DataFormatInfo]:
 
 def data_format(input: Optional[Type[ApiData]] = None, 
                 output: Optional[Type[ApiData]] = None,
-                is_attach: bool = True,
-                attach_err: Type[ErrInfoBase] = 
-                DEFUALT_INCORRECT_DATA_FORMAT_ERROR) -> Callback_t:
+                is_validate: bool = True,
+                err_validate: Type[ErrInfoBase] = 
+                DEFUALT_INCORRECT_DATA_FORMAT_ERROR) -> CallbackDecorator_t:
+    """Set data format of input/output data as API to `callback` on 
+    `Endpoint`.
     
+    This decorator can be used to add attributes of data format information 
+    to a `callback`, and execute validation if input raw data has expected 
+    format defined on `input` argument. 
+    
+    To represent no data inputs/outputs, specify `input`/`output` arguments 
+    as `None`s. If `input` is `None`, then any data received from client will 
+    not be read. If `is_validate` is `False`, then validation will not be 
+    executed.
+    
+    To retrieve data format information, use `get_data_format_info` function.
+
+    Parameters
+    ----------
+    input : Optional[Type[ApiData]]
+        Input data format, by default `None`
+    output : Optional[Type[ApiData]]
+        Output data format, by default `None`
+    is_validate : bool, optional
+        If input data is to be validated, by default `True`
+    err_validate : Type[ErrInfoBase]
+        Error class raised when validation failes, 
+        by default `DEFUALT_INCORRECT_DATA_FORMAT_ERROR`
+
+    Returns
+    -------
+    CallbackDecorator_t
+        Decorator to add attributes of data format information to callback
+        
+    Examples
+    --------
+    ```
+    class UserData(JsonApiData):
+        name: str
+        email: str
+        age: int
+    
+    class MockEndpoint(Endpoint):
+    
+        @data_format(input=UserData, output=None)
+        def do_GET(self, rec_body: UserData) -> None:
+            user_name = rec_body.name
+            # Do something...
+    ```
+    """
     _format = {"input": input, "output": output, 
-               "attach_err": attach_err, "is_attach": is_attach}
+               "err_validate": err_validate, "is_validate": is_validate}
     
-    if is_attach and input:
+    if is_validate and input:
         def input_decoded(
             callback: Callable[[Endpoint, ApiData, Tuple[Any, ...]], None]
             ) -> Callback_t:
             
+            @may_occurs(err_validate)
             def _callback(self: Endpoint, *args) -> None:
                 body = self.body
                 try:
                     data = input(body)
                 except ValidationFailedError:
-                    self.send_err(attach_err)
+                    self.send_err(err_validate)
                     return
                 
                 callback(self, data, *args)
@@ -340,26 +486,89 @@ ATTR_HEADERS_REQUIRED = _get_bamboo_attr("headers_required")
 
 @dataclass
 class RequiredHeaderInfo:
+    """`dataclass` with information of header which should be included in 
+    response headers.
+    
+    Attributes
+    ----------
+    header : str
+        Name of header
+    err : Type[ErrInfoBase]
+        Error class raised when the header is not included,
+        by default `DEFAULT_HEADER_NOT_FOUND_ERROR`
+    """
     header: str
     err: Type[ErrInfoBase] = DEFAULT_HEADER_NOT_FOUND_ERROR
     
     
-def get_required_header_info(
-    callback: Callback_t) -> List[RequiredHeaderInfo]:
+def get_required_header_info(callback: Callback_t
+                             ) -> List[RequiredHeaderInfo]:
+    """Retrieve information of headers which should be included in 
+    response headers.
+
+    Parameters
+    ----------
+    callback : Callback_t
+        Response method implemented on `Endpoint`
+
+    Returns
+    -------
+    List[RequiredHeaderInfo]
+        `list` of information of required headers
+    """
     if hasattr(callback, ATTR_HEADERS_REQUIRED):
         arr_info = getattr(callback, ATTR_HEADERS_REQUIRED)
         return [RequiredHeaderInfo(*info) for info in arr_info]
     return []
 
 
-def has_header_of(key: str, 
+def has_header_of(header: str, 
                   err: Type[ErrInfoBase] = DEFAULT_HEADER_NOT_FOUND_ERROR
-                  ) -> Callback_t:
+                  ) -> CallbackDecorator_t:
+    """Set callback up to receive given header from clients.
+
+    If request headers don't include specified `header`, then response 
+    headers and body will be made based on `err` and sent.
+
+    Parameters
+    ----------
+    header : str
+        Name of header
+    err : Type[ErrInfoBase], optional
+        Error class raised when specified `header` is not found of request 
+        headers, by default `DEFAULT_HEADER_NOT_FOUND_ERROR`
+
+    Returns
+    -------
+    CallbackDecorator_t
+        Decorator to make callback to be set up to receive the header
+        
+    Examples
+    --------
+    ```
+    class BasicAuthHeaderNotFoundErrInfo(ErrInfoBase):
+        http_status = HTTPStatus.UNAUTHORIZED
+        
+        @classmethod
+        def get_headers(cls) -> List[Tuple[str, str]]:
+            return [("WWW-Authenticate", 'Basic realm="SECRET AREA"')]
+            
+    class MockEndpoint(Endpoint):
     
+        @has_header_of("Authorization", BasicAuthHeaderNotFoundErrInfo)
+        def do_GET(self) -> None:
+            # It is guaranteed that request headers include the 
+            # `Authorization` header at this point.
+            header_auth = self.get_header("Authorization")
+            
+            # Do something...
+    ```
+    """
     def header_checker(callback: Callback_t) -> Callback_t:
         
+        @may_occurs(err)
         def _callback(self: Endpoint, *args) -> None:
-            val = self.get_header(key)
+            val = self.get_header(header)
             if val is None:
                 self.send_err(err)
                 return
@@ -370,7 +579,7 @@ def has_header_of(key: str,
             setattr(_callback, ATTR_HEADERS_REQUIRED, set())
         
         headers_required = getattr(_callback, ATTR_HEADERS_REQUIRED)
-        headers_required.add((key, err))
+        headers_required.add((header, err))
         return _callback
     return header_checker
 
@@ -382,6 +591,18 @@ ATTR_CLIENT_RESTRICTED = _get_bamboo_attr("client_restricted")
 
 
 def get_restricted_ip_info(callback: Callback_t) -> List[str]:
+    """Retrieve IP addresses restricted at specified `callback`.
+
+    Parameters
+    ----------
+    callback : Callback_t
+        Response method implemented on `Endpoint`
+
+    Returns
+    -------
+    List[str]
+        `list` of restricted IP addresses
+    """
     if hasattr(callback, ATTR_CLIENT_RESTRICTED):
         return getattr(callback, ATTR_CLIENT_RESTRICTED)
     return []
@@ -389,12 +610,56 @@ def get_restricted_ip_info(callback: Callback_t) -> List[str]:
 
 def restricts_client(*client_ips: str, 
                      err: Type[ErrInfoBase] = DEFAULT_NOT_APPLICABLE_IP_ERROR
-                     ) -> Callback_t:
+                     ) -> CallbackDecorator_t:
+    """Restrict IP addresses at callback.
+
+    Parameters
+    ----------
+    *client_ips : str
+        IP addresses to be allowed to request
+    err : Type[ErrInfoBase], optional
+        Error class raised when request from IP not included specified IPs 
+        comes, by default `DEFAULT_NOT_APPLICABLE_IP_ERROR`
+
+    Returns
+    -------
+    CallbackDecorator_t
+        Decorator to make callback to be set up to restrict IP addresses
+        
+    Raises
+    ------
+    ValueError
+        Raised if invalid IP address is detected
+        
+    Examples
+    --------
+    ```
+    class MockEndpoint(Endpoint):
+        
+        # Restrict to allow only localhost to request 
+        # to this callback
+        @restricts_client("localhost")
+        def do_GET(self) -> None:
+            # Only localhost can access to the callback.
+        
+            # Do something...
+    ```
+    """
+    for ip in client_ips:
+        if not is_valid_ipv4(ip):
+            raise ValueError(f"{ip} is invalid IP address.")
+    
+    allowed_ips = set(client_ips)
+    # Convert localhost to the address
+    if "localhost" in allowed_ips:
+        allowed_ips.remove("localhost")
+        allowed_ips.add("127.0.0.1")
     
     def register_restrictions(callback: Callback_t) -> Callback_t:
             
+        @may_occurs(err)
         def _callback(self: Endpoint, *args) -> None:
-            if self.client_ip not in client_ips:
+            if self.client_ip not in allowed_ips:
                 self.send_err(err)
                 return
             callback(self, *args)
@@ -404,36 +669,9 @@ def restricts_client(*client_ips: str,
             setattr(callback, ATTR_CLIENT_RESTRICTED, set())
             
         restrictions = getattr(callback, ATTR_CLIENT_RESTRICTED)
-        for ip in client_ips:
-            restrictions.add(ip)
+        restrictions.update(*allowed_ips)
             
         return _callback
     return register_restrictions
-
-# ----------------------------------------------------------------------------
-
-# Error Information ----------------------------------------------------------
-
-ATTR_ERRORS = _get_bamboo_attr("errors")
-
-
-def get_errors_info(callback: Callback_t) -> List[Type[ErrInfoBase]]:
-    if hasattr(callback, ATTR_ERRORS):
-        return getattr(callback, ATTR_ERRORS)
-    return []
-
-
-def may_occurs(*errors: Type[ErrInfoBase]) -> Callback_t:
-    
-    def attach_err_info(callback: Callback_t) -> Callback_t:
-        if not hasattr(callback, ATTR_ERRORS):
-            setattr(callback, ATTR_ERRORS, set())
-        
-        registered = getattr(callback, ATTR_ERRORS)
-        for err in errors:
-            registered.add(err)
-            
-        return callback
-    return attach_err_info
 
 # ----------------------------------------------------------------------------

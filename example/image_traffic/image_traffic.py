@@ -1,7 +1,7 @@
 
 from bamboo import App, Endpoint, data_format
 from bamboo.api import JsonApiData
-from bamboo.location import StringLocation
+from bamboo.location import AnyStringLocation
 from bamboo.request import http
 from bamboo.test import ServerForm, TestExecutor
 from bamboo.util.convert import encode_binary, decode2binary
@@ -18,7 +18,7 @@ class MockResponseData(JsonApiData):
     datetime: str
 
 
-@app.route(StringLocation(), "image", parcel=(PATH_IMAGE,))
+@app.route(AnyStringLocation(), "image", parcel=(PATH_IMAGE,))
 class MockServeImageEndpoint(Endpoint):
     """Api class sending useless image to clients."""
     
