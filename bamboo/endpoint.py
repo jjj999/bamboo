@@ -9,7 +9,7 @@ from typing import (
 from urllib.parse import parse_qs
 
 from bamboo.api import ApiData, ValidationFailedError
-from bamboo.base import HTTPMethods, HTTPStatus
+from bamboo.base import HTTPMethods, HTTPStatus, MediaTypes
 from bamboo.error import (
     DEFAULT_HEADER_NOT_FOUND_ERROR, DEFAULT_NOT_APPLICABLE_IP_ERROR,
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR, ErrInfoBase,
@@ -192,15 +192,26 @@ class Endpoint:
             raise BodyAlreadySetError("Response body has already been set.")
     
     def send_body(self, body: bytes = b"", 
-                  status: HTTPStatus = HTTPStatus.OK) -> None:
+                  status: HTTPStatus = HTTPStatus.OK,
+                  content_type: Optional[str] = None,
+                  **params: Optional[str]) -> None:
         """Set given binary to the response body.
 
         Parameters
         ----------
         body : bytes, optional
-            Binary to be set to the response body, by default b""
+            Binary to be set to the response body, by default `b""`
         status : HTTPStatus, optional
-            HTTP status of the response, by default HTTPStatus.OK
+            HTTP status of the response, by default `HTTPStatus.OK`
+        content_type : Optional[str], optional
+            `Content-Type` header to be sent, by default `None`
+        **params : Optional[str]
+            Directives of the `Content-Type` header
+            
+        Notes
+        -----
+        If the parameter `content_type` is specified, then the `Content-Type` 
+        header is to be added.
             
         Raises
         ------
@@ -211,6 +222,9 @@ class Endpoint:
 
         self._status = status
         self._res_body = body
+        
+        if content_type:
+            self.add_header("Content-Type", content_type, **params)
     
     def send_json(self, body: Dict[str, Any], 
                   status: HTTPStatus = HTTPStatus.OK,
@@ -235,14 +249,15 @@ class Endpoint:
         
         self._status = status
         self._res_body = json.dumps(body).encode(encoding=encoding)
+        self.add_header("Content-Type", MediaTypes.json, charset=encoding)
     
-    def send_err(self, err: Type[ErrInfoBase]) -> None:
+    def send_err(self, err: ErrInfoBase) -> None:
         """Set error to the response body.
 
         Parameters
         ----------
-        err : Type[ErrInfoBase]
-            Sub class of the ErrInfoBase error information is defined on
+        err : ErrInfoBase
+            Error information to be sent
             
         Raises
         ------
@@ -253,6 +268,8 @@ class Endpoint:
 
         self._status = err.http_status
         self._res_body = err.get_body()
+        self.add_header("Content-Type", err._content_type_,
+                        **err._content_type_args_)
 
 
 # Signature of the callback of response method on sub classes of 
@@ -353,14 +370,14 @@ class DataFormatInfo:
         Output data format, by default `None`
     is_validate : bool
         If input data is to be validate, by default `True`
-    err_validate : Type[ErrInfoBase]
-        Error class raised when validation failes, 
+    err_validate : ErrInfoBase
+        Error information sent when validation failes, 
         by default `DEFUALT_INCORRECT_DATA_FORMAT_ERROR`
     """
     input: Optional[Type[ApiData]] = None
     output: Optional[Type[ApiData]] = None
     is_validate: bool = True
-    err_validate: Type[ErrInfoBase] = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
+    err_validate: ErrInfoBase = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
     
     
 def get_data_format_info(callback: Callback_t) -> Optional[DataFormatInfo]:
@@ -386,7 +403,7 @@ def get_data_format_info(callback: Callback_t) -> Optional[DataFormatInfo]:
 def data_format(input: Optional[Type[ApiData]] = None, 
                 output: Optional[Type[ApiData]] = None,
                 is_validate: bool = True,
-                err_validate: Type[ErrInfoBase] = 
+                err_validate: ErrInfoBase = 
                 DEFUALT_INCORRECT_DATA_FORMAT_ERROR) -> CallbackDecorator_t:
     """Set data format of input/output data as API to `callback` on 
     `Endpoint`.
@@ -410,8 +427,8 @@ def data_format(input: Optional[Type[ApiData]] = None,
         Output data format, by default `None`
     is_validate : bool, optional
         If input data is to be validated, by default `True`
-    err_validate : Type[ErrInfoBase]
-        Error class raised when validation failes, 
+    err_validate : ErrInfoBase
+        Error information sent when validation failes, 
         by default `DEFUALT_INCORRECT_DATA_FORMAT_ERROR`
 
     Returns
@@ -443,7 +460,7 @@ def data_format(input: Optional[Type[ApiData]] = None,
             callback: Callable[[Endpoint, ApiData, Tuple[Any, ...]], None]
             ) -> Callback_t:
             
-            @may_occurs(err_validate)
+            @may_occurs(err_validate.__class__)
             def _callback(self: Endpoint, *args) -> None:
                 body = self.body
                 try:
@@ -493,12 +510,12 @@ class RequiredHeaderInfo:
     ----------
     header : str
         Name of header
-    err : Type[ErrInfoBase]
-        Error class raised when the header is not included,
+    err : ErrInfoBase
+        Error information sent when the header is not included,
         by default `DEFAULT_HEADER_NOT_FOUND_ERROR`
     """
     header: str
-    err: Type[ErrInfoBase] = DEFAULT_HEADER_NOT_FOUND_ERROR
+    err: ErrInfoBase = DEFAULT_HEADER_NOT_FOUND_ERROR
     
     
 def get_required_header_info(callback: Callback_t
@@ -523,7 +540,7 @@ def get_required_header_info(callback: Callback_t
 
 
 def has_header_of(header: str, 
-                  err: Type[ErrInfoBase] = DEFAULT_HEADER_NOT_FOUND_ERROR
+                  err: ErrInfoBase = DEFAULT_HEADER_NOT_FOUND_ERROR
                   ) -> CallbackDecorator_t:
     """Set callback up to receive given header from clients.
 
@@ -534,8 +551,8 @@ def has_header_of(header: str,
     ----------
     header : str
         Name of header
-    err : Type[ErrInfoBase], optional
-        Error class raised when specified `header` is not found of request 
+    err : ErrInfoBase, optional
+        Error information sent when specified `header` is not found of request 
         headers, by default `DEFAULT_HEADER_NOT_FOUND_ERROR`
 
     Returns
@@ -566,7 +583,7 @@ def has_header_of(header: str,
     """
     def header_checker(callback: Callback_t) -> Callback_t:
         
-        @may_occurs(err)
+        @may_occurs(err.__class__)
         def _callback(self: Endpoint, *args) -> None:
             val = self.get_header(header)
             if val is None:
@@ -609,7 +626,7 @@ def get_restricted_ip_info(callback: Callback_t) -> List[str]:
 
 
 def restricts_client(*client_ips: str, 
-                     err: Type[ErrInfoBase] = DEFAULT_NOT_APPLICABLE_IP_ERROR
+                     err: ErrInfoBase = DEFAULT_NOT_APPLICABLE_IP_ERROR
                      ) -> CallbackDecorator_t:
     """Restrict IP addresses at callback.
 
@@ -617,9 +634,9 @@ def restricts_client(*client_ips: str,
     ----------
     *client_ips : str
         IP addresses to be allowed to request
-    err : Type[ErrInfoBase], optional
-        Error class raised when request from IP not included specified IPs 
-        comes, by default `DEFAULT_NOT_APPLICABLE_IP_ERROR`
+    err : ErrInfoBase, optional
+        Error information sent when request from IP not included specified IPs
+         comes, by default `DEFAULT_NOT_APPLICABLE_IP_ERROR`
 
     Returns
     -------
@@ -657,7 +674,7 @@ def restricts_client(*client_ips: str,
     
     def register_restrictions(callback: Callback_t) -> Callback_t:
             
-        @may_occurs(err)
+        @may_occurs(err.__class__)
         def _callback(self: Endpoint, *args) -> None:
             if self.client_ip not in allowed_ips:
                 self.send_err(err)

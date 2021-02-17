@@ -45,3 +45,26 @@ class cached_property(Generic[Object, ReturnGetter]):
     def getter(self, fget: Callable[[Object], ReturnGetter]):
         self._fget = fget
         return self
+    
+    
+class class_property(Generic[Object, ReturnGetter]):
+    
+    def __init__(self,
+                 fget: Callable[[Object], ReturnGetter]) -> None:
+        self.__doc__ = getattr(fget, "__doc__")
+        self._fget = fget
+        
+    def __get__(self, obj: Union[Object, None], 
+                clazz: Optional[Type[Object]] = None) -> ReturnGetter:
+        if clazz is None:
+            clazz = type(obj)
+            
+        if self._fget is not None:
+            return self._fget(clazz)
+        raise AttributeError(
+            "'getter' has not been set yet."
+        )
+            
+    def getter(self, fget: Callable[[Object], ReturnGetter]):
+        self._fget = fget
+        return self

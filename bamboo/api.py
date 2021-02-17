@@ -7,8 +7,11 @@ from typing import (
     get_origin, get_type_hints,
 )
 
+from bamboo.base import MediaTypes, ContentTypeHolder
+from bamboo.util.deco import class_property
 
-class ApiData(metaclass=ABCMeta):
+
+class ApiData(ContentTypeHolder, metaclass=ABCMeta):
     """Base class to describe input/output data format on Endpoints as APIs.
     
     Subclasses of this class can be used an argument of `data_format` 
@@ -40,6 +43,10 @@ class ApiData(metaclass=ABCMeta):
             Raw data to be validated
         """
         pass
+    
+    @class_property
+    def _content_type_(cls) -> str:
+        return MediaTypes.plain
 
 
 class ValidationFailedError(Exception):
@@ -384,3 +391,7 @@ class JsonApiData(ApiData):
 
         self.__dict__.update(
             JsonApiDataBuilder.build(self.__class__, data).__dict__)
+        
+    @class_property
+    def _content_type_(cls) -> str:
+        return MediaTypes.json

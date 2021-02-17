@@ -193,8 +193,7 @@ class UserRegsiterAlreadyExistErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.BAD_REQUEST
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"User already exists."
     
     
@@ -202,8 +201,7 @@ class UserRegisterFailedErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.INTERNAL_SERVER_ERROR
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Registration failed because of internal error."
     
     
@@ -211,8 +209,7 @@ class UserDeleteNotExistErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.BAD_REQUEST
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"User not found."
     
     
@@ -220,8 +217,7 @@ class UserDeleteFailedErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.INTERNAL_SERVER_ERROR
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Deleting user failed because of internal error."
     
    
@@ -231,8 +227,7 @@ class TweetsGetFailedErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.INTERNAL_SERVER_ERROR
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Getting tweets failed because of internal error."
     
     
@@ -240,8 +235,7 @@ class TweetsGetNotExistErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.BAD_REQUEST
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Tweets not found."
         
         
@@ -249,8 +243,7 @@ class TweetPostFailedErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.INTERNAL_SERVER_ERROR
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Posting tweet failed because of internal error."
     
     
@@ -258,8 +251,7 @@ class TweetPostNotExistErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.BAD_REQUEST
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"User not found. Sign up first."
     
     
@@ -267,8 +259,7 @@ class TweetUpdateFailedErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.INTERNAL_SERVER_ERROR
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Updating tweet failed because of internal error."
     
     
@@ -276,8 +267,7 @@ class TweetUpdateNotExistErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.BAD_REQUEST
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Tweet not found."
     
     
@@ -285,8 +275,7 @@ class TweetDeleteFailedErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.INTERNAL_SERVER_ERROR
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Deleting tweet failed because of internal error."
     
     
@@ -294,8 +283,7 @@ class TweetDeleteNotExistErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.BAD_REQUEST
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Tweet not found."
     
     
@@ -303,8 +291,7 @@ class TweetDeleteForbiddenErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.FORBIDDEN
     
-    @classmethod
-    def get_body(cls) -> bytes:
+    def get_body(self) -> bytes:
         return b"Deleting tweet was forbidden. Delete your own tweets."
 
 # --------------------------------------------------------------------------------
@@ -355,10 +342,10 @@ class UserEndpoint(Endpoint):
     def do_POST(self, req_body: UserRegisterInput) -> None:
         flag = self.controller.register(req_body.name, req_body.email)
         if flag == self.controller.FLAG_REGISTER_ALREADY_EXIST:
-            self.send_err(UserRegsiterAlreadyExistErrInfo)
+            self.send_err(UserRegsiterAlreadyExistErrInfo())
             return
         elif flag == self.controller.FLAG_REGISTER_FAILED:
-            self.send_err(UserRegisterFailedErrInfo)
+            self.send_err(UserRegisterFailedErrInfo())
             return
         
         self.send_body(status=HTTPStatus.OK)
@@ -368,10 +355,10 @@ class UserEndpoint(Endpoint):
     def do_DELETE(self, req_body: UserDeleteInput) -> None:
         flag = self.controller.delete(req_body.email)
         if flag == self.controller.FLAG_DELETE_NOT_EXIST:
-            self.send_err(UserDeleteNotExistErrInfo)
+            self.send_err(UserDeleteNotExistErrInfo())
             return
         elif flag == self.controller.FLAG_DELETE_FAILED:
-            self.send_err(UserDeleteFailedErrInfo)
+            self.send_err(UserDeleteFailedErrInfo())
             return
         
         self.send_body(status=HTTPStatus.OK)
@@ -430,10 +417,10 @@ class TweetsEndpoint(Endpoint):
     def do_GET(self, rec_body: TweetsGetInput) -> None:
         flag, tweets = self.controller.get_tweets(rec_body.email)
         if flag == self.controller.FLAG_GET_TWEETS_NOT_EXIST:
-            self.send_err(TweetsGetNotExistErrInfo)
+            self.send_err(TweetsGetNotExistErrInfo())
             return
         elif flag == self.controller.FLAG_GET_TWEETS_FAIELD:
-            self.send_err(TweetsGetFailedErrInfo)
+            self.send_err(TweetsGetFailedErrInfo())
             return
         
         tweets = [tweet.__dict__ for tweet in tweets]
@@ -445,10 +432,10 @@ class TweetsEndpoint(Endpoint):
     def do_POST(self, rec_body: TweetPostInput) -> None:
         flag, id = self.controller.post(rec_body.email, rec_body.content)
         if flag == self.controller.FLAG_POST_NOT_EXIST:
-            self.send_err(TweetPostNotExistErrInfo)
+            self.send_err(TweetPostNotExistErrInfo())
             return
         elif flag == self.controller.FLAG_POST_FAILED:
-            self.send_err(TweetPostFailedErrInfo)
+            self.send_err(TweetPostFailedErrInfo())
             return
         
         body = {"id": id}
@@ -459,10 +446,10 @@ class TweetsEndpoint(Endpoint):
     def do_PUT(self, rec_body: TweetUpdateInput) -> None:
         flag = self.controller.update(rec_body.id, rec_body.new_content)
         if flag == self.controller.FLAG_UPDATE_NOT_EXIST:
-            self.send_err(TweetUpdateNotExistErrInfo)
+            self.send_err(TweetUpdateNotExistErrInfo())
             return
         elif flag == self.controller.FLAG_UDPATE_FAILED:
-            self.send_err(TweetUpdateFailedErrInfo)
+            self.send_err(TweetUpdateFailedErrInfo())
             return
         
         self.send_body(status=HTTPStatus.OK)
@@ -472,13 +459,13 @@ class TweetsEndpoint(Endpoint):
     def do_DELETE(self, rec_body: TweetDeleteInput) -> None:
         flag = self.controller.delete(rec_body.id, rec_body.email)
         if flag == self.controller.FLAG_DELETE_NOT_EXIST:
-            self.send_err(TweetDeleteNotExistErrInfo)
+            self.send_err(TweetDeleteNotExistErrInfo())
             return
         elif flag == self.controller.FLAG_DELETE_FAILED:
-            self.send_err(TweetDeleteFailedErrInfo)
+            self.send_err(TweetDeleteFailedErrInfo())
             return
         elif flag == self.controller.FLAG_DELETE_FORBIDDEN:
-            self.send_err(TweetDeleteForbiddenErrInfo)
+            self.send_err(TweetDeleteForbiddenErrInfo())
             return
         
         self.send_body(status=HTTPStatus.OK)

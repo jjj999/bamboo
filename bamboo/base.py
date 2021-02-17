@@ -1,5 +1,8 @@
 
 from __future__ import annotations
+from abc import ABCMeta, abstractmethod
+from typing import Dict
+from bamboo.util.deco import class_property
 from enum import Enum
 
 
@@ -74,6 +77,18 @@ class _MediaTypes:
     
     
 MediaTypes = _MediaTypes()
+
+
+class ContentTypeHolder:
+    
+    @class_property
+    @abstractmethod
+    def _content_type_(cls) -> str:
+        pass
+    
+    @class_property
+    def _content_type_args_(cls) -> Dict[str, str]:
+        return {}
 
 
 class HTTPStatus(str, Enum):
