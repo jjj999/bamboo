@@ -59,6 +59,7 @@ class TestHTTPRequest(unittest.TestCase):
 
     def test_get_info(self):
         res = http.request(self.url_info, "GET", datacls=InfoResponse)
+        print(res.headers)
         data = res.attach()
         
         self.assertTrue(isinstance(data, InfoResponse))

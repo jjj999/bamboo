@@ -1,5 +1,6 @@
 
 from __future__ import annotations
+from bamboo.base import ContentType
 import http.client as client
 from typing import Generic, Optional, Type
 
@@ -63,4 +64,10 @@ class Response(Generic[ResponseData_t]):
         return self._res.read(self.content_length)
     
     def attach(self) -> ResponseData_t:
-        return self._datacls(self.body)
+        content_type_raw = self.get_header("Content-Type")
+        content_type = ContentType()
+        if content_type_raw:
+            content_type = ContentType.parse(content_type_raw)
+
+        return self._datacls(self.body, content_type)
+    

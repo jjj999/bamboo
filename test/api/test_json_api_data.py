@@ -5,7 +5,11 @@ from typing import List, Optional
 import unittest
 
 from bamboo.api import JsonApiData, ValidationFailedError
+from bamboo.base import ContentType, MediaTypes
 
+
+json_content_type = ContentType(MediaTypes.json, "utf-8")
+not_json_content_type = ContentType(MediaTypes.plain, "utf-8")
 
 class TestInnerData(JsonApiData):
     
@@ -63,23 +67,23 @@ data_union = json.dumps({
 
 data_invalid_type = json.dumps({
     "name": 19, "age": 20,
-})
+}).encode()
 
 data_key_not_included = json.dumps({
     "name": "hogehoge", "Age": 30,
-})
+}).encode()
     
 
 class TestJsonApiData(unittest.TestCase):
     
     def test_inner_data(self):
-        data = TestInnerData(data_inner)
+        data = TestInnerData(data_inner, json_content_type)
         self.assertEqual(data.name, "hogehoge")
         self.assertEqual(data.age, 18)
         self.assertEqual(data.email, "hoge@hoge.com")
         
     def test_list_data(self):
-        data = TestListData(data_list)
+        data = TestListData(data_list, json_content_type)
         self.assertTrue(isinstance(data.accounts, list))
         self.assertTrue(isinstance(data.accounts[0], TestInnerData))
         self.assertEqual(data.accounts[0].name, "hogehoge")
@@ -88,7 +92,7 @@ class TestJsonApiData(unittest.TestCase):
         self.assertEqual(data.datetime, "2000.01.01-00:00:00")
     
     def test_nested_data(self):
-        data = TestNestedData(data_nested)
+        data = TestNestedData(data_nested, json_content_type)
         self.assertTrue(isinstance(data.account, TestInnerData))
         self.assertEqual(data.account.name, "hogehoge")
         self.assertEqual(data.account.age, 18)
@@ -96,18 +100,23 @@ class TestJsonApiData(unittest.TestCase):
         self.assertEqual(data.datetime, "2000.01.01-00:00:00")
         
     def test_union_data(self):
-        data = TestUnionData(data_union)
+        data = TestUnionData(data_union, json_content_type)
         self.assertEqual(data.name, "hogehoge")
         self.assertEqual(data.age, None)
         
     def test_invalid_type(self):
         with self.assertRaises(ValidationFailedError) as err:
-            data = TestUnionData(data_invalid_type)
+            data = TestUnionData(data_invalid_type, json_content_type)
         self.assertIsInstance(err.exception, ValidationFailedError)
         
     def test_key_not_included(self):
         with self.assertRaises(ValidationFailedError) as err:
-            data = TestUnionData(data_key_not_included)
+            data = TestUnionData(data_key_not_included, json_content_type)
+        self.assertIsInstance(err.exception, ValidationFailedError)
+        
+    def test_not_json_content_tyep(self):
+        with self.assertRaises(ValidationFailedError) as err:
+            data = TestUnionData(data_union, not_json_content_type)
         self.assertIsInstance(err.exception, ValidationFailedError)
 
 

@@ -3,7 +3,7 @@ from typing import List
 import unittest
 
 from bamboo.api import (
-    JsonApiDataBuilder, JsonApiData, NotJsonableAnnotationError
+    JsonApiDataBuilder, JsonApiData, InvalidAnnotationError
 )
 
 
@@ -21,33 +21,33 @@ class TestOuterApi(JsonApiData):
 class TestJsonable(unittest.TestCase):
     
     def test_int(self):
-        JsonApiDataBuilder.check_jsonable(int)
+        JsonApiDataBuilder.check_annotations(int)
     
     def test_float(self):
-        JsonApiDataBuilder.check_jsonable(float)
+        JsonApiDataBuilder.check_annotations(float)
     
     def test_str(self):
-        JsonApiDataBuilder.check_jsonable(str)
+        JsonApiDataBuilder.check_annotations(str)
     
     def test_bool(self):
-        JsonApiDataBuilder.check_jsonable(bool)
+        JsonApiDataBuilder.check_annotations(bool)
     
     def test_NoneType(self):
-        JsonApiDataBuilder.check_jsonable(type(None))
+        JsonApiDataBuilder.check_annotations(type(None))
     
     def test_list(self):
-        JsonApiDataBuilder.check_jsonable(List[int])
+        JsonApiDataBuilder.check_annotations(List[int])
 
-        with self.assertRaises(NotJsonableAnnotationError) as err:
-            JsonApiDataBuilder.check_jsonable(List)
-        self.assertIsInstance(err.exception, NotJsonableAnnotationError)
+        with self.assertRaises(InvalidAnnotationError) as err:
+            JsonApiDataBuilder.check_annotations(List)
+        self.assertIsInstance(err.exception, InvalidAnnotationError)
         
-        with self.assertRaises(NotJsonableAnnotationError) as err:
-            JsonApiDataBuilder.check_jsonable(List[dict])
-        self.assertIsInstance(err.exception, NotJsonableAnnotationError)
+        with self.assertRaises(InvalidAnnotationError) as err:
+            JsonApiDataBuilder.check_annotations(List[dict])
+        self.assertIsInstance(err.exception, InvalidAnnotationError)
     
     def test_jsonapi(self):
-        JsonApiDataBuilder.is_jsonable_api(TestOuterApi)
+        JsonApiDataBuilder.has_valid_annotations(TestOuterApi)
 
 
 if __name__ == "__main__":
