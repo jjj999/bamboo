@@ -1,9 +1,12 @@
 
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
-from typing import Dict
-from bamboo.util.deco import class_property
+from dataclasses import dataclass
+import re
+from typing import Dict, Optional
 from enum import Enum
+
+from bamboo.util.deco import class_property
 
 
 class _HTTPMethods:
@@ -46,6 +49,7 @@ class _MediaTypes:
     css = "text/css"
     javascript = "application/javascript"
     json = "application/json"
+    x_www_form_urlencoded = "application/x-www-form-urlencoded"
     rss = "application/rss+xml"
     atom = "application/atom+xml"
     binary = "application/octet-stream"
@@ -79,7 +83,7 @@ class _MediaTypes:
 MediaTypes = _MediaTypes()
 
 
-class ContentTypeHolder:
+class ContentTypeHolder(metaclass=ABCMeta):
     
     @class_property
     @abstractmethod
@@ -89,6 +93,31 @@ class ContentTypeHolder:
     @class_property
     def _content_type_args_(cls) -> Dict[str, str]:
         return {}
+    
+    
+@dataclass
+class ContentType:
+    
+    media_type: Optional[str] = None
+    charset: Optional[str] = None
+    boundary: Optional[str] = None
+    
+    @classmethod
+    def parse(cls, raw: str) -> ContentType:
+        raw = re.split(";\s*", raw)
+        result = cls()
+        
+        media_type = raw[0]
+        if len(media_type):
+            result.media_type = media_type
+            
+        for directive, val in [item.split("=") for item in raw[1:]]:
+            if directive == "charset":
+                result.charset = val.lower()
+            elif directive == "boundary":
+                result.boundary = val
+                
+        return result
 
 
 class HTTPStatus(str, Enum):

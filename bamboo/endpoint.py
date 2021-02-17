@@ -9,11 +9,12 @@ from typing import (
 from urllib.parse import parse_qs
 
 from bamboo.api import ApiData, ValidationFailedError
-from bamboo.base import HTTPMethods, HTTPStatus, MediaTypes
+from bamboo.base import HTTPMethods, HTTPStatus, MediaTypes, ContentType
 from bamboo.error import (
     DEFAULT_HEADER_NOT_FOUND_ERROR, DEFAULT_NOT_APPLICABLE_IP_ERROR,
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR, ErrInfoBase,
 )
+from bamboo.util.deco import cached_property
 from bamboo.util.ip import is_valid_ipv4
 
 
@@ -117,9 +118,10 @@ class Endpoint:
         name = "HTTP_" + name.replace("-", "_").upper()
         return self._environ.get(name)
     
-    @property
-    def content_type(self) -> str:
-        return self._environ.get("CONTENT_TYPE")
+    @cached_property
+    def content_type(self) -> ContentType:
+        raw = self._environ.get("CONTENT_TYPE")
+        return ContentType.parse(raw)
     
     @property
     def content_length(self) -> int:
@@ -193,8 +195,7 @@ class Endpoint:
     
     def send_body(self, body: bytes = b"", 
                   status: HTTPStatus = HTTPStatus.OK,
-                  content_type: Optional[str] = None,
-                  **params: Optional[str]) -> None:
+                  content_type: Optional[ContentType] = None) -> None:
         """Set given binary to the response body.
 
         Parameters
@@ -203,10 +204,8 @@ class Endpoint:
             Binary to be set to the response body, by default `b""`
         status : HTTPStatus, optional
             HTTP status of the response, by default `HTTPStatus.OK`
-        content_type : Optional[str], optional
+        content_type : Optional[ContentType], optional
             `Content-Type` header to be sent, by default `None`
-        **params : Optional[str]
-            Directives of the `Content-Type` header
             
         Notes
         -----
@@ -222,9 +221,18 @@ class Endpoint:
 
         self._status = status
         self._res_body = body
+        if content_type is None:
+            return
         
-        if content_type:
-            self.add_header("Content-Type", content_type, **params)
+        # Content-Type's parameters
+        params = {}
+        if content_type.charset:
+            params["charset"] = content_type.charset
+        if content_type.boundary:
+            params["boundary"] = content_type.boundary    
+    
+        if content_type.media_type:
+            self.add_header("Content-Type", content_type.media_type, **params)
     
     def send_json(self, body: Dict[str, Any], 
                   status: HTTPStatus = HTTPStatus.OK,
@@ -247,9 +255,9 @@ class Endpoint:
         """
         self._check_body_already_set()
         
-        self._status = status
-        self._res_body = json.dumps(body).encode(encoding=encoding)
-        self.add_header("Content-Type", MediaTypes.json, charset=encoding)
+        body = json.dumps(body).encode(encoding=encoding)
+        content_type = ContentType(media_type=MediaTypes.json, charset=encoding)
+        self.send_body(body=body, status=status, content_type=content_type)
     
     def send_err(self, err: ErrInfoBase) -> None:
         """Set error to the response body.
@@ -464,7 +472,7 @@ def data_format(input: Optional[Type[ApiData]] = None,
             def _callback(self: Endpoint, *args) -> None:
                 body = self.body
                 try:
-                    data = input(body)
+                    data = input(body, self.content_type)
                 except ValidationFailedError:
                     self.send_err(err_validate)
                     return
