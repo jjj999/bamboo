@@ -6,8 +6,9 @@ from typing import (
     Any, Dict, Sequence, Type, TypeVar, Union, get_args,
     get_origin, get_type_hints,
 )
+from urllib.parse import parse_qs
 
-from bamboo.base import MediaTypes, ContentTypeHolder
+from bamboo.base import MediaTypes, ContentTypeHolder, ContentType
 from bamboo.util.deco import class_property
 
 
@@ -35,12 +36,14 @@ class ApiData(ContentTypeHolder, metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def __init__(self, raw: bytes) -> None:
+    def __init__(self, raw: bytes, content_type: ContentType) -> None:
         """
         Parameters
         ----------
         raw : bytes
             Raw data to be validated
+        content_type : ContentType
+            Values of `Content-Type` header
         """
         pass
     
@@ -77,14 +80,21 @@ class BinaryApiData(ApiData):
     ```
     """
     
-    def __init__(self, raw: bytes) -> None:
+    def __init__(self, raw: bytes, content_type: ContentType) -> None:
         """
         Parameters
         ----------
         raw : bytes
             Raw data to be validated
+        content_type : ContentType
+            Values of `Content-Type` header
+            
+        Notes
+        -----
+        In objects of this class, `content_type` is not used even if any 
+        `content_type` is specified.
         """
-        super().__init__(raw)
+        super().__init__(raw, content_type)
         
         if not isinstance(raw, bytes):
             raise ValidationFailedError(
@@ -96,7 +106,7 @@ class BinaryApiData(ApiData):
         return self._raw
 
         
-class NotJsonableAnnotationError(Exception):
+class InvalidAnnotationError(Exception):
     """Raised if a type not convertable to JSON is included of type hints."""
     pass
 
@@ -128,7 +138,7 @@ class JsonApiDataBuilder:
     TYPES_ORIGIN = (list, Union)
     
     @classmethod
-    def check_jsonable(cls, *types: Type) -> None:
+    def check_annotations(cls, *types: Type) -> None:
         """Check if types are convertable to JSON data.
         
         Parameters
@@ -138,7 +148,7 @@ class JsonApiDataBuilder:
             
         Raises
         ------
-        NotJsonableAnnotationError
+        InvalidAnnotationError
             Raised if a type not convertable to JSON data is detected
         """  
         def checker(types: Sequence[Type]) -> None:
@@ -150,42 +160,47 @@ class JsonApiDataBuilder:
                     elif issubclass(type_, JsonApiData):
                         checker(get_type_hints(JsonApiData).values())
                     else:
-                        raise NotJsonableAnnotationError(
+                        raise InvalidAnnotationError(
                             f"{type_.__name__} is an unacceptable as a type "
                             "of attributes of JsonApiData.")
                 else:
                     args = get_args(type_)
                     if origin == list:
                         if not len(args):
-                            raise NotJsonableAnnotationError(
+                            raise InvalidAnnotationError(
                                 "List with no arguments is not acceptable. "
                                 "Specify an argument of type to list.")
                         checker([args[0]])
                     elif origin == Union:
                         # Only Optional is admitted.
                         if not (len(args) == 2 and args[1] == cls.NoneType):
-                            raise NotJsonableAnnotationError(
+                            raise InvalidAnnotationError(
                                 "Attritbutes with serveral types are not "
                                 "acceptable. Only 'Optional' can be used as "
                                 "type hints.")
                         
                         checker([args[0]])
                     else:
-                        raise NotJsonableAnnotationError(
+                        raise InvalidAnnotationError(
                             f"{type_.__name__} is not acceptable as a type of"
                             " attributes of JsonApiData.")
         checker(types)
         
     @classmethod
-    def is_jsonable_api(cls, apiclass: Type[JsonApiData]) -> None:
+    def has_valid_annotations(cls, apiclass: Type[JsonApiData]) -> None:
         """Check if `JsonApiData` has only arguments convertable to JSON.
 
         Parameters
         ----------
         apiclass : Type[JsonApiData]
             A subclass of the `JsonApiData`
+            
+        Raises
+        ------
+        InvalidAnnotationError
+            Raised if a type not convertable to JSON data is detected
         """
-        cls.check_jsonable(*tuple(get_type_hints(apiclass).values()))
+        cls.check_annotations(*tuple(get_type_hints(apiclass).values()))
     
     @classmethod
     def validate_obj(cls, obj: Any, objtype: Type) -> bool:
@@ -334,9 +349,10 @@ class JsonApiData(ApiData):
     """API data with JSON format.
 
     This class can be used to describe data with JSON format. This class 
-    should be inheritted and several class attributes should be defined in 
-    the subclass. Developers may define type hints of the class attribtues, 
-    which are used to validate if raw data has format the type hints define.
+    should be inheritted and its several class-attributes should be 
+    defined in the subclass. Developers must define type hints of the 
+    class-attribtues, which are used to validate if raw data has format 
+    the type hints define.
     
     Examples
     --------
@@ -359,7 +375,7 @@ class JsonApiData(ApiData):
     
         @data_format(input=MockApiData, output=None)
         def do_GET(self, rec_body: MockApiData) -> None:
-            # Do something
+            # Do something...
             
             # Example
             for user in rec_body.users:
@@ -368,22 +384,38 @@ class JsonApiData(ApiData):
     """
     
     def __init_subclass__(cls) -> None:
-        JsonApiDataBuilder.is_jsonable_api(cls)
+        JsonApiDataBuilder.has_valid_annotations(cls)
             
     # NOTE
     #   DO NOT override the method. This class should be used only 
     #   by defining attributes and their types.
-    def __init__(self, raw: bytes) -> None:
+    def __init__(self, raw: bytes, content_type: ContentType) -> None:
         """
         Parameters
         ----------
         raw : bytes
             Raw data to be validated
+        content_type : ContentType
+            Values of `Content-Type` header
         """
-        super().__init__(raw)
+        super().__init__(raw, content_type)
+        
+        encoding = content_type.charset
+        if encoding is None:
+            encoding = "utf-8"
+            
+        if content_type.media_type.lower() != MediaTypes.json:
+            raise ValidationFailedError(
+                "Media type of 'Content-Type' header is not "
+                f"{MediaTypes.json}, but {content_type.media_type}.")
 
         try:
+            raw = raw.decode(encoding=encoding)
             data = json.loads(raw)
+        except UnicodeDecodeError:
+            raise ValidationFailedError(
+                "Decoding raw data failed. The encoding was expected "
+                f"{encoding}, but not corresponded.")
         except json.decoder.JSONDecodeError:
             raise ValidationFailedError(
                 "Decoding raw data failed."
@@ -395,3 +427,157 @@ class JsonApiData(ApiData):
     @class_property
     def _content_type_(cls) -> str:
         return MediaTypes.json
+
+
+class XWWWFormUrlEncodedDataBuilder:
+    
+    TYPES_ARGS = (str,)
+    
+    @classmethod
+    def check_annotations(cls, *types: Type) -> None:
+        """Check if types are acceptable to `XWWWFormUriEncodedData` class.
+
+        Parameters
+        ----------
+        *types : Type
+            Classes to be checked
+
+        Raises
+        ------
+        InvalidAnnotationError
+            Raised if a type not acceptable
+        """
+        for type_ in types:
+            if type_ not in cls.TYPES_ARGS:
+                raise InvalidAnnotationError(
+                    f"{type_.__name__} is an unacceptable as a type "
+                    "of attributes of XWWWFormUrlEncodedData.")
+            
+    @classmethod
+    def has_valid_annotations(cls, apiclass: Type[XWWWFormUrlEncodedData]
+                              ) -> None:
+        """Check if `XWWWFormUrlEncodedData` has only arguments with 
+        acceptable types.
+
+        Parameters
+        ----------
+        apiclass : Type[XWWWFormUrlEncodedData]
+            A subclass of the `XWWWFormUrlEncodedData`
+            
+        Raises
+        ------
+        InvalidAnnotationError
+            Raised if a type not acceptable
+        """
+        cls.check_annotations(*tuple(get_type_hints(apiclass).values()))
+    
+    @classmethod
+    def build(cls, apiclass: Type[XWWWFormUrlEncodedData],
+              data: str) -> XWWWFormUrlEncodedData:
+        """Build new `XWWWFormUrlEncodedData` object from raw data.
+
+        Parameters
+        ----------
+        apiclass : Type[XWWWFormUrlEncodedData]
+            Class of new object to be generated
+        data : str
+            Raw data already decoded
+
+        Returns
+        -------
+        XWWWFormUrlEncodedData
+            New object built
+
+        Raises
+        ------
+        ValidationFailedError
+            Raised if type validation of raw data failes
+        """
+        instance = apiclass.__new__(apiclass)
+        annotations = get_type_hints(apiclass)        
+        data = parse_qs(data)
+        
+        for key_def in annotations.keys():
+            if key_def not in data:
+                raise ValidationFailedError(
+                    f"Raw data has no key of '{key_def}'.")
+                
+            if len(data[key_def]) > 1:
+                raise ValidationFailedError(
+                    f"Duplicated keys '{key_def}' were detected.")
+            
+            setattr(instance, key_def, data[key_def][0])
+        
+        return instance
+        
+
+class XWWWFormUrlEncodedData(ApiData):
+    """API data with `x-www-form-urlencoded`
+    
+    This class can be used to describe data with `x-www-form-urlencoded` 
+    format. This class should be inheritted and its several 
+    class-attributes should be defined in the subclass. Developer must 
+    define type hints of the class-attributes, which are used to validate if 
+    raw data has format the type hints define. In this class, the type hints 
+    must be only `str`. Otherwise, `InvalidAnnotationError` will be raised.
+
+    Examples
+    --------
+    - Defining subclass of this class
+    
+    ```
+    class UserCredentials(XWWWFormUrlEncodedData):
+        user_id: str
+        password: str
+    ```
+    
+    - Validating received data
+    
+    ```
+    class MockEndpoint(Endpoint):
+    
+        @data_format(input=UserCredentials, output=None)
+        def do_GET(self, rec_body: UserCredentials) -> None:
+            # Do something...
+            
+            # Example
+            authenticate(rec_body.user_id, rec_body.password)
+    ```
+    """
+    
+    def __init_subclass__(cls) -> None:
+        XWWWFormUrlEncodedDataBuilder.has_valid_annotations(cls)
+    
+    def __init__(self, raw: bytes, content_type: ContentType) -> None:
+        """
+        Parameters
+        ----------
+        raw : bytes
+            Raw data to be validated
+        content_type : ContentType
+            Values of `Content-Type` header
+        """
+        encoding = content_type.charset
+        if encoding is None:
+            encoding = "utf-8"
+            
+        media_type_rec = content_type.media_type.lower()
+        if media_type_rec != MediaTypes.x_www_form_urlencoded:
+            raise ValidationFailedError(
+                "Media type of 'Content-Type' header is not "
+                f"{MediaTypes.x_www_form_urlencoded}, "
+                f"but {content_type.media_type}.")
+        
+        try:
+            raw = raw.decode(encoding=encoding)
+        except UnicodeDecodeError:
+            raise ValidationFailedError(
+                "Decoding raw data failed. The encoding was expected "
+                f"{encoding}, but not corresponded.")
+        
+        instance = XWWWFormUrlEncodedDataBuilder.build(self.__class__, raw)
+        self.__dict__.update(instance.__dict__)
+    
+    @class_property
+    def _content_type_(cls) -> str:
+        return MediaTypes.x_www_form_urlencoded
