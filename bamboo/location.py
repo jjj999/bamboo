@@ -23,8 +23,8 @@ class FlexibleLocation(metaclass=ABCMeta):
         pass
 
 
-Location = Union[str, FlexibleLocation]
-Uri_t = Tuple[Location]
+Location_t = Union[str, FlexibleLocation]
+Uri_t = Tuple[Location_t]
 
 
 def is_flexible_uri(uri: Uri_t) -> bool:
