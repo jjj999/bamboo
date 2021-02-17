@@ -84,6 +84,8 @@ MediaTypes = _MediaTypes()
 
 
 class ContentTypeHolder(metaclass=ABCMeta):
+    """Abstract class with properties about `Content-Type`.
+    """
     
     @class_property
     @abstractmethod
@@ -97,6 +99,8 @@ class ContentTypeHolder(metaclass=ABCMeta):
     
 @dataclass
 class ContentType:
+    """`dataclass` for describing value of `Content-Type` header.
+    """
     
     media_type: Optional[str] = None
     charset: Optional[str] = None
@@ -104,6 +108,18 @@ class ContentType:
     
     @classmethod
     def parse(cls, raw: str) -> ContentType:
+        """Parse and make new instance of this class.
+
+        Parameters
+        ----------
+        raw : str
+            Value of `Content-Type` header
+
+        Returns
+        -------
+        ContentType
+            New instance of this class based on the `raw` data
+        """
         raw = re.split(";\s*", raw)
         result = cls()
         
