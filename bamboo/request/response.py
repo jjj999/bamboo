@@ -1,10 +1,10 @@
 
 from __future__ import annotations
-from bamboo.base import ContentType
 import http.client as client
 from typing import Generic, Optional, Type
 
 from bamboo.api import BinaryApiData
+from bamboo.base import ContentType
 from bamboo.request import ResponseData_t
 from bamboo.util.deco import cached_property
 
@@ -63,11 +63,17 @@ class Response(Generic[ResponseData_t]):
     def body(self) -> bytes:
         return self._res.read(self.content_length)
     
-    def attach(self) -> ResponseData_t:
+    def attach(self, 
+               datacls: Optional[Type[ResponseData_t]] = None
+               ) -> ResponseData_t:
         content_type_raw = self.get_header("Content-Type")
-        content_type = ContentType()
         if content_type_raw:
             content_type = ContentType.parse(content_type_raw)
+        else:
+            content_type = ContentType()
 
-        return self._datacls(self.body, content_type)
+        if datacls is None:
+            return self._datacls(self.body, content_type)
+        else:
+            return datacls(self.body, content_type)
     

@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional, Type
 from urllib.parse import parse_qs, urlparse
 
 from bamboo.api import BinaryApiData  
-from bamboo.base import HTTPMethods
+from bamboo.base import HTTPMethods, MediaTypes
 from bamboo.request import ResponseData_t, Schemes
 from bamboo.request.response import Response
 from bamboo.util.convert import unparse_qs
@@ -32,6 +32,8 @@ def request(uri: str,
         raise ValueError("Request body is specified both 'body' and 'json'.")
     if json:
         body = dumps(json)
+        if "Content-Type" not in headers:
+            headers["Content-Type"] = MediaTypes.json
     
     parsed_uri = urlparse(uri)
     if parsed_uri.scheme != Schemes.HTTP:
