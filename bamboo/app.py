@@ -6,7 +6,7 @@ from typing import (
 
 from bamboo.endpoint import Endpoint, _get_bamboo_attr
 from bamboo.error import DEFAULT_NOT_FOUND_ERROR
-from bamboo.location import Location, Uri_t
+from bamboo.location import Location_t, Uri_t
 from bamboo.router import Router
 
 
@@ -240,7 +240,7 @@ class App:
         """
         return self._router.search_uris(endpoint)
     
-    def route(self, *locs: Location, parcel: Parcel_t = (),
+    def route(self, *locs: Location_t, parcel: Parcel_t = (),
               version: Union[int, Tuple[int], None] = None
               ) -> Callable[[Type[Endpoint]], Type[Endpoint]]:
         """Register combination of URI and `Endpoint` for routing.
