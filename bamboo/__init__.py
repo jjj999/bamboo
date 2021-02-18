@@ -19,11 +19,11 @@ from bamboo.base import (
 )
 
 from bamboo.endpoint import (
-    BodyAlreadySetError, Endpoint, ATTR_DATA_FORMAT, DataFormatInfo,
+    StatusCodeAlreadySetError, Endpoint, ATTR_DATA_FORMAT, DataFormatInfo,
     get_data_format_info, data_format, ATTR_HEADERS_REQUIRED, 
     RequiredHeaderInfo, get_required_header_info, has_header_of,
     ATTR_CLIENT_RESTRICTED, get_restricted_ip_info, restricts_client,
-    ATTR_ERRORS, get_errors_info, may_occurs, _get_bamboo_attr,
+    ATTR_ERRORS, get_errors_info, may_occur, _get_bamboo_attr,
 )
 
 from bamboo.error import (

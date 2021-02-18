@@ -2,7 +2,10 @@
 import json
 from typing import List, Optional, Tuple
 
-from bamboo.base import HTTPStatus, MediaTypes, ContentTypeHolder
+from bamboo.base import (
+    ContentType, HTTPStatus, ContentTypeHolder,
+    DEFAULT_CONTENT_TYPE_PLAIN, DEFAULT_CONTENT_TYPE_JSON,
+)
 from bamboo.util.deco import class_property
 
 
@@ -32,8 +35,8 @@ class ErrInfoBase(ContentTypeHolder):
         pass
     
     @class_property
-    def _content_type_(cls) -> str:
-        return MediaTypes.plain
+    def _content_type_(cls) -> ContentType:
+        return DEFAULT_CONTENT_TYPE_PLAIN
     
     def get_headers(self) -> List[Tuple[str, str]]:
         """Publishes additional headers for error response.
@@ -125,8 +128,8 @@ class ApiErrInfo(ErrInfoBase):
     encoding: str = "utf-8"
     
     @class_property
-    def _content_type_(cls) -> str:
-        return MediaTypes.json
+    def _content_type_(cls) -> ContentType:
+        return DEFAULT_CONTENT_TYPE_JSON
     
     def get_body(self) -> Optional[bytes]:
         """Publishes response body for error response.

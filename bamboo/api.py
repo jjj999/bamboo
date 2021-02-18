@@ -402,7 +402,7 @@ class JsonApiData(ApiData):
         
         encoding = content_type.charset
         if encoding is None:
-            encoding = "utf-8"
+            encoding = "UTF-8"
             
         media_type = content_type.media_type
         if media_type is None:
@@ -564,7 +564,7 @@ class XWWWFormUrlEncodedData(ApiData):
         """
         encoding = content_type.charset
         if encoding is None:
-            encoding = "utf-8"
+            encoding = "UTF-8"
             
         media_type = content_type.media_type
         if media_type is None:

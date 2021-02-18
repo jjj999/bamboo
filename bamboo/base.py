@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 import re
-from typing import Dict, Optional
+from typing import Optional
 from enum import Enum
 
 from bamboo.util.deco import class_property
@@ -83,20 +83,6 @@ class _MediaTypes:
 MediaTypes = _MediaTypes()
 
 
-class ContentTypeHolder(metaclass=ABCMeta):
-    """Abstract class with properties about `Content-Type`.
-    """
-    
-    @class_property
-    @abstractmethod
-    def _content_type_(cls) -> str:
-        pass
-    
-    @class_property
-    def _content_type_args_(cls) -> Dict[str, str]:
-        return {}
-    
-    
 @dataclass
 class ContentType:
     """`dataclass` for describing value of `Content-Type` header.
@@ -134,6 +120,23 @@ class ContentType:
                 result.boundary = val
                 
         return result
+    
+    
+class ContentTypeHolder(metaclass=ABCMeta):
+    """Abstract class with properties about `Content-Type`.
+    """
+    
+    @class_property
+    @abstractmethod
+    def _content_type_(cls) -> ContentType:
+        pass
+
+    
+# NOTE
+#   Value of the Content-Type header by default. This variables can be 
+#   used if Content-Type of response is not specified.
+DEFAULT_CONTENT_TYPE_PLAIN = ContentType(MediaTypes.plain)
+DEFAULT_CONTENT_TYPE_JSON = ContentType(MediaTypes.json, "UTF-8")
 
 
 class HTTPStatus(str, Enum):
