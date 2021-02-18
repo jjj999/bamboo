@@ -9,7 +9,7 @@ $ python -m pip install git+https://github.com/jjj999/bamboo.git
 ```
 
 ## Usage
-詳細なドキュメントは[こちら](./documentation/usage/)を参照してください．以下は簡単な実装例です．
+詳細なドキュメントは[こちら](./docs/usage/)を参照してください．以下は簡単な実装例です．
 
 ```python
 from wsgiref.simple_server import make_server
@@ -35,6 +35,9 @@ if __name__ == "__main__":
 ```
 
 実行後，ブラウザで http://localhost:8000/hello にアクセスしてみましょう．
+
+## API documentation
+リポジトリをクローンもしくはダウンロードし，[docs/api/_build/index.html](docs/api/_build/index.html) をブラウザで開くと参照できます．後日ドキュメント用のホームページが開設される可能性があります．
 
 ## Examples
 
