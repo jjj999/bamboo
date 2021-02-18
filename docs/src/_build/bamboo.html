@@ -1,0 +1,2269 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>bamboo package &mdash; bamboo 0.2.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="bamboo.nas package" href="bamboo.nas.html" />
+    <link rel="prev" title="Welcome to bamboo’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> bamboo
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">bamboo package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bamboo.nas.html">bamboo.nas package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bamboo.request.html">bamboo.request package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bamboo.util.html">bamboo.util package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamboo.api">bamboo.api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamboo.app">bamboo.app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamboo.base">bamboo.base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamboo.endpoint">bamboo.endpoint module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamboo.error">bamboo.error module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamboo.location">bamboo.location module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamboo.router">bamboo.router module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamboo.test">bamboo.test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamboo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">bamboo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>bamboo package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/bamboo.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bamboo-package">
+<h1>bamboo package<a class="headerlink" href="#bamboo-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bamboo.nas.html">bamboo.nas package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.nas.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.nas.html#module-bamboo.nas.simple_nas">bamboo.nas.simple_nas module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.nas.html#module-bamboo.nas">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bamboo.request.html">bamboo.request package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.request.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.request.html#module-bamboo.request.http">bamboo.request.http module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.request.html#module-bamboo.request.response">bamboo.request.response module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.request.html#module-bamboo.request">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bamboo.util.html">bamboo.util package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.util.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.util.html#module-bamboo.util.convert">bamboo.util.convert module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.util.html#module-bamboo.util.deco">bamboo.util.deco module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.util.html#module-bamboo.util.ip">bamboo.util.ip module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.util.html#module-bamboo.util.string">bamboo.util.string module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.util.html#module-bamboo.util.time">bamboo.util.time module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.util.html#module-bamboo.util.version">bamboo.util.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bamboo.util.html#module-bamboo.util">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-bamboo.api">
+<span id="bamboo-api-module"></span><h2>bamboo.api module<a class="headerlink" href="#module-bamboo.api" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="bamboo.api.ApiData">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.api.</span></code><code class="sig-name descname"><span class="pre">ApiData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.base.ContentType" title="bamboo.base.ContentType"><span class="pre">bamboo.base.ContentType</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.api.ApiData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.base.ContentTypeHolder" title="bamboo.base.ContentTypeHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.base.ContentTypeHolder</span></code></a></p>
+<p>Base class to describe input/output data format on Endpoints as APIs.</p>
+<p>Subclasses of this class can be used an argument of <cite>data_format</cite>
+decorator for callbacks on Endpoints. If input/output parameters of
+the <cite>data_format</cite> are specified, the decorator validates if raw data,
+typically a <cite>bytes</cite> object, has expected data format.</p>
+<p>Subclasses of this class can define their own data formats in <cite>__init__</cite>
+methods. Developers should implement <cite>__init__</cite> methods of the subclasses
+such that each objects has data with expected formats by implementors.</p>
+<p class="rubric">Notes</p>
+<p>This class is an abstract class. So, don’t initilize it and specify it
+as an argument of the <cite>data_format</cite> decorator.</p>
+<p>Subclasses of this class should validate if raw data given to <cite>__init__</cite>
+methods has expected formats. If the validation failes, the classes MUST
+raise <cite>ValidataionFailedError</cite> to announce the failure to the
+<cite>data_format</cite> decorator.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.api.BinaryApiData">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.api.</span></code><code class="sig-name descname"><span class="pre">BinaryApiData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.base.ContentType" title="bamboo.base.ContentType"><span class="pre">bamboo.base.ContentType</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.api.BinaryApiData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.api.ApiData" title="bamboo.api.ApiData"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.api.ApiData</span></code></a></p>
+<p>API data with no format.</p>
+<p>This class can be used to describe raw data with no data format. So,
+any received data from clients is acceptable on the class.</p>
+<dl class="py attribute">
+<dt id="bamboo.api.BinaryApiData.raw">
+<code class="sig-name descname"><span class="pre">raw</span></code><a class="headerlink" href="#bamboo.api.BinaryApiData.raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property of raw data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a>`
+class MockEndpoint(Endpoint):</p>
+<blockquote>
+<div><p>&#64;data_format(input=BinaryApiData, output=None)
+def do_GET(self, rec_body: BinaryApiData) -&gt; None:</p>
+<blockquote>
+<div><p># get raw data of request body
+raw_data = rec_body.raw</p>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<dl class="py method">
+<dt id="id0">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">raw</span></code><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="bamboo.api.InvalidAnnotationError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.api.</span></code><code class="sig-name descname"><span class="pre">InvalidAnnotationError</span></code><a class="headerlink" href="#bamboo.api.InvalidAnnotationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Raised if a type not convertable to JSON is included of type hints.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.api.JsonApiData">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.api.</span></code><code class="sig-name descname"><span class="pre">JsonApiData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.base.ContentType" title="bamboo.base.ContentType"><span class="pre">bamboo.base.ContentType</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.api.JsonApiData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.api.ApiData" title="bamboo.api.ApiData"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.api.ApiData</span></code></a></p>
+<p>API data with JSON format.</p>
+<p>This class can be used to describe data with JSON format. This class
+should be inheritted and its several class-attributes should be
+defined in the subclass. Developers must define type hints of the
+class-attribtues, which are used to validate if raw data has format
+the type hints define.</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p>Defining subclass of this class</p></li>
+</ul>
+<p><a href="#id7"><span class="problematic" id="id8">``</span></a>`
+class User(JsonApiData):</p>
+<blockquote>
+<div><p>name: str
+email: str
+age: int</p>
+</div></blockquote>
+<dl class="simple">
+<dt>class MockApiData(JsonApiData):</dt><dd><p>users: List[User]</p>
+</dd>
+</dl>
+<p><a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a></p>
+<ul class="simple">
+<li><p>Validating received data</p></li>
+</ul>
+<p><a href="#id13"><span class="problematic" id="id14">``</span></a>`
+class MockEndpoint(Endpoint):</p>
+<blockquote>
+<div><p>&#64;data_format(input=MockApiData, output=None)
+def do_GET(self, rec_body: MockApiData) -&gt; None:</p>
+<blockquote>
+<div><p># Do something…</p>
+<p># Example
+for user in rec_body.users:</p>
+<blockquote>
+<div><p>print(f”user name : {user.name}”)</p>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id15"><span class="problematic" id="id16">``</span></a><a href="#id17"><span class="problematic" id="id18">`</span></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.api.JsonApiDataBuilder">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.api.</span></code><code class="sig-name descname"><span class="pre">JsonApiDataBuilder</span></code><a class="headerlink" href="#bamboo.api.JsonApiDataBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Builder for <cite>JsonApiData</cite>.</p>
+<p>This utility class has some class methods for validating JSON data and
+building <cite>JsonApiData</cite> objects from raw data.</p>
+<dl class="py attribute">
+<dt id="bamboo.api.JsonApiDataBuilder.NoneType">
+<code class="sig-name descname"><span class="pre">NoneType</span></code><a class="headerlink" href="#bamboo.api.JsonApiDataBuilder.NoneType" title="Permalink to this definition">¶</a></dt>
+<dd><p>The type of None</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.api.JsonApiDataBuilder.TYPES_ARGS">
+<code class="sig-name descname"><span class="pre">TYPES_ARGS</span></code><a class="headerlink" href="#bamboo.api.JsonApiDataBuilder.TYPES_ARGS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tuple of types acceptable to <cite>JsonApiData</cite> with no arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tuple[type]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.api.JsonApiDataBuilder.TYPES_ARGS_SET">
+<code class="sig-name descname"><span class="pre">TYPES_ARGS_SET</span></code><a class="headerlink" href="#bamboo.api.JsonApiDataBuilder.TYPES_ARGS_SET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of types acceptable to <cite>JsonApiData</cite> with no arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Set[type]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.api.JsonApiDataBuilder.TYPES_ORIGIN">
+<code class="sig-name descname"><span class="pre">TYPES_ORIGIN</span></code><a class="headerlink" href="#bamboo.api.JsonApiDataBuilder.TYPES_ORIGIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tuple of types acceptable to <cite>JsonApiData</cite> with arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tuple[type]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="id19">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">NoneType</span></code><a class="headerlink" href="#id19" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id20">
+<code class="sig-name descname"><span class="pre">TYPES_ARGS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'bool'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'NoneType'&gt;)</span></em><a class="headerlink" href="#id20" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id21">
+<code class="sig-name descname"><span class="pre">TYPES_ARGS_SET</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{&lt;class</span> <span class="pre">'NoneType'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'bool'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'int'&gt;}</span></em><a class="headerlink" href="#id21" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id22">
+<code class="sig-name descname"><span class="pre">TYPES_ORIGIN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">(&lt;class</span> <span class="pre">'list'&gt;,</span> <span class="pre">typing.Union)</span></em><a class="headerlink" href="#id22" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.api.JsonApiDataBuilder.build">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">build</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">apiclass</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.api.JsonApiData" title="bamboo.api.JsonApiData"><span class="pre">bamboo.api.JsonApiData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.api.JsonApiData" title="bamboo.api.JsonApiData"><span class="pre">bamboo.api.JsonApiData</span></a><a class="headerlink" href="#bamboo.api.JsonApiDataBuilder.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build new <cite>JsonApiData</cite> object from raw data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>apiclass</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#bamboo.api.JsonApiData" title="bamboo.api.JsonApiData"><em>JsonApiData</em></a><em>]</em>) – Class of new object to be generated</p></li>
+<li><p><strong>data</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Raw data converted as a dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New object built</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bamboo.api.JsonApiData" title="bamboo.api.JsonApiData">JsonApiData</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bamboo.api.ValidationFailedError" title="bamboo.api.ValidationFailedError"><strong>ValidationFailedError</strong></a> – Raised if type validation of raw data failes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.api.JsonApiDataBuilder.check_annotations">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">check_annotations</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">types</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.api.JsonApiDataBuilder.check_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if types are convertable to JSON data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*types</strong> (<em>Type</em>) – Classes to be checked</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bamboo.api.InvalidAnnotationError" title="bamboo.api.InvalidAnnotationError"><strong>InvalidAnnotationError</strong></a> – Raised if a type not convertable to JSON data is detected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.api.JsonApiDataBuilder.has_valid_annotations">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">has_valid_annotations</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">apiclass</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.api.JsonApiData" title="bamboo.api.JsonApiData"><span class="pre">bamboo.api.JsonApiData</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.api.JsonApiDataBuilder.has_valid_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if <cite>JsonApiData</cite> has only arguments convertable to JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>apiclass</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#bamboo.api.JsonApiData" title="bamboo.api.JsonApiData"><em>JsonApiData</em></a><em>]</em>) – A subclass of the <cite>JsonApiData</cite></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bamboo.api.InvalidAnnotationError" title="bamboo.api.InvalidAnnotationError"><strong>InvalidAnnotationError</strong></a> – Raised if a type not convertable to JSON data is detected</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.api.JsonApiDataBuilder.validate_obj">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">validate_obj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objtype</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#bamboo.api.JsonApiDataBuilder.validate_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate if given object is acceptable as a value of <cite>JsonApiData</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>Any</em>) – Value to be validated</p></li>
+<li><p><strong>objtype</strong> (<em>Type</em>) – Type to be validated</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If the obj and objtype is acceptable to <cite>JsonApiData</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="bamboo.api.ValidationFailedError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.api.</span></code><code class="sig-name descname"><span class="pre">ValidationFailedError</span></code><a class="headerlink" href="#bamboo.api.ValidationFailedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Raised if type validation of data failes.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.api.XWWWFormUrlEncodedData">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.api.</span></code><code class="sig-name descname"><span class="pre">XWWWFormUrlEncodedData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.base.ContentType" title="bamboo.base.ContentType"><span class="pre">bamboo.base.ContentType</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.api.XWWWFormUrlEncodedData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.api.ApiData" title="bamboo.api.ApiData"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.api.ApiData</span></code></a></p>
+<p>API data with <cite>x-www-form-urlencoded</cite></p>
+<p>This class can be used to describe data with <cite>x-www-form-urlencoded</cite>
+format. This class should be inheritted and its several
+class-attributes should be defined in the subclass. Developer must
+define type hints of the class-attributes, which are used to validate if
+raw data has format the type hints define. In this class, the type hints
+must be only <cite>str</cite>. Otherwise, <cite>InvalidAnnotationError</cite> will be raised.</p>
+<p class="rubric">Examples</p>
+<ul class="simple">
+<li><p>Defining subclass of this class</p></li>
+</ul>
+<p><a href="#id23"><span class="problematic" id="id24">``</span></a>`
+class UserCredentials(XWWWFormUrlEncodedData):</p>
+<blockquote>
+<div><p>user_id: str
+password: str</p>
+</div></blockquote>
+<p><a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a></p>
+<ul class="simple">
+<li><p>Validating received data</p></li>
+</ul>
+<p><a href="#id29"><span class="problematic" id="id30">``</span></a>`
+class MockEndpoint(Endpoint):</p>
+<blockquote>
+<div><p>&#64;data_format(input=UserCredentials, output=None)
+def do_GET(self, rec_body: UserCredentials) -&gt; None:</p>
+<blockquote>
+<div><p># Do something…</p>
+<p># Example
+authenticate(rec_body.user_id, rec_body.password)</p>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id31"><span class="problematic" id="id32">``</span></a><a href="#id33"><span class="problematic" id="id34">`</span></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.api.XWWWFormUrlEncodedDataBuilder">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.api.</span></code><code class="sig-name descname"><span class="pre">XWWWFormUrlEncodedDataBuilder</span></code><a class="headerlink" href="#bamboo.api.XWWWFormUrlEncodedDataBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="bamboo.api.XWWWFormUrlEncodedDataBuilder.TYPES_ARGS">
+<code class="sig-name descname"><span class="pre">TYPES_ARGS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;,)</span></em><a class="headerlink" href="#bamboo.api.XWWWFormUrlEncodedDataBuilder.TYPES_ARGS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.api.XWWWFormUrlEncodedDataBuilder.build">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">build</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">apiclass</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.api.XWWWFormUrlEncodedData" title="bamboo.api.XWWWFormUrlEncodedData"><span class="pre">bamboo.api.XWWWFormUrlEncodedData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.api.XWWWFormUrlEncodedData" title="bamboo.api.XWWWFormUrlEncodedData"><span class="pre">bamboo.api.XWWWFormUrlEncodedData</span></a><a class="headerlink" href="#bamboo.api.XWWWFormUrlEncodedDataBuilder.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build new <cite>XWWWFormUrlEncodedData</cite> object from raw data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>apiclass</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#bamboo.api.XWWWFormUrlEncodedData" title="bamboo.api.XWWWFormUrlEncodedData"><em>XWWWFormUrlEncodedData</em></a><em>]</em>) – Class of new object to be generated</p></li>
+<li><p><strong>data</strong> (<em>str</em>) – Raw data already decoded</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New object built</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bamboo.api.XWWWFormUrlEncodedData" title="bamboo.api.XWWWFormUrlEncodedData">XWWWFormUrlEncodedData</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bamboo.api.ValidationFailedError" title="bamboo.api.ValidationFailedError"><strong>ValidationFailedError</strong></a> – Raised if type validation of raw data failes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.api.XWWWFormUrlEncodedDataBuilder.check_annotations">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">check_annotations</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">types</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.api.XWWWFormUrlEncodedDataBuilder.check_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if types are acceptable to <cite>XWWWFormUriEncodedData</cite> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*types</strong> (<em>Type</em>) – Classes to be checked</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bamboo.api.InvalidAnnotationError" title="bamboo.api.InvalidAnnotationError"><strong>InvalidAnnotationError</strong></a> – Raised if a type not acceptable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.api.XWWWFormUrlEncodedDataBuilder.has_valid_annotations">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">has_valid_annotations</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">apiclass</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.api.XWWWFormUrlEncodedData" title="bamboo.api.XWWWFormUrlEncodedData"><span class="pre">bamboo.api.XWWWFormUrlEncodedData</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.api.XWWWFormUrlEncodedDataBuilder.has_valid_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if <cite>XWWWFormUrlEncodedData</cite> has only arguments with
+acceptable types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>apiclass</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#bamboo.api.XWWWFormUrlEncodedData" title="bamboo.api.XWWWFormUrlEncodedData"><em>XWWWFormUrlEncodedData</em></a><em>]</em>) – A subclass of the <cite>XWWWFormUrlEncodedData</cite></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bamboo.api.InvalidAnnotationError" title="bamboo.api.InvalidAnnotationError"><strong>InvalidAnnotationError</strong></a> – Raised if a type not acceptable</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bamboo.app">
+<span id="bamboo-app-module"></span><h2>bamboo.app module<a class="headerlink" href="#module-bamboo.app" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="bamboo.app.App">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.app.</span></code><code class="sig-name descname"><span class="pre">App</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_version_inserted</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.app.App" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Application objects compliant with the WSGI.</p>
+<dl class="py attribute">
+<dt id="bamboo.app.App.TAG_VERSION">
+<code class="sig-name descname"><span class="pre">TAG_VERSION</span></code><a class="headerlink" href="#bamboo.app.App.TAG_VERSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prefix of version</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id35">
+<code class="sig-name descname"><span class="pre">TAG_VERSION</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'v'</span></em><a class="headerlink" href="#id35" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.app.App.route">
+<code class="sig-name descname"><span class="pre">route</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">locs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#bamboo.location.FlexibleLocation" title="bamboo.location.FlexibleLocation"><span class="pre">bamboo.location.FlexibleLocation</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parcel</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.app.App.route" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register combination of URI and <cite>Endpoint</cite> for routing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parcel</strong> (<em>Parcel_t</em><em>, </em><em>optional</em>) – Pacel to be given to the <cite>Endpoint</cite>, by default ()</p></li>
+<li><p><strong>version</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>Tuple</em><em>[</em><em>int</em><em>]</em><em>, </em><em>None</em><em>]</em><em>, </em><em>optional</em>) – Version of the <cite>Endpoint</cite>, by default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Decorator to add combination of URI and <cite>Endpoint</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Callable[[Type[<a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint">Endpoint</a>]], Type[<a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint">Endpoint</a>]]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><a href="#id36"><span class="problematic" id="id37">``</span></a>`
+app = App()</p>
+<p># set path of URI as <cite>test/data/image</cite> and version as 1
+&#64;app.route(“test”, “data”, “image”, version=1)
+class MockEndpoint(Endpoint):</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def do_GET(self) -&gt; None:</dt><dd><p># Do something…</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id38"><span class="problematic" id="id39">``</span></a><a href="#id40"><span class="problematic" id="id41">`</span></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.app.App.seach_uris">
+<code class="sig-name descname"><span class="pre">seach_uris</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#bamboo.location.FlexibleLocation" title="bamboo.location.FlexibleLocation"><span class="pre">bamboo.location.FlexibleLocation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.app.App.seach_uris" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all URI patterns of <cite>Endpoint</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>endpoint</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><em>Endpoint</em></a><em>]</em>) – <cite>Endpoint</cite> whose URIs to be searched</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of searching</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[Uri_t]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.app.ParcelConfig">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.app.</span></code><code class="sig-name descname"><span class="pre">ParcelConfig</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.app.ParcelConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Operator class for parcel of <cite>Endpoint</cite>.</p>
+<p>This class can be used to get and set parcel of <cite>Endpoint</cite> safely.</p>
+<dl class="py method">
+<dt id="bamboo.app.ParcelConfig.get">
+<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.app.ParcelConfig.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve parcel belonging to specified <cite>app</cite>/</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>app</strong> (<a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><em>App</em></a>) – Application including the internal <cite>Endpoint</cite></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Parcel set to <cite>Endpoint</cite>, if not set yet, then <cite>None</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[Parcel_t]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.app.ParcelConfig.get_all">
+<code class="sig-name descname"><span class="pre">get_all</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.app.ParcelConfig.get_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve parcels belonging to all <cite>App</cite> objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>list</cite> of <cite>tuple`s of `App</cite> objects and their parcels</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Tuple[<a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App">App</a>, Parcel_t]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.app.ParcelConfig.set">
+<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parcel</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.app.ParcelConfig.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ser parcel of <cite>Endpoint</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app</strong> (<a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><em>App</em></a>) – Application including the internal <cite>Endpoint</cite></p></li>
+<li><p><strong>parcel</strong> (<em>Parcel_t</em>) – Parcel to be set</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.app.VersionConfig">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.app.</span></code><code class="sig-name descname"><span class="pre">VersionConfig</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.app.VersionConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Operator class for version of <cite>Endpoint</cite>.</p>
+<p>This class can be used to get and set version of <cite>Endpoint</cite> safely.</p>
+<dl class="py method">
+<dt id="bamboo.app.VersionConfig.get">
+<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.app.VersionConfig.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve version belonging to specified <cite>app</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>app</strong> (<a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><em>App</em></a>) – Application including the internal <cite>Endpoint</cite></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Version set to <cite>Endpoint</cite>, if not set yet, then <cite>None</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[Version_t]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.app.VersionConfig.get_all">
+<code class="sig-name descname"><span class="pre">get_all</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.app.VersionConfig.get_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve versions belonging to all <cite>App</cite> objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>list</cite> of <cite>tuple`s of `App</cite> objects and their versions</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Tuple[<a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App">App</a>, Version_t]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.app.VersionConfig.set">
+<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.app.VersionConfig.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set version of <cite>Endpoint</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app</strong> (<a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><em>App</em></a>) – Application including the internal <cite>Endpoint</cite></p></li>
+<li><p><strong>version</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>Tuple</em><em>[</em><em>int</em><em>]</em><em>, </em><em>None</em><em>]</em><em>, </em><em>optional</em>) – Version to be set, by default <cite>None</cite></p></li>
+<li><p><strong>force</strong> (<em>bool</em><em>, </em><em>optional</em>) – If forcing to set the <cite>version</cite>, by default <cite>False</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Raised if version of the <cite>Endpoint</cite> has already been set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bamboo.base">
+<span id="bamboo-base-module"></span><h2>bamboo.base module<a class="headerlink" href="#module-bamboo.base" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="bamboo.base.ContentType">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.base.</span></code><code class="sig-name descname"><span class="pre">ContentType</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">media_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional[str]</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional[str]</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional[str]</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.base.ContentType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="bamboo.base.ContentType.boundary">
+<code class="sig-name descname"><span class="pre">boundary</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#bamboo.base.ContentType.boundary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.ContentType.charset">
+<code class="sig-name descname"><span class="pre">charset</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#bamboo.base.ContentType.charset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.ContentType.media_type">
+<code class="sig-name descname"><span class="pre">media_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#bamboo.base.ContentType.media_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.base.ContentType.parse">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">parse</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.base.ContentType" title="bamboo.base.ContentType"><span class="pre">bamboo.base.ContentType</span></a><a class="headerlink" href="#bamboo.base.ContentType.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.base.ContentTypeHolder">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.base.</span></code><code class="sig-name descname"><span class="pre">ContentTypeHolder</span></code><a class="headerlink" href="#bamboo.base.ContentTypeHolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.base.HTTPStatus">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.base.</span></code><code class="sig-name descname"><span class="pre">HTTPStatus</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.base.HTTPStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enum which describes HTTP status.</p>
+<p>Each class variables of the class have two main attributes of
+‘value’ and ‘description’ as strings. ‘value’ means the enum value
+and describes HTTP status for WSGI. ‘description’ is additional
+attributes of the Enum, and describes short message of
+the corresponding value.</p>
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.ACCEPTED">
+<code class="sig-name descname"><span class="pre">ACCEPTED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'202</span> <span class="pre">Accepted'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.ACCEPTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.ALREADY_REPORTED">
+<code class="sig-name descname"><span class="pre">ALREADY_REPORTED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'208</span> <span class="pre">Already</span> <span class="pre">Reported'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.ALREADY_REPORTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.BAD_GATEWAY">
+<code class="sig-name descname"><span class="pre">BAD_GATEWAY</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'502</span> <span class="pre">Bad</span> <span class="pre">Gateway'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.BAD_GATEWAY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.BAD_REQUEST">
+<code class="sig-name descname"><span class="pre">BAD_REQUEST</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'400</span> <span class="pre">Bad</span> <span class="pre">Request'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.BAD_REQUEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.CONFLICT">
+<code class="sig-name descname"><span class="pre">CONFLICT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'409</span> <span class="pre">Conflict'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.CONFLICT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.CONTINUE">
+<code class="sig-name descname"><span class="pre">CONTINUE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'100</span> <span class="pre">Continue'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.CONTINUE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.CREATED">
+<code class="sig-name descname"><span class="pre">CREATED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'201</span> <span class="pre">Created'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.CREATED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.EXPECTATION_FAILED">
+<code class="sig-name descname"><span class="pre">EXPECTATION_FAILED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'417</span> <span class="pre">Expectation</span> <span class="pre">Failed'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.EXPECTATION_FAILED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.FAILED_DEPENDENCY">
+<code class="sig-name descname"><span class="pre">FAILED_DEPENDENCY</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'424</span> <span class="pre">Failed</span> <span class="pre">Dependency'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.FAILED_DEPENDENCY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.FORBIDDEN">
+<code class="sig-name descname"><span class="pre">FORBIDDEN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'403</span> <span class="pre">Forbidden'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.FORBIDDEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.FOUND">
+<code class="sig-name descname"><span class="pre">FOUND</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'302</span> <span class="pre">Found'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.FOUND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.GATEWAY_TIMEOUT">
+<code class="sig-name descname"><span class="pre">GATEWAY_TIMEOUT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'504</span> <span class="pre">Gateway</span> <span class="pre">Timeout'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.GATEWAY_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.GONE">
+<code class="sig-name descname"><span class="pre">GONE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'410</span> <span class="pre">Gone'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.GONE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.HTTP_VERSION_NOT_SUPPORTED">
+<code class="sig-name descname"><span class="pre">HTTP_VERSION_NOT_SUPPORTED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'505</span> <span class="pre">HTTP</span> <span class="pre">Version</span> <span class="pre">Not</span> <span class="pre">Supported'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.HTTP_VERSION_NOT_SUPPORTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.IM_USED">
+<code class="sig-name descname"><span class="pre">IM_USED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'226</span> <span class="pre">IM</span> <span class="pre">Used'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.IM_USED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.INSUFFICIENT_STORAGE">
+<code class="sig-name descname"><span class="pre">INSUFFICIENT_STORAGE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'507</span> <span class="pre">Insufficient</span> <span class="pre">Storage'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.INSUFFICIENT_STORAGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.INTERNAL_SERVER_ERROR">
+<code class="sig-name descname"><span class="pre">INTERNAL_SERVER_ERROR</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'500</span> <span class="pre">Internal</span> <span class="pre">Server</span> <span class="pre">Error'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.INTERNAL_SERVER_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.LENGTH_REQUIRED">
+<code class="sig-name descname"><span class="pre">LENGTH_REQUIRED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'411</span> <span class="pre">Length</span> <span class="pre">Required'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.LENGTH_REQUIRED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.LOCKED">
+<code class="sig-name descname"><span class="pre">LOCKED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'423</span> <span class="pre">Locked'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.LOCKED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.LOOP_DETECTED">
+<code class="sig-name descname"><span class="pre">LOOP_DETECTED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'508</span> <span class="pre">Loop</span> <span class="pre">Detected'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.LOOP_DETECTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.METHOD_NOT_ALLOWED">
+<code class="sig-name descname"><span class="pre">METHOD_NOT_ALLOWED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'405</span> <span class="pre">Method</span> <span class="pre">Not</span> <span class="pre">Allowed'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.METHOD_NOT_ALLOWED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.MISDIRECTED_REQUEST">
+<code class="sig-name descname"><span class="pre">MISDIRECTED_REQUEST</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'421</span> <span class="pre">Misdirected</span> <span class="pre">Request'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.MISDIRECTED_REQUEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.MOVED_PERMANENTLY">
+<code class="sig-name descname"><span class="pre">MOVED_PERMANENTLY</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'301</span> <span class="pre">Moved</span> <span class="pre">Permanently'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.MOVED_PERMANENTLY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.MULTIPLE_CHOICES">
+<code class="sig-name descname"><span class="pre">MULTIPLE_CHOICES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'300</span> <span class="pre">Multiple</span> <span class="pre">Choices'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.MULTIPLE_CHOICES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.MULTI_STATUS">
+<code class="sig-name descname"><span class="pre">MULTI_STATUS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'207</span> <span class="pre">Multi-Status'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.MULTI_STATUS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.NETWORK_AUTHENTICATION_REQUIRED">
+<code class="sig-name descname"><span class="pre">NETWORK_AUTHENTICATION_REQUIRED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'511</span> <span class="pre">Network</span> <span class="pre">Authentication</span> <span class="pre">Required'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.NETWORK_AUTHENTICATION_REQUIRED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.NON_AUTHORITATIVE_INFORMATION">
+<code class="sig-name descname"><span class="pre">NON_AUTHORITATIVE_INFORMATION</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'203</span> <span class="pre">Non-Authoritative</span> <span class="pre">Information'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.NON_AUTHORITATIVE_INFORMATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.NOT_ACCEPTABLE">
+<code class="sig-name descname"><span class="pre">NOT_ACCEPTABLE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'406</span> <span class="pre">Not</span> <span class="pre">Acceptable'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.NOT_ACCEPTABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.NOT_EXTENDED">
+<code class="sig-name descname"><span class="pre">NOT_EXTENDED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'510</span> <span class="pre">Not</span> <span class="pre">Extended'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.NOT_EXTENDED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.NOT_FOUND">
+<code class="sig-name descname"><span class="pre">NOT_FOUND</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'404</span> <span class="pre">Not</span> <span class="pre">Found'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.NOT_FOUND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.NOT_IMPLEMENTED">
+<code class="sig-name descname"><span class="pre">NOT_IMPLEMENTED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'501</span> <span class="pre">Not</span> <span class="pre">Implemented'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.NOT_IMPLEMENTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.NOT_MODIFIED">
+<code class="sig-name descname"><span class="pre">NOT_MODIFIED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'304</span> <span class="pre">Not</span> <span class="pre">Modified'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.NOT_MODIFIED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.NO_CONTENT">
+<code class="sig-name descname"><span class="pre">NO_CONTENT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'204</span> <span class="pre">No</span> <span class="pre">Content'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.NO_CONTENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.OK">
+<code class="sig-name descname"><span class="pre">OK</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'200</span> <span class="pre">OK'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.OK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.PARTIAL_CONTENT">
+<code class="sig-name descname"><span class="pre">PARTIAL_CONTENT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'206</span> <span class="pre">Partial</span> <span class="pre">Content'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.PARTIAL_CONTENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.PAYMENT_REQUIRED">
+<code class="sig-name descname"><span class="pre">PAYMENT_REQUIRED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'402</span> <span class="pre">Payment</span> <span class="pre">Required'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.PAYMENT_REQUIRED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.PERMANENT_REDIRECT">
+<code class="sig-name descname"><span class="pre">PERMANENT_REDIRECT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'308</span> <span class="pre">Permanent</span> <span class="pre">Redirect'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.PERMANENT_REDIRECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.PRECONDITION_FAILED">
+<code class="sig-name descname"><span class="pre">PRECONDITION_FAILED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'412</span> <span class="pre">Precondition</span> <span class="pre">Failed'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.PRECONDITION_FAILED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.PRECONDITION_REQUIRED">
+<code class="sig-name descname"><span class="pre">PRECONDITION_REQUIRED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'428</span> <span class="pre">Precondition</span> <span class="pre">Required'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.PRECONDITION_REQUIRED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.PROCESSING">
+<code class="sig-name descname"><span class="pre">PROCESSING</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'102</span> <span class="pre">Processing'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.PROCESSING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.PROXY_AUTHENTICATION_REQUIRED">
+<code class="sig-name descname"><span class="pre">PROXY_AUTHENTICATION_REQUIRED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'407</span> <span class="pre">Proxy</span> <span class="pre">Authentication</span> <span class="pre">Required'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.PROXY_AUTHENTICATION_REQUIRED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.REQUESTED_RANGE_NOT_SATISFIABLE">
+<code class="sig-name descname"><span class="pre">REQUESTED_RANGE_NOT_SATISFIABLE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'416</span> <span class="pre">Requested</span> <span class="pre">Range</span> <span class="pre">Not</span> <span class="pre">Satisfiable'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.REQUESTED_RANGE_NOT_SATISFIABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.REQUEST_ENTITY_TOO_LARGE">
+<code class="sig-name descname"><span class="pre">REQUEST_ENTITY_TOO_LARGE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'413</span> <span class="pre">Request</span> <span class="pre">Entity</span> <span class="pre">Too</span> <span class="pre">Large'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.REQUEST_ENTITY_TOO_LARGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.REQUEST_HEADER_FIELDS_TOO_LARGE">
+<code class="sig-name descname"><span class="pre">REQUEST_HEADER_FIELDS_TOO_LARGE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'431</span> <span class="pre">Request</span> <span class="pre">Header</span> <span class="pre">Fields</span> <span class="pre">Too</span> <span class="pre">Large'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.REQUEST_HEADER_FIELDS_TOO_LARGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.REQUEST_TIMEOUT">
+<code class="sig-name descname"><span class="pre">REQUEST_TIMEOUT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'408</span> <span class="pre">Request</span> <span class="pre">Timeout'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.REQUEST_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.REQUEST_URI_TOO_LONG">
+<code class="sig-name descname"><span class="pre">REQUEST_URI_TOO_LONG</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'414</span> <span class="pre">Request-URI</span> <span class="pre">Too</span> <span class="pre">Long'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.REQUEST_URI_TOO_LONG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.RESET_CONTENT">
+<code class="sig-name descname"><span class="pre">RESET_CONTENT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'205</span> <span class="pre">Reset</span> <span class="pre">Content'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.RESET_CONTENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.SEE_OTHER">
+<code class="sig-name descname"><span class="pre">SEE_OTHER</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'303</span> <span class="pre">See</span> <span class="pre">Other'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.SEE_OTHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.SERVICE_UNAVAILABLE">
+<code class="sig-name descname"><span class="pre">SERVICE_UNAVAILABLE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'503</span> <span class="pre">Service</span> <span class="pre">Unavailable'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.SERVICE_UNAVAILABLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.SWITCHING_PROTOCOLS">
+<code class="sig-name descname"><span class="pre">SWITCHING_PROTOCOLS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'101</span> <span class="pre">Switching</span> <span class="pre">Protocols'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.SWITCHING_PROTOCOLS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.TEMPORARY_REDIRECT">
+<code class="sig-name descname"><span class="pre">TEMPORARY_REDIRECT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'307</span> <span class="pre">Temporary</span> <span class="pre">Redirect'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.TEMPORARY_REDIRECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.TOO_MANY_REQUESTS">
+<code class="sig-name descname"><span class="pre">TOO_MANY_REQUESTS</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'429</span> <span class="pre">Too</span> <span class="pre">Many</span> <span class="pre">Requests'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.TOO_MANY_REQUESTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.UNAUTHORIZED">
+<code class="sig-name descname"><span class="pre">UNAUTHORIZED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'401</span> <span class="pre">Unauthorized'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.UNAUTHORIZED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.UNPROCESSABLE_ENTITY">
+<code class="sig-name descname"><span class="pre">UNPROCESSABLE_ENTITY</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'422</span> <span class="pre">Unprocessable</span> <span class="pre">Entity'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.UNPROCESSABLE_ENTITY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.UNSUPPORTED_MEDIA_TYPE">
+<code class="sig-name descname"><span class="pre">UNSUPPORTED_MEDIA_TYPE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'415</span> <span class="pre">Unsupported</span> <span class="pre">Media</span> <span class="pre">Type'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.UNSUPPORTED_MEDIA_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.UPGRADE_REQUIRED">
+<code class="sig-name descname"><span class="pre">UPGRADE_REQUIRED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'426</span> <span class="pre">Upgrade</span> <span class="pre">Required'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.UPGRADE_REQUIRED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.USE_PROXY">
+<code class="sig-name descname"><span class="pre">USE_PROXY</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'305</span> <span class="pre">Use</span> <span class="pre">Proxy'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.USE_PROXY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.base.HTTPStatus.VARIANT_ALSO_NEGOTIATES">
+<code class="sig-name descname"><span class="pre">VARIANT_ALSO_NEGOTIATES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'506</span> <span class="pre">Variant</span> <span class="pre">Also</span> <span class="pre">Negotiates'</span></em><a class="headerlink" href="#bamboo.base.HTTPStatus.VARIANT_ALSO_NEGOTIATES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bamboo.endpoint">
+<span id="bamboo-endpoint-module"></span><h2>bamboo.endpoint module<a class="headerlink" href="#module-bamboo.endpoint" title="Permalink to this headline">¶</a></h2>
+<dl class="py exception">
+<dt id="bamboo.endpoint.BodyAlreadySetError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">BodyAlreadySetError</span></code><a class="headerlink" href="#bamboo.endpoint.BodyAlreadySetError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Raised if response body has already been set.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.endpoint.DataFormatInfo">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">DataFormatInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">input:</span> <span class="pre">Optional[Type[bamboo.api.ApiData]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">output:</span> <span class="pre">Optional[Type[bamboo.api.ApiData]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">is_validate:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em>, <em class="sig-param"><span class="pre">err_validate:</span> <span class="pre">bamboo.error.ErrInfoBase</span> <span class="pre">=</span> <span class="pre">&lt;bamboo.error.DefaultDataFormatErrInfo</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.endpoint.DataFormatInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p><cite>dataclass</cite> with information of data format at callbacks on <cite>Endpoint</cite>.</p>
+<dl class="py attribute">
+<dt id="bamboo.endpoint.DataFormatInfo.input">
+<code class="sig-name descname"><span class="pre">input</span></code><a class="headerlink" href="#bamboo.endpoint.DataFormatInfo.input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Input data format, by default <cite>None</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Optional[Type[<a class="reference internal" href="#bamboo.api.ApiData" title="bamboo.api.ApiData">ApiData</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.endpoint.DataFormatInfo.output">
+<code class="sig-name descname"><span class="pre">output</span></code><a class="headerlink" href="#bamboo.endpoint.DataFormatInfo.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output data format, by default <cite>None</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Optional[Type[<a class="reference internal" href="#bamboo.api.ApiData" title="bamboo.api.ApiData">ApiData</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.endpoint.DataFormatInfo.is_validate">
+<code class="sig-name descname"><span class="pre">is_validate</span></code><a class="headerlink" href="#bamboo.endpoint.DataFormatInfo.is_validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>If input data is to be validate, by default <cite>True</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.endpoint.DataFormatInfo.err_validate">
+<code class="sig-name descname"><span class="pre">err_validate</span></code><a class="headerlink" href="#bamboo.endpoint.DataFormatInfo.err_validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error information sent when validation failes,
+by default <cite>DEFUALT_INCORRECT_DATA_FORMAT_ERROR</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase">ErrInfoBase</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id42">
+<code class="sig-name descname"><span class="pre">err_validate</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><span class="pre">bamboo.error.ErrInfoBase</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">&lt;bamboo.error.DefaultDataFormatErrInfo</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#id42" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id43">
+<code class="sig-name descname"><span class="pre">input</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.api.ApiData" title="bamboo.api.ApiData"><span class="pre">bamboo.api.ApiData</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#id43" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id44">
+<code class="sig-name descname"><span class="pre">is_validate</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#id44" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id45">
+<code class="sig-name descname"><span class="pre">output</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.api.ApiData" title="bamboo.api.ApiData"><span class="pre">bamboo.api.ApiData</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#id45" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.endpoint.Endpoint">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">Endpoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">parcel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.endpoint.Endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class of Endpoint to define logic to requests.</p>
+<dl class="py attribute">
+<dt id="bamboo.endpoint.Endpoint.response_methods">
+<code class="sig-name descname"><span class="pre">response_methods</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.response_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callbacks defined the class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tuple[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.add_header">
+<code class="sig-name descname"><span class="pre">add_header</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.endpoint.Endpoint.add_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add response header with MIME parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Field name of the header</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – Value of the field</p></li>
+<li><p><strong>**params</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – MIME parameters added to the field</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.add_headers">
+<code class="sig-name descname"><span class="pre">add_headers</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">headers</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.endpoint.Endpoint.add_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add response headers at once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>**headers</strong> (<em>str</em>) – Header’s info whose header is the field name.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method would be used shortcut to register multiple
+headers. If it requires adding MIME parameters, developers
+can use the ‘add_header’ method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.body">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">body</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.body" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.client_ip">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">client_ip</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.client_ip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.content_length">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">content_length</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.content_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.endpoint.Endpoint.content_type">
+<code class="sig-name descname"><span class="pre">content_type</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.content_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.get_header">
+<code class="sig-name descname"><span class="pre">get_header</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.endpoint.Endpoint.get_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to retrieve a HTTP header.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Header field to retrieve</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of the field if exists, else None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.path">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">path</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.query">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">query</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.query" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.request_method">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">request_method</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.request_method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id46">
+<code class="sig-name descname"><span class="pre">response_methods</span></code><em class="property"><span class="pre">:</span> <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id46" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.send_body">
+<code class="sig-name descname"><span class="pre">send_body</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">body:</span> <span class="pre">bytes</span> <span class="pre">=</span> <span class="pre">b''</span></em>, <em class="sig-param"><span class="pre">status:</span> <span class="pre">bamboo.base.HTTPStatus</span> <span class="pre">=</span> <span class="pre">&lt;HTTPStatus.OK:</span> <span class="pre">'200</span> <span class="pre">OK'&gt;</span></em>, <em class="sig-param"><span class="pre">content_type:</span> <span class="pre">Optional[bamboo.base.ContentType]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.endpoint.Endpoint.send_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set given binary to the response body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>body</strong> (<em>bytes</em><em>, </em><em>optional</em>) – Binary to be set to the response body, by default <cite>b””</cite></p></li>
+<li><p><strong>status</strong> (<a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus"><em>HTTPStatus</em></a><em>, </em><em>optional</em>) – HTTP status of the response, by default <cite>HTTPStatus.OK</cite></p></li>
+<li><p><strong>content_type</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="#bamboo.base.ContentType" title="bamboo.base.ContentType"><em>ContentType</em></a><em>]</em><em>, </em><em>optional</em>) – <cite>Content-Type</cite> header to be sent, by default <cite>None</cite></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If the parameter <cite>content_type</cite> is specified, then the <cite>Content-Type</cite>
+header is to be added.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bamboo.endpoint.BodyAlreadySetError" title="bamboo.endpoint.BodyAlreadySetError"><strong>BodyAlreadySetError</strong></a> – Raised if response body has already been set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.send_err">
+<code class="sig-name descname"><span class="pre">send_err</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">err</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><span class="pre">bamboo.error.ErrInfoBase</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.endpoint.Endpoint.send_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set error to the response body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>err</strong> (<a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><em>ErrInfoBase</em></a>) – Error information to be sent</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bamboo.endpoint.BodyAlreadySetError" title="bamboo.endpoint.BodyAlreadySetError"><strong>BodyAlreadySetError</strong></a> – Raised if response body has already been set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.send_json">
+<code class="sig-name descname"><span class="pre">send_json</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">body:</span> <span class="pre">Dict[str,</span> <span class="pre">Any],</span> <span class="pre">status:</span> <span class="pre">bamboo.base.HTTPStatus</span> <span class="pre">=</span> <span class="pre">&lt;HTTPStatus.OK:</span> <span class="pre">'200</span> <span class="pre">OK'&gt;,</span> <span class="pre">encoding:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'utf-8'</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.endpoint.Endpoint.send_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set given json data to the response body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>body</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Json data to be set to the response body</p></li>
+<li><p><strong>status</strong> (<a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus"><em>HTTPStatus</em></a><em>, </em><em>optional</em>) – HTTP status of the response, by default HTTPStatus.OK</p></li>
+<li><p><strong>encoding</strong> (<em>str</em><em>, </em><em>optional</em>) – Encoding of the Json data, by default “utf-8”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bamboo.endpoint.BodyAlreadySetError" title="bamboo.endpoint.BodyAlreadySetError"><strong>BodyAlreadySetError</strong></a> – Raised if response body has already been set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.setup">
+<code class="sig-name descname"><span class="pre">setup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">parcel</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.endpoint.Endpoint.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.endpoint.RequiredHeaderInfo">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">RequiredHeaderInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">header:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">err:</span> <span class="pre">bamboo.error.ErrInfoBase</span> <span class="pre">=</span> <span class="pre">&lt;bamboo.error.DefaultHeaderNotFoundErrInfo</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.endpoint.RequiredHeaderInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p><cite>dataclass</cite> with information of header which should be included in
+response headers.</p>
+<dl class="py attribute">
+<dt id="bamboo.endpoint.RequiredHeaderInfo.header">
+<code class="sig-name descname"><span class="pre">header</span></code><a class="headerlink" href="#bamboo.endpoint.RequiredHeaderInfo.header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of header</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.endpoint.RequiredHeaderInfo.err">
+<code class="sig-name descname"><span class="pre">err</span></code><a class="headerlink" href="#bamboo.endpoint.RequiredHeaderInfo.err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error information sent when the header is not included,
+by default <cite>DEFAULT_HEADER_NOT_FOUND_ERROR</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase">ErrInfoBase</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id47">
+<code class="sig-name descname"><span class="pre">err</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><span class="pre">bamboo.error.ErrInfoBase</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">&lt;bamboo.error.DefaultHeaderNotFoundErrInfo</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#id47" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id48">
+<code class="sig-name descname"><span class="pre">header</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#id48" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.endpoint.data_format">
+<code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">data_format</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">input:</span> <span class="pre">Optional[Type[bamboo.api.ApiData]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">output:</span> <span class="pre">Optional[Type[bamboo.api.ApiData]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">is_validate:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em>, <em class="sig-param"><span class="pre">err_validate:</span> <span class="pre">bamboo.error.ErrInfoBase</span> <span class="pre">=</span> <span class="pre">&lt;bamboo.error.DefaultDataFormatErrInfo</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.endpoint.data_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set data format of input/output data as API to <cite>callback</cite> on
+<cite>Endpoint</cite>.</p>
+<p>This decorator can be used to add attributes of data format information
+to a <cite>callback</cite>, and execute validation if input raw data has expected
+format defined on <cite>input</cite> argument.</p>
+<p>To represent no data inputs/outputs, specify <cite>input</cite>/<cite>output</cite> arguments
+as <cite>None`s. If `input</cite> is <cite>None</cite>, then any data received from client will
+not be read. If <cite>is_validate</cite> is <cite>False</cite>, then validation will not be
+executed.</p>
+<p>To retrieve data format information, use <cite>get_data_format_info</cite> function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><a class="reference internal" href="#bamboo.api.ApiData" title="bamboo.api.ApiData"><em>ApiData</em></a><em>]</em><em>]</em>) – Input data format, by default <cite>None</cite></p></li>
+<li><p><strong>output</strong> (<em>Optional</em><em>[</em><em>Type</em><em>[</em><a class="reference internal" href="#bamboo.api.ApiData" title="bamboo.api.ApiData"><em>ApiData</em></a><em>]</em><em>]</em>) – Output data format, by default <cite>None</cite></p></li>
+<li><p><strong>is_validate</strong> (<em>bool</em><em>, </em><em>optional</em>) – If input data is to be validated, by default <cite>True</cite></p></li>
+<li><p><strong>err_validate</strong> (<a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><em>ErrInfoBase</em></a>) – Error information sent when validation failes,
+by default <cite>DEFUALT_INCORRECT_DATA_FORMAT_ERROR</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Decorator to add attributes of data format information to callback</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>CallbackDecorator_t</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><a href="#id49"><span class="problematic" id="id50">``</span></a>`
+class UserData(JsonApiData):</p>
+<blockquote>
+<div><p>name: str
+email: str
+age: int</p>
+</div></blockquote>
+<p>class MockEndpoint(Endpoint):</p>
+<blockquote>
+<div><p>&#64;data_format(input=UserData, output=None)
+def do_GET(self, rec_body: UserData) -&gt; None:</p>
+<blockquote>
+<div><p>user_name = rec_body.name
+# Do something…</p>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id51"><span class="problematic" id="id52">``</span></a><a href="#id53"><span class="problematic" id="id54">`</span></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.endpoint.get_data_format_info">
+<code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_data_format_info</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.DataFormatInfo" title="bamboo.endpoint.DataFormatInfo"><span class="pre">bamboo.endpoint.DataFormatInfo</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.endpoint.get_data_format_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve information of data format at <cite>callback</cite> on <cite>Endpoint</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>Callback_t</em>) – Response method implemented on <cite>Endpoint</cite></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Information of data format at the <cite>callback</cite>. If the <cite>callback</cite> is
+not decorated by <cite>data_format</cite> decorator, then returns <cite>None</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#bamboo.endpoint.DataFormatInfo" title="bamboo.endpoint.DataFormatInfo">DataFormatInfo</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.endpoint.get_errors_info">
+<code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_errors_info</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><span class="pre">bamboo.error.ErrInfoBase</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.endpoint.get_errors_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve errors may occur at specified <cite>callback</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>Callback_t</em>) – Response method implemented on <cite>Endpoint</cite></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>list</cite> of error classes may occur</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[Type[<a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase">ErrInfoBase</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.endpoint.get_required_header_info">
+<code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_required_header_info</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.RequiredHeaderInfo" title="bamboo.endpoint.RequiredHeaderInfo"><span class="pre">bamboo.endpoint.RequiredHeaderInfo</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.endpoint.get_required_header_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve information of headers which should be included in
+response headers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>Callback_t</em>) – Response method implemented on <cite>Endpoint</cite></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>list</cite> of information of required headers</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#bamboo.endpoint.RequiredHeaderInfo" title="bamboo.endpoint.RequiredHeaderInfo">RequiredHeaderInfo</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.endpoint.get_restricted_ip_info">
+<code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_restricted_ip_info</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.endpoint.get_restricted_ip_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve IP addresses restricted at specified <cite>callback</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>Callback_t</em>) – Response method implemented on <cite>Endpoint</cite></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>list</cite> of restricted IP addresses</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.endpoint.has_header_of">
+<code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">has_header_of</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">header:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">err:</span> <span class="pre">bamboo.error.ErrInfoBase</span> <span class="pre">=</span> <span class="pre">&lt;bamboo.error.DefaultHeaderNotFoundErrInfo</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.endpoint.has_header_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set callback up to receive given header from clients.</p>
+<p>If request headers don’t include specified <cite>header</cite>, then response
+headers and body will be made based on <cite>err</cite> and sent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>header</strong> (<em>str</em>) – Name of header</p></li>
+<li><p><strong>err</strong> (<a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><em>ErrInfoBase</em></a><em>, </em><em>optional</em>) – Error information sent when specified <cite>header</cite> is not found of request
+headers, by default <cite>DEFAULT_HEADER_NOT_FOUND_ERROR</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Decorator to make callback to be set up to receive the header</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>CallbackDecorator_t</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><a href="#id55"><span class="problematic" id="id56">``</span></a>`
+class BasicAuthHeaderNotFoundErrInfo(ErrInfoBase):</p>
+<blockquote>
+<div><p>http_status = HTTPStatus.UNAUTHORIZED</p>
+<p>&#64;classmethod
+def get_headers(cls) -&gt; List[Tuple[str, str]]:</p>
+<blockquote>
+<div><p>return [(“WWW-Authenticate”, ‘Basic realm=”SECRET AREA”’)]</p>
+</div></blockquote>
+</div></blockquote>
+<p>class MockEndpoint(Endpoint):</p>
+<blockquote>
+<div><p>&#64;has_header_of(“Authorization”, BasicAuthHeaderNotFoundErrInfo)
+def do_GET(self) -&gt; None:</p>
+<blockquote>
+<div><p># It is guaranteed that request headers include the
+# <cite>Authorization</cite> header at this point.
+header_auth = self.get_header(“Authorization”)</p>
+<p># Do something…</p>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id57"><span class="problematic" id="id58">``</span></a><a href="#id59"><span class="problematic" id="id60">`</span></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.endpoint.may_occurs">
+<code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">may_occurs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">errors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><span class="pre">bamboo.error.ErrInfoBase</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.endpoint.may_occurs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register error classes to callback on <cite>Endpoint</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*errors</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><em>ErrInfoBase</em></a><em>]</em>) – Error classes which may occuur</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Decorator to register error classes to callback</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>CallbackDecorator_t</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><a href="#id61"><span class="problematic" id="id62">``</span></a>`
+class MockErrInfo(ErrInfo):</p>
+<blockquote>
+<div><p>http_status = HTTPStatus.INTERNAL_SERVER_ERROR</p>
+<p>&#64;classmethod
+def get_body(cls) -&gt; bytes:</p>
+<blockquote>
+<div><p>return b”Intrernal server error occured”</p>
+</div></blockquote>
+</div></blockquote>
+<p>class MockEndpoint(Endpoint):</p>
+<blockquote>
+<div><p>&#64;may_occurs(MockErrInfo)
+def do_GET(self) -&gt; None:</p>
+<blockquote>
+<div><p># Do something…</p>
+<p># It is possible to send error response.
+if is_some_flag():</p>
+<blockquote>
+<div><p>self.send_err(MockErrInfo)</p>
+</div></blockquote>
+<p>self.send_body(status=HTTPStatus.OK)</p>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id63"><span class="problematic" id="id64">``</span></a><a href="#id65"><span class="problematic" id="id66">`</span></a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.endpoint.restricts_client">
+<code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">restricts_client</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*client_ips:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">err:</span> <span class="pre">bamboo.error.ErrInfoBase</span> <span class="pre">=</span> <span class="pre">&lt;bamboo.error.DefaultNotApplicableIpErrInfo</span> <span class="pre">object&gt;</span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.endpoint.restricts_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restrict IP addresses at callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*client_ips</strong> (<em>str</em>) – IP addresses to be allowed to request</p></li>
+<li><p><strong>err</strong> (<a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><em>ErrInfoBase</em></a><em>, </em><em>optional</em>) – <dl class="simple">
+<dt>Error information sent when request from IP not included specified IPs</dt><dd><p>comes, by default <cite>DEFAULT_NOT_APPLICABLE_IP_ERROR</cite></p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Decorator to make callback to be set up to restrict IP addresses</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>CallbackDecorator_t</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Raised if invalid IP address is detected</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><a href="#id67"><span class="problematic" id="id68">``</span></a>`
+class MockEndpoint(Endpoint):</p>
+<blockquote>
+<div><p># Restrict to allow only localhost to request
+# to this callback
+&#64;restricts_client(“localhost”)
+def do_GET(self) -&gt; None:</p>
+<blockquote>
+<div><p># Only localhost can access to the callback.</p>
+<p># Do something…</p>
+</div></blockquote>
+</div></blockquote>
+<p><a href="#id69"><span class="problematic" id="id70">``</span></a><a href="#id71"><span class="problematic" id="id72">`</span></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bamboo.error">
+<span id="bamboo-error-module"></span><h2>bamboo.error module<a class="headerlink" href="#module-bamboo.error" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="bamboo.error.ApiErrInfo">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.error.</span></code><code class="sig-name descname"><span class="pre">ApiErrInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.error.ApiErrInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.error.ErrInfoBase</span></code></a></p>
+<p>ErrInfo to handle API error.</p>
+<p>This ErrInfo has implemented method of ‘get_body’. This class
+emits Json data including error information defined by developer
+when the error is sent.</p>
+<dl class="py attribute">
+<dt id="bamboo.error.ApiErrInfo.http_status">
+<code class="sig-name descname"><span class="pre">http_status</span></code><a class="headerlink" href="#bamboo.error.ApiErrInfo.http_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP status of the error</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus">HTTPStatus</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.ApiErrInfo.message">
+<code class="sig-name descname"><span class="pre">message</span></code><a class="headerlink" href="#bamboo.error.ApiErrInfo.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Short message for announcing error, by default None</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.ApiErrInfo.code">
+<code class="sig-name descname"><span class="pre">code</span></code><a class="headerlink" href="#bamboo.error.ApiErrInfo.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error code for your API, by default None</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Optional[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.ApiErrInfo.dev_message">
+<code class="sig-name descname"><span class="pre">dev_message</span></code><a class="headerlink" href="#bamboo.error.ApiErrInfo.dev_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Message to explain developers the error, by default None</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.ApiErrInfo.user_message">
+<code class="sig-name descname"><span class="pre">user_message</span></code><a class="headerlink" href="#bamboo.error.ApiErrInfo.user_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Message to explain end users the error, by default None</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.ApiErrInfo.info">
+<code class="sig-name descname"><span class="pre">info</span></code><a class="headerlink" href="#bamboo.error.ApiErrInfo.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Information about the error, by default None</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.ApiErrInfo.encoding">
+<code class="sig-name descname"><span class="pre">encoding</span></code><a class="headerlink" href="#bamboo.error.ApiErrInfo.encoding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encoding to encode response body, by default ‘utf-8’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id73">
+<code class="sig-name descname"><span class="pre">code</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#id73" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id74">
+<code class="sig-name descname"><span class="pre">dev_message</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#id74" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id75">
+<code class="sig-name descname"><span class="pre">encoding</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'utf-8'</span></em><a class="headerlink" href="#id75" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.error.ApiErrInfo.get_body">
+<code class="sig-name descname"><span class="pre">get_body</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.error.ApiErrInfo.get_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publishes response body for error response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Response body</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id76">
+<code class="sig-name descname"><span class="pre">info</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#id76" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id77">
+<code class="sig-name descname"><span class="pre">message</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">'Bad</span> <span class="pre">request</span> <span class="pre">syntax</span> <span class="pre">or</span> <span class="pre">unsupported</span> <span class="pre">method'</span></em><a class="headerlink" href="#id77" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id78">
+<code class="sig-name descname"><span class="pre">user_message</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#id78" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.error.DefaultDataFormatErrInfo">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.error.</span></code><code class="sig-name descname"><span class="pre">DefaultDataFormatErrInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.error.DefaultDataFormatErrInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.error.ErrInfoBase</span></code></a></p>
+<dl class="py attribute">
+<dt id="bamboo.error.DefaultDataFormatErrInfo.http_status">
+<code class="sig-name descname"><span class="pre">http_status</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus"><span class="pre">bamboo.base.HTTPStatus</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">'415</span> <span class="pre">Unsupported</span> <span class="pre">Media</span> <span class="pre">Type'</span></em><a class="headerlink" href="#bamboo.error.DefaultDataFormatErrInfo.http_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.DefaultDataFormatErrInfo.message">
+<code class="sig-name descname"><span class="pre">message</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">'Entity</span> <span class="pre">body</span> <span class="pre">in</span> <span class="pre">unsupported</span> <span class="pre">format'</span></em><a class="headerlink" href="#bamboo.error.DefaultDataFormatErrInfo.message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.error.DefaultHeaderNotFoundErrInfo">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.error.</span></code><code class="sig-name descname"><span class="pre">DefaultHeaderNotFoundErrInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.error.DefaultHeaderNotFoundErrInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.error.ErrInfoBase</span></code></a></p>
+<dl class="py attribute">
+<dt id="bamboo.error.DefaultHeaderNotFoundErrInfo.http_status">
+<code class="sig-name descname"><span class="pre">http_status</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus"><span class="pre">bamboo.base.HTTPStatus</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">'400</span> <span class="pre">Bad</span> <span class="pre">Request'</span></em><a class="headerlink" href="#bamboo.error.DefaultHeaderNotFoundErrInfo.http_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.DefaultHeaderNotFoundErrInfo.message">
+<code class="sig-name descname"><span class="pre">message</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">'Bad</span> <span class="pre">request</span> <span class="pre">syntax</span> <span class="pre">or</span> <span class="pre">unsupported</span> <span class="pre">method'</span></em><a class="headerlink" href="#bamboo.error.DefaultHeaderNotFoundErrInfo.message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.error.DefaultNotApplicableIpErrInfo">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.error.</span></code><code class="sig-name descname"><span class="pre">DefaultNotApplicableIpErrInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.error.DefaultNotApplicableIpErrInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.error.ErrInfoBase</span></code></a></p>
+<dl class="py attribute">
+<dt id="bamboo.error.DefaultNotApplicableIpErrInfo.http_status">
+<code class="sig-name descname"><span class="pre">http_status</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus"><span class="pre">bamboo.base.HTTPStatus</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">'403</span> <span class="pre">Forbidden'</span></em><a class="headerlink" href="#bamboo.error.DefaultNotApplicableIpErrInfo.http_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.DefaultNotApplicableIpErrInfo.message">
+<code class="sig-name descname"><span class="pre">message</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">'Request</span> <span class="pre">forbidden</span> <span class="pre">--</span> <span class="pre">authorization</span> <span class="pre">will</span> <span class="pre">not</span> <span class="pre">help'</span></em><a class="headerlink" href="#bamboo.error.DefaultNotApplicableIpErrInfo.message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.error.DefaultNotFoundErrInfo">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.error.</span></code><code class="sig-name descname"><span class="pre">DefaultNotFoundErrInfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.error.DefaultNotFoundErrInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.error.ErrInfoBase" title="bamboo.error.ErrInfoBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.error.ErrInfoBase</span></code></a></p>
+<dl class="py attribute">
+<dt id="bamboo.error.DefaultNotFoundErrInfo.http_status">
+<code class="sig-name descname"><span class="pre">http_status</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus"><span class="pre">bamboo.base.HTTPStatus</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">'404</span> <span class="pre">Not</span> <span class="pre">Found'</span></em><a class="headerlink" href="#bamboo.error.DefaultNotFoundErrInfo.http_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.DefaultNotFoundErrInfo.message">
+<code class="sig-name descname"><span class="pre">message</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">'Nothing</span> <span class="pre">matches</span> <span class="pre">the</span> <span class="pre">given</span> <span class="pre">URI'</span></em><a class="headerlink" href="#bamboo.error.DefaultNotFoundErrInfo.message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.error.ErrInfoBase">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.error.</span></code><code class="sig-name descname"><span class="pre">ErrInfoBase</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.error.ErrInfoBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.base.ContentTypeHolder" title="bamboo.base.ContentTypeHolder"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.base.ContentTypeHolder</span></code></a></p>
+<p>Base class of all error handlings.</p>
+<p>This class defines the attributes of all classes for error handling.</p>
+<dl class="py attribute">
+<dt id="bamboo.error.ErrInfoBase.http_status">
+<code class="sig-name descname"><span class="pre">http_status</span></code><a class="headerlink" href="#bamboo.error.ErrInfoBase.http_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP status of the error</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus">HTTPStatus</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.error.ErrInfoBase.message">
+<code class="sig-name descname"><span class="pre">message</span></code><a class="headerlink" href="#bamboo.error.ErrInfoBase.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>short message for announcing error, default None</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.error.ErrInfoBase.get_all_form">
+<code class="sig-name descname"><span class="pre">get_all_form</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus"><span class="pre">bamboo.base.HTTPStatus</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">bytes</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.error.ErrInfoBase.get_all_form" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.error.ErrInfoBase.get_body">
+<code class="sig-name descname"><span class="pre">get_body</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="headerlink" href="#bamboo.error.ErrInfoBase.get_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publishes response body for error response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Response body</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.error.ErrInfoBase.get_headers">
+<code class="sig-name descname"><span class="pre">get_headers</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.error.ErrInfoBase.get_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publishes additional headers for error response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Additional headers</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[Tuple[str, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="id79">
+<code class="sig-name descname"><span class="pre">http_status</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#bamboo.base.HTTPStatus" title="bamboo.base.HTTPStatus"><span class="pre">bamboo.base.HTTPStatus</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">'400</span> <span class="pre">Bad</span> <span class="pre">Request'</span></em><a class="headerlink" href="#id79" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="id80">
+<code class="sig-name descname"><span class="pre">message</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#id80" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bamboo.location">
+<span id="bamboo-location-module"></span><h2>bamboo.location module<a class="headerlink" href="#module-bamboo.location" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="bamboo.location.AnyStringLocation">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.location.</span></code><code class="sig-name descname"><span class="pre">AnyStringLocation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.location.AnyStringLocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.location.FlexibleLocation" title="bamboo.location.FlexibleLocation"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.location.FlexibleLocation</span></code></a></p>
+<p>Flexible location representing string with no rules.</p>
+<dl class="py method">
+<dt id="bamboo.location.AnyStringLocation.is_valid">
+<code class="sig-name descname"><span class="pre">is_valid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#bamboo.location.AnyStringLocation.is_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Judge if specified <cite>loc</cite> is valid location or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>loc</strong> (<em>str</em>) – Location to be judged</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If specified location is valid or not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.location.AsciiDigitLocation">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.location.</span></code><code class="sig-name descname"><span class="pre">AsciiDigitLocation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">digits</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.location.AsciiDigitLocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bamboo.location.FlexibleLocation" title="bamboo.location.FlexibleLocation"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamboo.location.FlexibleLocation</span></code></a></p>
+<p>Flexible location representing location of number in ASCII code.</p>
+<dl class="py method">
+<dt id="bamboo.location.AsciiDigitLocation.is_valid">
+<code class="sig-name descname"><span class="pre">is_valid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#bamboo.location.AsciiDigitLocation.is_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Judge if specified <cite>loc</cite> is valid location or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>loc</strong> (<em>str</em>) – Location to be judged</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If specified location is valid or not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.location.FlexibleLocation">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.location.</span></code><code class="sig-name descname"><span class="pre">FlexibleLocation</span></code><a class="headerlink" href="#bamboo.location.FlexibleLocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class of flexible location.</p>
+<p>Location is concept representing each pieces of path of URI, i.e.
+locations can configures a path of URI by joining them with
+separator <cite>/</cite>.</p>
+<p>Location has type of <cite>str</cite> or subclasses of this class. If a location
+is <cite>str</cite>, then the location is called a static location. Otherwise,
+the location is called a flexible location. Flexible locations means
+location with some kind of logical rules of strings. The logic of rules
+can be implemented on <cite>is_valid</cite> method, returning if specified string
+is valid in the rules.</p>
+<dl class="py method">
+<dt id="bamboo.location.FlexibleLocation.is_valid">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">is_valid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#bamboo.location.FlexibleLocation.is_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.location.is_duplicated_uri">
+<code class="sig-prename descclassname"><span class="pre">bamboo.location.</span></code><code class="sig-name descname"><span class="pre">is_duplicated_uri</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri_1</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#bamboo.location.FlexibleLocation" title="bamboo.location.FlexibleLocation"><span class="pre">bamboo.location.FlexibleLocation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri_2</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#bamboo.location.FlexibleLocation" title="bamboo.location.FlexibleLocation"><span class="pre">bamboo.location.FlexibleLocation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#bamboo.location.is_duplicated_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Judge if a couple of specified URI patterns has same pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uri_1</strong> (<em>Uri_t</em>) – URI pattern to be judged</p></li>
+<li><p><strong>uri_2</strong> (<em>Uri_t</em>) – URI pattern to be judged</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If two URIs has same pattern or not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.location.is_flexible_uri">
+<code class="sig-prename descclassname"><span class="pre">bamboo.location.</span></code><code class="sig-name descname"><span class="pre">is_flexible_uri</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#bamboo.location.FlexibleLocation" title="bamboo.location.FlexibleLocation"><span class="pre">bamboo.location.FlexibleLocation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#bamboo.location.is_flexible_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Judge if specified <cite>uri</cite> has one or more flexible location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>uri</strong> (<em>Uri_t</em>) – URI pattern to be judged</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If specified <cite>uri</cite> has one or more flexible location.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bamboo.router">
+<span id="bamboo-router-module"></span><h2>bamboo.router module<a class="headerlink" href="#module-bamboo.router" title="Permalink to this headline">¶</a></h2>
+<dl class="py exception">
+<dt id="bamboo.router.DuplicatedUriRegisteredError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.router.</span></code><code class="sig-name descname"><span class="pre">DuplicatedUriRegisteredError</span></code><a class="headerlink" href="#bamboo.router.DuplicatedUriRegisteredError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Raised if duplicated URI is registered.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.router.Router">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.router.</span></code><code class="sig-name descname"><span class="pre">Router</span></code><a class="headerlink" href="#bamboo.router.Router" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Operator of routing request to <cite>Endpoint</cite> by URI.</p>
+<dl class="py method">
+<dt id="bamboo.router.Router.register">
+<code class="sig-name descname"><span class="pre">register</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#bamboo.location.FlexibleLocation" title="bamboo.location.FlexibleLocation"><span class="pre">bamboo.location.FlexibleLocation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.router.Router.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register combination of URI and <cite>Endpoint</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uri</strong> (<em>Uri_t</em>) – URI pattern of the <cite>Endpoint</cite></p></li>
+<li><p><strong>endpoint</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><em>Endpoint</em></a><em>]</em>) – <cite>Endpoint</cite> class to be registered</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bamboo.router.DuplicatedUriRegisteredError" title="bamboo.router.DuplicatedUriRegisteredError"><strong>DuplicatedUriRegisteredError</strong></a> – Raised if given URI pattern matches one already registered</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.router.Router.search_uris">
+<code class="sig-name descname"><span class="pre">search_uris</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#bamboo.location.FlexibleLocation" title="bamboo.location.FlexibleLocation"><span class="pre">bamboo.location.FlexibleLocation</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.router.Router.search_uris" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search URI patterns of specified <cite>endpoint</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>endpoint</strong> (<em>Type</em><em>[</em><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><em>Endpoint</em></a><em>]</em>) – <cite>Endpoint</cite> whose URI patterns to be retrieved</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result of searching</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[Uri_t]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.router.Router.validate">
+<code class="sig-name descname"><span class="pre">validate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.router.Router.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate specified <cite>uri</cite> and retrieved <cite>Endpoint</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>uri</strong> (<em>str</em>) – Path of URI</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>Endpoint</cite> if specified <cite>uri</cite> is valid, else <cite>None</cite></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[Type[<a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint">Endpoint</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bamboo.test">
+<span id="bamboo-test-module"></span><h2>bamboo.test module<a class="headerlink" href="#module-bamboo.test" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="bamboo.test.ServerForm">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.test.</span></code><code class="sig-name descname"><span class="pre">ServerForm</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_log</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.test.ServerForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dataclass to register a server form.</p>
+<p>This dataclass would be used to register as a form
+into test classes such as TestExecutor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hostname</strong> (<em>str</em>) – Hostname of the server</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – Port of the server</p></li>
+<li><p><strong>app</strong> (<a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><em>App</em></a>) – App object with implemented Endpoints</p></li>
+<li><p><strong>path_log</strong> (<em>str</em>) – Path log of the server will be written</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="bamboo.test.ServerForm.app">
+<code class="sig-name descname"><span class="pre">app</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a></em><a class="headerlink" href="#bamboo.test.ServerForm.app" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.test.ServerForm.hostname">
+<code class="sig-name descname"><span class="pre">hostname</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#bamboo.test.ServerForm.hostname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.test.ServerForm.path_log">
+<code class="sig-name descname"><span class="pre">path_log</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#bamboo.test.ServerForm.path_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.test.ServerForm.port">
+<code class="sig-name descname"><span class="pre">port</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#bamboo.test.ServerForm.port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bamboo.test.TestExecutor">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.test.</span></code><code class="sig-name descname"><span class="pre">TestExecutor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">forms</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.test.ServerForm" title="bamboo.test.ServerForm"><span class="pre">bamboo.test.ServerForm</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.test.TestExecutor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Utility class that can execute server applications at child processes.</p>
+<p>This class can be used in test scripts for holding several server forms
+and running the application based on the forms at the child processes.
+Also this object has feature of context manager and developers may use
+it to kill the processes safely.</p>
+<dl class="py method">
+<dt id="bamboo.test.TestExecutor.add_forms">
+<code class="sig-name descname"><span class="pre">add_forms</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">forms</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.test.ServerForm" title="bamboo.test.ServerForm"><span class="pre">bamboo.test.ServerForm</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.test.TestExecutor.add_forms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add forms with information of server applications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*foms</strong> (<a class="reference internal" href="#bamboo.test.ServerForm" title="bamboo.test.ServerForm"><em>ServerForm</em></a>) – Dataclass describing information of the server application</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.test.TestExecutor.close">
+<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pop</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.test.TestExecutor.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kill the all child processes derived from registered forms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pop</strong> (<em>bool</em><em>, </em><em>optional</em>) – If removing the registered forms, by default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.test.TestExecutor.exec">
+<code class="sig-name descname"><span class="pre">exec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waiting</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.test.TestExecutor.exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a simple client-server test.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>Callable</em><em>[</em><em>[</em><em>Tuple</em><em>[</em><em>Any</em><em>, </em><em>..</em><em>]</em><em>]</em><em>, </em><em>None</em><em>]</em>) – Function executed after all the server applications start</p></li>
+<li><p><strong>args</strong> (<em>Tuple</em><em>[</em><em>Any</em><em>, </em><em>..</em><em>]</em><em>, </em><em>optional</em>) – Arguments of the func, by default ()</p></li>
+<li><p><strong>waiting</strong> (<em>float</em><em>, </em><em>optional</em>) – Waiting time after running the applications, by default 0.05</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.test.TestExecutor.start_serve">
+<code class="sig-name descname"><span class="pre">start_serve</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waiting</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.test.TestExecutor" title="bamboo.test.TestExecutor"><span class="pre">bamboo.test.TestExecutor</span></a><a class="headerlink" href="#bamboo.test.TestExecutor.start_serve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run registered server applications at child processes.</p>
+<p>This object has feature of context manager and the method
+returns the object itself. So developer can use the with
+sentence and in it, can define logic of clients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>waiting</strong> (<em>float</em><em>, </em><em>optional</em>) – Waiting time after running the processes, by default 0.05</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>This object itself</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bamboo.test.TestExecutor" title="bamboo.test.TestExecutor">TestExecutor</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p><code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">holder</span> <span class="pre">=</span> <span class="pre">TestExecutor(form)</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">with</span> <span class="pre">holder.start_serve():</span>
+<span class="pre">...</span>&#160;&#160;&#160; <span class="pre">res</span> <span class="pre">=</span> <span class="pre">http_get(&quot;http://localhost:8000/image&quot;)</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">print(res.body)</span>
+<span class="pre">`</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="bamboo.test.serve_at">
+<code class="sig-prename descclassname"><span class="pre">bamboo.test.</span></code><code class="sig-name descname"><span class="pre">serve_at</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">form</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.test.ServerForm" title="bamboo.test.ServerForm"><span class="pre">bamboo.test.ServerForm</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.test.serve_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subroutine for server application called at a child process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>form</strong> (<a class="reference internal" href="#bamboo.test.ServerForm" title="bamboo.test.ServerForm"><em>ServerForm</em></a>) – Dataclass describing information of the server application</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bamboo">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bamboo" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="bamboo.nas.html" class="btn btn-neutral float-right" title="bamboo.nas package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to bamboo’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, jjj999.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
