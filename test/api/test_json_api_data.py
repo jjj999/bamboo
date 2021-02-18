@@ -11,6 +11,7 @@ from bamboo.base import ContentType, MediaTypes
 json_content_type = ContentType(MediaTypes.json, "utf-8")
 not_json_content_type = ContentType(MediaTypes.plain, "utf-8")
 
+
 class TestInnerData(JsonApiData):
     
     name: str
@@ -70,7 +71,11 @@ data_invalid_type = json.dumps({
 }).encode()
 
 data_key_not_included = json.dumps({
-    "name": "hogehoge", "Age": 30,
+    "Name": "hogehoge", "age": 30,
+}).encode()
+
+data_default_value = json.dumps({
+    "name": "hogehoge"
 }).encode()
     
 
@@ -118,6 +123,11 @@ class TestJsonApiData(unittest.TestCase):
         with self.assertRaises(ValidationFailedError) as err:
             data = TestUnionData(data_union, not_json_content_type)
         self.assertIsInstance(err.exception, ValidationFailedError)
+        
+    def test_default_value(self):
+        data = TestUnionData(data_default_value, json_content_type)
+        self.assertEqual(data.name, "hogehoge")
+        self.assertEqual(data.age, None)
 
 
 if __name__ == "__main__":

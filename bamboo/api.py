@@ -266,7 +266,7 @@ class JsonApiDataBuilder:
         # NOTE
         #   Ignore keys of data which is not defined in the apiclass.
         for key_def, type_def in annotations.items():            
-            if key_def not in data:
+            if not (key_def in data or hasattr(apiclass, key_def)):
                 raise ValidationFailedError(
                     f"Raw data has no key of '{key_def}'.")
             
@@ -404,9 +404,14 @@ class JsonApiData(ApiData):
         if encoding is None:
             encoding = "utf-8"
             
-        if content_type.media_type.lower() != MediaTypes.json:
+        media_type = content_type.media_type
+        if media_type is None:
             raise ValidationFailedError(
-                "Media type of 'Content-Type' header is not "
+                "'Content-Type' header was not specified. Specify "
+                f"'{MediaTypes.json}' as media type.")
+        if media_type.lower() != MediaTypes.json:
+            raise ValidationFailedError(
+                "Media type of 'Content-Type' header was not "
                 f"{MediaTypes.json}, but {content_type.media_type}.")
 
         try:
@@ -561,8 +566,12 @@ class XWWWFormUrlEncodedData(ApiData):
         if encoding is None:
             encoding = "utf-8"
             
-        media_type_rec = content_type.media_type.lower()
-        if media_type_rec != MediaTypes.x_www_form_urlencoded:
+        media_type = content_type.media_type
+        if media_type is None:
+            raise ValidationFailedError(
+                "'Content-Type' header was not specified. Specify "
+                f"'{MediaTypes.x_www_form_urlencoded}' as media type.")
+        if media_type.lower() != MediaTypes.x_www_form_urlencoded:
             raise ValidationFailedError(
                 "Media type of 'Content-Type' header is not "
                 f"{MediaTypes.x_www_form_urlencoded}, "
