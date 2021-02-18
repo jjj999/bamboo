@@ -4,6 +4,7 @@ import unittest
 
 from bamboo import App, Endpoint, data_format
 from bamboo.api import JsonApiData
+from bamboo.base import ContentType, MediaTypes
 from bamboo.request import http
 from bamboo.test import  ServerForm, TestExecutor
 from bamboo.util.time import get_datetime_rfc822
@@ -36,7 +37,7 @@ class MockImageEndpoint(Endpoint):
         with open(self.PATH_IMAGE, "rb") as f:
             image = f.read()
             
-        self.send_body(image)
+        self.send_body(image, ContentType(MediaTypes.jpeg))
         
         
 class TestHTTPRequest(unittest.TestCase):
