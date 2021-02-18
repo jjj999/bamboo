@@ -9,7 +9,10 @@ from typing import (
 from urllib.parse import parse_qs
 
 from bamboo.api import ApiData, ValidationFailedError
-from bamboo.base import HTTPMethods, HTTPStatus, MediaTypes, ContentType
+from bamboo.base import (
+    HTTPMethods, HTTPStatus, MediaTypes, ContentType,
+    DEFAULT_CONTENT_TYPE_PLAIN,
+)
 from bamboo.error import (
     DEFAULT_HEADER_NOT_FOUND_ERROR, DEFAULT_NOT_APPLICABLE_IP_ERROR,
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR, ErrInfoBase,
@@ -18,8 +21,8 @@ from bamboo.util.deco import cached_property
 from bamboo.util.ip import is_valid_ipv4
 
 
-class BodyAlreadySetError(Exception):
-    """Raised if response body has already been set."""
+class StatusCodeAlreadySetError(Exception):
+    """Raised if response status code has already been set."""
     pass
 
 
@@ -161,7 +164,7 @@ class Endpoint:
         **params : Optional[str]
             MIME parameters added to the field
         """
-        params = [f'; {header}="{val}"' for header, val in params.items()]
+        params = [f'; {header}={val}' for header, val in params.items()]
         params = "".join(params)
         self._headers.append((name, value + params))
     
@@ -182,47 +185,67 @@ class Endpoint:
         for name, val in headers.items():
             self.add_header(name, val)
     
-    def _check_body_already_set(self) -> None:
-        """Check if response body already exists.
+    def _check_status_already_set(self) -> None:
+        """Check if response status code already exists.
 
         Raises
         ------
-        BodyAlreadySetError
-            Raised if response body has already been set.
+        StatusCodeAlreadySetError
+            Raised if response status code has already been set.
         """
         if self._res_body:
-            raise BodyAlreadySetError("Response body has already been set.")
+            raise StatusCodeAlreadySetError(
+                "Response status code has already been set.")
+        
+    def send_only_status(self, status: HTTPStatus = HTTPStatus.OK) -> None:
+        """Set specified status code to one of response.
+        
+        This method can be used if a callback doesn't need to send response 
+        body. 
+
+        Parameters
+        ----------
+        status : HTTPStatus, optional
+            HTTP status of the response, by default `HTTPStatus.OK`
+        """
+        self._check_status_already_set()
+        
+        self._status = status
     
-    def send_body(self, body: bytes = b"", 
-                  status: HTTPStatus = HTTPStatus.OK,
-                  content_type: Optional[ContentType] = None) -> None:
+    def send_body(self, body: bytes, 
+                  content_type: ContentType = DEFAULT_CONTENT_TYPE_PLAIN,
+                  status: HTTPStatus = HTTPStatus.OK) -> None:
         """Set given binary to the response body.
 
         Parameters
         ----------
         body : bytes, optional
             Binary to be set to the response body, by default `b""`
+        content_type : ContentType, optional
+            `Content-Type` header to be sent, 
+            by default `DEFAULT_CONTENT_TYPE_PLAIN`
         status : HTTPStatus, optional
             HTTP status of the response, by default `HTTPStatus.OK`
-        content_type : Optional[ContentType], optional
-            `Content-Type` header to be sent, by default `None`
             
         Notes
         -----
         If the parameter `content_type` is specified, then the `Content-Type` 
         header is to be added.
+        
+        `DEFAULT_CONTENT_TYPE_PLAIN` has its MIME type of `text/plain`, and the 
+        other attributes are `None`. If another value of `Content-Type` is 
+        needed, then you should generate new `ContentType` instance with 
+        attributes you want.
             
-        Raises
+        Raisess
         ------
-        BodyAlreadySetError
-            Raised if response body has already been set.
+        StatusCodeAlreadySetError
+            Raised if response status code has already been set.
         """
-        self._check_body_already_set()
+        self._check_status_already_set()
 
         self._status = status
         self._res_body = body
-        if content_type is None:
-            return
         
         # Content-Type's parameters
         params = {}
@@ -231,12 +254,11 @@ class Endpoint:
         if content_type.boundary:
             params["boundary"] = content_type.boundary    
     
-        if content_type.media_type:
-            self.add_header("Content-Type", content_type.media_type, **params)
+        self.add_header("Content-Type", content_type.media_type, **params)
     
     def send_json(self, body: Dict[str, Any], 
                   status: HTTPStatus = HTTPStatus.OK,
-                  encoding: str = "utf-8") -> None:
+                  encoding: str = "UTF-8") -> None:
         """Set given json data to the response body.
 
         Parameters
@@ -246,18 +268,18 @@ class Endpoint:
         status : HTTPStatus, optional
             HTTP status of the response, by default HTTPStatus.OK
         encoding : str, optional
-            Encoding of the Json data, by default "utf-8"
+            Encoding of the Json data, by default "UTF-8"
             
         Raises
         ------
-        BodyAlreadySetError
-            Raised if response body has already been set.
+        StatusCodeAlreadySetError
+            Raised if response status code has already been set.
         """
-        self._check_body_already_set()
+        self._check_status_already_set()
         
         body = json.dumps(body).encode(encoding=encoding)
         content_type = ContentType(media_type=MediaTypes.json, charset=encoding)
-        self.send_body(body=body, status=status, content_type=content_type)
+        self.send_body(body, content_type=content_type, status=status)
     
     def send_err(self, err: ErrInfoBase) -> None:
         """Set error to the response body.
@@ -269,15 +291,17 @@ class Endpoint:
             
         Raises
         ------
-        BodyAlreadySetError
-            Raised if response body has already been set.
+        StatusCodeAlreadySetError
+            Raised if response status code has already been set.
         """
-        self._check_body_already_set()
+        self._check_status_already_set()
 
         self._status = err.http_status
         self._res_body = err.get_body()
-        self.add_header("Content-Type", err._content_type_,
-                        **err._content_type_args_)
+        
+        if len(self._res_body):
+            self.add_header("Content-Type", err._content_type_,
+                            **err._content_type_args_)
 
 
 # Signature of the callback of response method on sub classes of 
@@ -312,7 +336,7 @@ def get_errors_info(callback: Callback_t) -> List[Type[ErrInfoBase]]:
     return []
 
 
-def may_occurs(*errors: Type[ErrInfoBase]) -> CallbackDecorator_t:
+def may_occur(*errors: Type[ErrInfoBase]) -> CallbackDecorator_t:
     """Register error classes to callback on `Endpoint`.
     
     Parameters
@@ -337,7 +361,7 @@ def may_occurs(*errors: Type[ErrInfoBase]) -> CallbackDecorator_t:
             
     class MockEndpoint(Endpoint):
         
-        @may_occurs(MockErrInfo)
+        @may_occur(MockErrInfo)
         def do_GET(self) -> None:
             # Do something...
             
@@ -468,7 +492,7 @@ def data_format(input: Optional[Type[ApiData]] = None,
             callback: Callable[[Endpoint, ApiData, Tuple[Any, ...]], None]
             ) -> Callback_t:
             
-            @may_occurs(err_validate.__class__)
+            @may_occur(err_validate.__class__)
             def _callback(self: Endpoint, *args) -> None:
                 body = self.body
                 try:
@@ -591,7 +615,7 @@ def has_header_of(header: str,
     """
     def header_checker(callback: Callback_t) -> Callback_t:
         
-        @may_occurs(err.__class__)
+        @may_occur(err.__class__)
         def _callback(self: Endpoint, *args) -> None:
             val = self.get_header(header)
             if val is None:
@@ -682,7 +706,7 @@ def restricts_client(*client_ips: str,
     
     def register_restrictions(callback: Callback_t) -> Callback_t:
             
-        @may_occurs(err.__class__)
+        @may_occur(err.__class__)
         def _callback(self: Endpoint, *args) -> None:
             if self.client_ip not in allowed_ips:
                 self.send_err(err)
