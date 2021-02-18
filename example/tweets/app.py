@@ -348,7 +348,7 @@ class UserEndpoint(Endpoint):
             self.send_err(UserRegisterFailedErrInfo())
             return
         
-        self.send_body(status=HTTPStatus.OK)
+        self.send_only_status(HTTPStatus.OK)
         
     @print_request_body
     @data_format(input=UserDeleteInput, output=None)
@@ -361,7 +361,7 @@ class UserEndpoint(Endpoint):
             self.send_err(UserDeleteFailedErrInfo())
             return
         
-        self.send_body(status=HTTPStatus.OK)
+        self.send_only_status(HTTPStatus.OK)
         
 
 # Tweet
@@ -452,7 +452,7 @@ class TweetsEndpoint(Endpoint):
             self.send_err(TweetUpdateFailedErrInfo())
             return
         
-        self.send_body(status=HTTPStatus.OK)
+        self.send_only_status(HTTPStatus.OK)
         
     @print_request_body
     @data_format(input=TweetDeleteInput, output=None)
@@ -468,7 +468,7 @@ class TweetsEndpoint(Endpoint):
             self.send_err(TweetDeleteForbiddenErrInfo())
             return
         
-        self.send_body(status=HTTPStatus.OK)
+        self.send_only_status(HTTPStatus.OK)
     
 # --------------------------------------------------------------------------------
 
