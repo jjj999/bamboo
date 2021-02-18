@@ -119,13 +119,13 @@ class ApiErrInfo(ErrInfoBase):
     info : Optional[str]
         Information about the error, by default None
     encoding : str
-        Encoding to encode response body, by default 'utf-8'
+        Encoding to encode response body, by default 'UTF-8'
     """    
     code: Optional[int] = None
     dev_message: Optional[str] = None
     user_message: Optional[str] = None
     info: Optional[str] = None
-    encoding: str = "utf-8"
+    encoding: str = "UTF-8"
     
     @class_property
     def _content_type_(cls) -> ContentType:
