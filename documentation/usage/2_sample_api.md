@@ -337,8 +337,9 @@ $ python request.py abcdefg
 ```
 Headers
 -------
-Date : Tue, 02 Feb 2021 08:45:03 GMT
+Date : Thu, 18 Feb 2021 07:07:58 GMT
 Server : WSGIServer/0.2 CPython/3.8.5
+Content-Type : application/json; charset="utf-8"
 Content-Length : 21
 
 Bodies

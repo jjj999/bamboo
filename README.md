@@ -9,7 +9,7 @@ $ python -m pip install git+https://github.com/jjj999/bamboo.git
 ```
 
 ## Usage
-詳細なドキュメントは[こちら](./docs/usage/)を参照してください．以下は簡単な実装例です．
+詳細なドキュメントは[こちら](./documentation/usage/)を参照してください．以下は簡単な実装例です．
 
 ```python
 from wsgiref.simple_server import make_server
