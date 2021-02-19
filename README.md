@@ -37,7 +37,7 @@ if __name__ == "__main__":
 実行後，ブラウザで http://localhost:8000/hello にアクセスしてみましょう．
 
 ## API documentation
-リポジトリをクローンもしくはダウンロードし，[docs/api/_build/index.html](docs/api/_build/index.html) をブラウザで開くと参照できます．後日ドキュメント用のホームページが開設される可能性があります．
+Bamboo の API ドキュメントは[こちら](https://docs-bamboo.herokuapp.com/)．
 
 ## Examples
 
