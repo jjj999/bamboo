@@ -1,12 +1,4 @@
 
-import sys
-
-
-if "__python_version" not in globals():
-    python_version = sys.version_info
-    __python_version = float(f"{python_version.major}.{python_version.minor}")
-    
-
 from bamboo.util.version import VersionState as _VersionState
 from bamboo.util.version import resolve_version as _resolve_version
 

@@ -1,9 +1,7 @@
 [[source]]
+name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
-name = "pypi"
-
-[packages]
 
 [dev-packages]
 peewee = "*"
@@ -11,6 +9,9 @@ psycopg2 = "*"
 falcon = "*"
 hug = "*"
 flask = "*"
+requests = "*"
+
+[packages]
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
