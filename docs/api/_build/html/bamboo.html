@@ -1189,7 +1189,7 @@ by default <cite>DEFUALT_INCORRECT_DATA_FORMAT_ERROR</cite></p>
 
 <dl class="py class">
 <dt id="bamboo.endpoint.Endpoint">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">Endpoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">parcel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.endpoint.Endpoint" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.endpoint.</span></code><code class="sig-name descname"><span class="pre">Endpoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">environ</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flexible_locs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">parcel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.endpoint.Endpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class of Endpoint to define logic to requests.</p>
 <dl class="py attribute">
@@ -1251,6 +1251,11 @@ can use the ‘add_header’ method.</p>
 <dl class="py attribute">
 <dt id="bamboo.endpoint.Endpoint.content_type">
 <code class="sig-name descname"><span class="pre">content_type</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.content_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.endpoint.Endpoint.flexible_locs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">flexible_locs</span></code><a class="headerlink" href="#bamboo.endpoint.Endpoint.flexible_locs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1747,7 +1752,7 @@ when the error is sent.</p>
 <dl class="py attribute">
 <dt id="bamboo.error.ApiErrInfo.encoding">
 <code class="sig-name descname"><span class="pre">encoding</span></code><a class="headerlink" href="#bamboo.error.ApiErrInfo.encoding" title="Permalink to this definition">¶</a></dt>
-<dd><p>Encoding to encode response body, by default ‘utf-8’</p>
+<dd><p>Encoding to encode response body, by default ‘UTF-8’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
@@ -1767,7 +1772,7 @@ when the error is sent.</p>
 
 <dl class="py attribute">
 <dt id="id75">
-<code class="sig-name descname"><span class="pre">encoding</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'utf-8'</span></em><a class="headerlink" href="#id75" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">encoding</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><em class="property"> <span class="pre">=</span> <span class="pre">'UTF-8'</span></em><a class="headerlink" href="#id75" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2098,19 +2103,30 @@ is valid in the rules.</p>
 
 <dl class="py method">
 <dt id="bamboo.router.Router.validate">
-<code class="sig-name descname"><span class="pre">validate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.router.Router.validate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">validate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint"><span class="pre">bamboo.endpoint.Endpoint</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.router.Router.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate specified <cite>uri</cite> and retrieved <cite>Endpoint</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>uri</strong> (<em>str</em>) – Path of URI</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><cite>Endpoint</cite> if specified <cite>uri</cite> is valid, else <cite>None</cite></p>
+<dd class="field-even"><p>Pair of values of flexible locations and <cite>Endpoint</cite> if specified
+<cite>uri</cite> is valid</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[Type[<a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint">Endpoint</a>]]</p>
+<dd class="field-odd"><p>Tuple[Tuple[str, ..], Optional[Type[<a class="reference internal" href="#bamboo.endpoint.Endpoint" title="bamboo.endpoint.Endpoint">Endpoint</a>]]]</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>This method returns pair of tuple of flexible locations specified as
+parts of URI pattern linked to <cite>Endpoint</cite> and its <cite>Endpoint</cite>. If any
+flexible locations are not included in the URI pattern, then empty
+tuple will be returned as a sequence of flexible locations, so if
+URI patterns is configured with only static locations, you will get
+the empty tuple.</p>
+<p>If invalid URI pattern is come, then also empty tuple will be return
+as sequence of flexible locations and <cite>None</cite> as <cite>Endpoint</cite>, or
+<cite>((), None)</cite>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -2120,7 +2136,7 @@ is valid in the rules.</p>
 <span id="bamboo-test-module"></span><h2>bamboo.test module<a class="headerlink" href="#module-bamboo.test" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="bamboo.test.ServerForm">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.test.</span></code><code class="sig-name descname"><span class="pre">ServerForm</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostname</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_log</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.test.ServerForm" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.test.</span></code><code class="sig-name descname"><span class="pre">ServerForm</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_log</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.test.ServerForm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Dataclass to register a server form.</p>
 <p>This dataclass would be used to register as a form
@@ -2128,7 +2144,7 @@ into test classes such as TestExecutor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>hostname</strong> (<em>str</em>) – Hostname of the server</p></li>
+<li><p><strong>host</strong> (<em>str</em>) – Hostname of the server</p></li>
 <li><p><strong>port</strong> (<em>int</em>) – Port of the server</p></li>
 <li><p><strong>app</strong> (<a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><em>App</em></a>) – App object with implemented Endpoints</p></li>
 <li><p><strong>path_log</strong> (<em>str</em>) – Path log of the server will be written</p></li>
@@ -2141,8 +2157,8 @@ into test classes such as TestExecutor.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="bamboo.test.ServerForm.hostname">
-<code class="sig-name descname"><span class="pre">hostname</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#bamboo.test.ServerForm.hostname" title="Permalink to this definition">¶</a></dt>
+<dt id="bamboo.test.ServerForm.host">
+<code class="sig-name descname"><span class="pre">host</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#bamboo.test.ServerForm.host" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -2184,6 +2200,27 @@ it to kill the processes safely.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>pop</strong> (<em>bool</em><em>, </em><em>optional</em>) – If removing the registered forms, by default True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.test.TestExecutor.debug">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">debug</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><span class="pre">bamboo.app.App</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_log</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">8000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waiting</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">None</span><a class="headerlink" href="#bamboo.test.TestExecutor.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a server application for debug.</p>
+<p>This method is a kind of shorcut for launching a server application
+and can be used to debug the application. If you want to deploy an
+application made with Bamboo, consider to use another WSGI server
+application for production.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app</strong> (<a class="reference internal" href="#bamboo.app.App" title="bamboo.app.App"><em>App</em></a>) – App object with implemented Endpoints</p></li>
+<li><p><strong>path_log</strong> (<em>str</em>) – Path log of the server will be written</p></li>
+<li><p><strong>host</strong> (<em>str</em><em>, </em><em>optional</em>) – Hostname of the server, by default “localhost”</p></li>
+<li><p><strong>port</strong> (<em>int</em><em>, </em><em>optional</em>) – Port of the server, by default 8000</p></li>
+<li><p><strong>waiting</strong> (<em>float</em><em>, </em><em>optional</em>) – Waiting time after running the applications, by default 0.05</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

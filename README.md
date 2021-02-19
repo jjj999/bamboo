@@ -12,9 +12,7 @@ $ python -m pip install git+https://github.com/jjj999/bamboo.git
 詳細なドキュメントは[こちら](./docs/usage/)を参照してください．以下は簡単な実装例です．
 
 ```python
-from wsgiref.simple_server import make_server
-
-from bamboo import App, Endpoint
+from bamboo import App, Endpoint, TestExecutor
 
 app = App()
 
@@ -25,13 +23,7 @@ class MockEndpoint(Endpoint):
         self.send_body(b"Hello, World!")
 
 if __name__ == "__main__":
-    server = make_server("", 8000, app)
-    try:
-        print("Hosting on port 8000...")
-        server.serve_forever()
-    except KeyboardInterrupt:
-        server.server_close()
-        print()
+    TestExecutor.debug(app, "debug_app.log")
 ```
 
 実行後，ブラウザで http://localhost:8000/hello にアクセスしてみましょう．

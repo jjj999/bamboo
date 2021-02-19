@@ -206,7 +206,7 @@ class Account(JsonApiData):
 from bamboo.api import JsonApiData
 
 # リクエスト，レスポンスボディのJSONスキーマの定義
-class UnpsideDownRequest(JsonApiData):
+class UpsideDownRequest(JsonApiData):
     token: str
     
 class UpsideDownResponse(JsonApiData):
@@ -218,8 +218,8 @@ class UpsideDownResponse(JsonApiData):
 class UpsideDownEndpoint(bamboo.Endpoint):
 
     # 入出力データフォーマットの登録
-    @bamboo.data_format(input=UnpsideDownRequest, output=UpsideDownResponse)
-    def do_GET(self, req_body: UnpsideDownRequest) -> None:
+    @bamboo.data_format(input=UpsideDownRequest, output=UpsideDownResponse)
+    def do_GET(self, req_body: UpsideDownRequest) -> None:
         # 反転処理
         result = req_body.token[::-1]
 
@@ -233,17 +233,15 @@ class UpsideDownEndpoint(bamboo.Endpoint):
 *data_format* によるデコレートは必須ではありませんが，特に理由のない場合はデコレートすることをおすすめします．型バリデーションが実行されるのもありますが，なによりデコレートによってそのコールバックの性質がわかりやすくなります．もし，このようなデコレーションがなければ内部ロジックを読んでコールバックの性質を読み取る必要が出てきてしまいます．Bamboo にはこの他にもコールバックの性質を定義する様々なデコレータがありますので，積極的にデコレートを行い，コールバックの性質を宣言しておくのが良いでしょう．
 
 ## サーバーを起動する
-最後にサーバーを起動します．今回は簡易的に Python の wsgiref で実装されているサーバーアプリケーションを利用します．Bamboo は WSGI 準拠な Web フレームワークなので，他の WSGI 準拠なサーバーアプリケーションも利用できます．
+最後にサーバーを起動します．今回はチュートリアルなので，デバッグモードでサーバーを起動しましょう．Bamboo にはテスト用に `TestExecutor` というユーティリティクラスが定義されており，このクラスを用いて簡単にデバッグモードでサーバーアプリケーションを起動できます．以下は今回のチュートリアルで作成するサーバーサイドの完全なスクリプトです．
 
 ```python
-from wsgiref.simple_server import make_server
-
-from bamboo import App, Endpoint, data_format
+from bamboo import App, Endpoint, data_format, TestExecutor
 from bamboo.api import JsonApiData
 
 app = App()
 
-class UnpsideDownRequest(JsonApiData):
+class UpsideDownRequest(JsonApiData):
     token: str
     
 class UpsideDownResponse(JsonApiData):
@@ -252,23 +250,15 @@ class UpsideDownResponse(JsonApiData):
 @app.route("upsidedown")
 class UpsideDownEndpoint(Endpoint):
 
-    @data_format(input=UnpsideDownRequest, output=UpsideDownResponse)
-    def do_GET(self, req_body: UnpsideDownRequest) -> None:
+    @data_format(input=UpsideDownRequest, output=UpsideDownResponse)
+    def do_GET(self, req_body: UpsideDownRequest) -> None:
         result = req_body.token[::-1]
 
         body = {"result": result}
         self.send_json(body)
 
 if __name__ == "__main__":
-    HOST_ADDRESS = ("localhost", 8000)
-    server = make_server("", 8000, app)
-
-    try:
-        print(f"Hosting on : {HOST_ADDRESS}...")
-        server.serve_forever()
-    except KeyboardInterrupt:
-        server.server_close()
-        print()
+    TestExecutor.debug(app, "debug_app.log")
 ```
 
 ## クライアントサイドの処理
