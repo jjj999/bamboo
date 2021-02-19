@@ -1,5 +1,5 @@
 
-from typing import Dict, List, Optional, Type
+from typing import Dict, List, Optional, Tuple, Type
 
 from bamboo.endpoint import Endpoint
 from bamboo.location import (
@@ -49,7 +49,8 @@ class Router:
             self.uris_flexible.append(uri)
         self.uri2endpoint[uri] = endpoint
     
-    def validate(self, uri: str) -> Optional[Type[Endpoint]]:
+    def validate(self, uri: str
+                 ) -> Tuple[Tuple[str, ...], Optional[Type[Endpoint]]]:
         """Validate specified `uri` and retrieved `Endpoint`.
 
         Parameters
@@ -59,18 +60,34 @@ class Router:
 
         Returns
         -------
-        Optional[Type[Endpoint]]
-            `Endpoint` if specified `uri` is valid, else `None`
+        Tuple[Tuple[str, ...], Optional[Type[Endpoint]]]
+            Pair of values of flexible locations and `Endpoint` if specified 
+            `uri` is valid
+            
+        Notes
+        -----
+        This method returns pair of tuple of flexible locations specified as 
+        parts of URI pattern linked to `Endpoint` and its `Endpoint`. If any 
+        flexible locations are not included in the URI pattern, then empty 
+        tuple will be returned as a sequence of flexible locations, so if 
+        URI patterns is configured with only static locations, you will get 
+        the empty tuple. 
+        
+        If invalid URI pattern is come, then also empty tuple will be return 
+        as sequence of flexible locations and `None` as `Endpoint`, or 
+        `((), None)`.
         """
         uri = tuple(uri[1:].split("/"))
         endpoint = self.uri2endpoint.get(uri)
         if endpoint:
-            return endpoint
+            return ((), endpoint)
         
         depth = len(uri)
         for flexible in self.uris_flexible:
             if len(flexible) != depth:
                 continue
+            
+            flexibles_received = []
             
             # Judging each locations
             for loc_req, loc_flex in zip(uri, flexible):
@@ -79,13 +96,15 @@ class Router:
                 if isinstance(loc_flex, FlexibleLocation):
                     if not loc_flex.is_valid(loc_req):
                         break
+                    
+                    flexibles_received.append(loc_req)
             else:
                 # Correct case
                 endpoint = self.uri2endpoint.get(flexible)
-                return endpoint
+                return (tuple(flexibles_received), endpoint)
         
         # Could not find it
-        return None
+        return ((), None)
     
     def search_uris(self, endpoint: Type[Endpoint]) -> List[Uri_t]:
         """Search URI patterns of specified `endpoint`.

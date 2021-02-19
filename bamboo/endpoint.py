@@ -57,8 +57,13 @@ class Endpoint:
     def __init_subclass__(cls) -> None:
         cls.response_methods = cls._get_response_method_names()
         
-    def __init__(self, environ: Dict[str, Any], *parcel) -> None:
+    def __init__(self, 
+                 environ: Dict[str, Any], 
+                 flexible_locs: Tuple[str, ...],
+                 *parcel
+                 ) -> None:
         self._environ = environ
+        self._flexible_locs = flexible_locs
         self._req_body = None
         self._status: Optional[HTTPStatus] = None
         self._headers: List[Tuple[str, str]] = []
@@ -100,6 +105,10 @@ class Endpoint:
         
     def setup(self, *parcel) -> None:
         pass
+    
+    @property
+    def flexible_locs(self) -> Tuple[str, ...]:
+        return self._flexible_locs
     
     @property
     def client_ip(self) -> str:
@@ -298,6 +307,9 @@ class Endpoint:
 
         self._status = err.http_status
         self._res_body = err.get_body()
+        
+        for name, val in err.get_headers():
+            self.add_header(name, val)
         
         if len(self._res_body):
             self.add_header("Content-Type", err._content_type_,

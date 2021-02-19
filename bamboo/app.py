@@ -191,14 +191,14 @@ class App:
         method = environ.get("REQUEST_METHOD").upper()
         path = environ.get("PATH_INFO")
         
-        endpoint_class = self._router.validate(path)
+        flexible_locs, endpoint_class = self._router.validate(path)
         if endpoint_class is None:
             return [self._send_404(start_response)]
         
         parcel_config = ParcelConfig(endpoint_class)
         parcel = parcel_config.get(self)
         
-        endpoint = endpoint_class(environ, *parcel)
+        endpoint = endpoint_class(environ, flexible_locs, *parcel)
         callback = endpoint_class._get_response_method(method)
         if callback is None:
             return [self._send_404(start_response)]
@@ -221,7 +221,7 @@ class App:
         bytes
             Response body
         """
-        stat, headers, res_body = DEFAULT_NOT_FOUND_ERROR._get_all_form()
+        stat, headers, res_body = DEFAULT_NOT_FOUND_ERROR.get_all_form()
         start_response(stat.value, headers)
         return res_body
     
