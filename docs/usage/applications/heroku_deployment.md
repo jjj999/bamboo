@@ -12,7 +12,7 @@
 これと同時に必要になる Python ライブラリをインストールしておきましょう．ここでは Python は 3.8 系を仮定します (3.8 以上なら動作します) ．
 
 ```
-$ pip install git+https://github.com/jjj999/bamboo.git requests gunicorn
+$ pip install bamboo-core requests gunicorn
 ```
 
 ## Bamboo による Web アプリケーションの作成

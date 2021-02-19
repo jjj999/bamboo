@@ -13,7 +13,7 @@
 
 ## Installing
 ```
-$ python -m pip install git+https://github.com/jjj999/bamboo.git
+$ python -m pip install bamboo-core
 ```
 
 ## 依存パッケージ
