@@ -1,15 +1,42 @@
 
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
+import collections
 import json
 from typing import (
-    Any, Dict, Sequence, Type, TypeVar, Union, get_args,
-    get_origin, get_type_hints,
+    Any, Dict, Sequence, Type, TypeVar, Union, 
+    get_type_hints
 )
 from urllib.parse import parse_qs
 
+from bamboo import __python_version
 from bamboo.base import MediaTypes, ContentTypeHolder, ContentType
 from bamboo.util.deco import class_property
+
+
+if __python_version < 3.8:
+    from collections.abc import Callable
+    from typing import _GenericAlias, Generic
+    
+    
+    def get_origin(tp):
+        if isinstance(tp, _GenericAlias):
+            return tp.__origin__
+        if tp is Generic:
+            return Generic
+        return None
+
+        
+    def get_args(tp):
+
+        if isinstance(tp, _GenericAlias) and not tp._special:
+            res = tp.__args__
+            if get_origin(tp) is Callable and res[0] is not Ellipsis:
+                res = (list(res[:-1]), res[-1])
+            return res
+        return ()
+else:
+    from typing import get_args, get_origin
 
 
 class ApiData(ContentTypeHolder, metaclass=ABCMeta):

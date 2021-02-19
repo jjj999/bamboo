@@ -16,7 +16,7 @@ path = abspath(join(expanduser("~"),    # TODO Edit path of the package
                     name_pkg))
 name_env = "dermserver-"                # TODO Edit your env name
 
-version_python = "3.8"
+version_python = "3.7"
 path_site = join(expanduser("~"),
                  ".local",
                  "share",
