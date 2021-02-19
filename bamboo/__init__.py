@@ -1,9 +1,5 @@
 
-from bamboo.util.version import VersionState as _VersionState
-from bamboo.util.version import resolve_version as _resolve_version
-
-
-__version__ = _resolve_version(0, 3, 0, _VersionState.alpha)
+__version__ = "0.3.0"
 
 from bamboo.api import (
     ApiData, ValidationFailedError, BinaryApiData, InvalidAnnotationError,
