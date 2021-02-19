@@ -10,6 +10,7 @@ falcon = "*"
 hug = "*"
 flask = "*"
 requests = "*"
+gunicorn = "*"
 
 [packages]
 
