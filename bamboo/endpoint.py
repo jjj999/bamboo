@@ -113,6 +113,27 @@ class Endpoint:
     @property
     def client_ip(self) -> str:
         return self._environ.get("REMOTE_ADDR")
+    
+    @property
+    def requested_addr(self) -> Tuple[str, int]:
+        """Retrieve requested a pair of host name and port.
+
+        Returns
+        -------
+        Tuple[str, int]
+            A pair of host name and port
+        """
+        host = self._environ.get("HTTP_HOST")
+        if host:
+            host = host.split(":")[0]
+        else:
+            host = self._environ.get("SERVER_NAME")
+        
+        port = self._environ.get("SERVER_PORT")
+        if len(port):
+            port = int(port)
+        
+        return (host, port)
         
     def get_header(self, name: str) -> Optional[str]:
         """Try to retrieve a HTTP header.
