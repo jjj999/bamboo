@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>bamboo.util package &mdash; bamboo 0.2.1 documentation</title>
   
@@ -16,10 +16,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +29,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -52,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> bamboo
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> bamboo
           
 
           
@@ -154,8 +152,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -169,7 +165,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/bamboo.util.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -192,22 +188,22 @@
 <span id="bamboo-util-convert-module"></span><h2>bamboo.util.convert module<a class="headerlink" href="#module-bamboo.util.convert" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="bamboo.util.convert.decode2binary">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.convert.</span></code><code class="sig-name descname"><span class="pre">decode2binary</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bytes</span><a class="headerlink" href="#bamboo.util.convert.decode2binary" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.convert.</code><code class="sig-name descname">decode2binary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; bytes<a class="headerlink" href="#bamboo.util.convert.decode2binary" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.util.convert.encode_base64_string">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.convert.</span></code><code class="sig-name descname"><span class="pre">encode_base64_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.convert.encode_base64_string" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.convert.</code><code class="sig-name descname">encode_base64_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.convert.encode_base64_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.util.convert.encode_binary">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.convert.</span></code><code class="sig-name descname"><span class="pre">encode_binary</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bytes</span><span class="p"><span class="pre">,</span> </span><span class="pre">bytearray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.convert.encode_binary" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.convert.</code><code class="sig-name descname">encode_binary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>bytes<span class="p">, </span>bytearray<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.convert.encode_binary" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.util.convert.unparse_qs">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.convert.</span></code><code class="sig-name descname"><span class="pre">unparse_qs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.convert.unparse_qs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.convert.</code><code class="sig-name descname">unparse_qs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.convert.unparse_qs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -215,34 +211,34 @@
 <span id="bamboo-util-deco-module"></span><h2>bamboo.util.deco module<a class="headerlink" href="#module-bamboo.util.deco" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="bamboo.util.deco.cached_property">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.util.deco.</span></code><code class="sig-name descname"><span class="pre">cached_property</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Object</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">ReturnGetter</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.deco.cached_property" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">bamboo.util.deco.Object</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">bamboo.util.deco.ReturnGetter</span></code>]</p>
+<em class="property">class </em><code class="sig-prename descclassname">bamboo.util.deco.</code><code class="sig-name descname">cached_property</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.deco.cached_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></p>
 <dl class="py method">
 <dt id="bamboo.util.deco.cached_property.getter">
-<code class="sig-name descname"><span class="pre">getter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Object</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">ReturnGetter</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.deco.cached_property.getter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">getter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fget</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>Object<span class="p">]</span><span class="p">, </span>ReturnGetter<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.deco.cached_property.getter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt id="bamboo.util.deco.class_property">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.util.deco.</span></code><code class="sig-name descname"><span class="pre">class_property</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Object</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">ReturnGetter</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.deco.class_property" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">bamboo.util.deco.Object</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">bamboo.util.deco.ReturnGetter</span></code>]</p>
+<em class="property">class </em><code class="sig-prename descclassname">bamboo.util.deco.</code><code class="sig-name descname">class_property</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.deco.class_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></p>
 <dl class="py method">
 <dt id="bamboo.util.deco.class_property.getter">
-<code class="sig-name descname"><span class="pre">getter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fget</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Object</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">ReturnGetter</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.deco.class_property.getter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">getter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fget</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>Object<span class="p">]</span><span class="p">, </span>ReturnGetter<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.deco.class_property.getter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.util.deco.joint_funcs">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.deco.</span></code><code class="sig-name descname"><span class="pre">joint_funcs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.util.deco.joint_funcs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.deco.</code><code class="sig-name descname">joint_funcs</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">]</span><span class="p">, </span>None<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Callable<span class="p">[</span><span class="p">]</span><span class="p">, </span>None<span class="p">]</span><a class="headerlink" href="#bamboo.util.deco.joint_funcs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.util.deco.joint_methods">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.deco.</span></code><code class="sig-name descname"><span class="pre">joint_methods</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">methods</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.util.deco.joint_methods" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.deco.</code><code class="sig-name descname">joint_methods</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">methods</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>None<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Callable<span class="p">[</span><span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>None<span class="p">]</span><a class="headerlink" href="#bamboo.util.deco.joint_methods" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -250,7 +246,7 @@
 <span id="bamboo-util-ip-module"></span><h2>bamboo.util.ip module<a class="headerlink" href="#module-bamboo.util.ip" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="bamboo.util.ip.is_valid_ipv4">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.ip.</span></code><code class="sig-name descname"><span class="pre">is_valid_ipv4</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">bool</span><a class="headerlink" href="#bamboo.util.ip.is_valid_ipv4" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.ip.</code><code class="sig-name descname">is_valid_ipv4</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ip</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#bamboo.util.ip.is_valid_ipv4" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -258,212 +254,85 @@
 <span id="bamboo-util-string-module"></span><h2>bamboo.util.string module<a class="headerlink" href="#module-bamboo.util.string" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="bamboo.util.string.CircularChar">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.util.string.</span></code><code class="sig-name descname"><span class="pre">CircularChar</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">begin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'0'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.string.CircularChar" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bamboo.util.string.</code><code class="sig-name descname">CircularChar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">begin</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'0'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.string.CircularChar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
 <dt id="bamboo.util.string.CircularChar.END">
-<code class="sig-name descname"><span class="pre">END</span></code><em class="property"> <span class="pre">=</span> <span class="pre">61</span></em><a class="headerlink" href="#bamboo.util.string.CircularChar.END" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">END</code><em class="property"> = 61</em><a class="headerlink" href="#bamboo.util.string.CircularChar.END" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="bamboo.util.string.CircularChar.HEAD">
-<code class="sig-name descname"><span class="pre">HEAD</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'0'</span></em><a class="headerlink" href="#bamboo.util.string.CircularChar.HEAD" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">HEAD</code><em class="property"> = '0'</em><a class="headerlink" href="#bamboo.util.string.CircularChar.HEAD" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="bamboo.util.string.CircularChar.ROW">
-<code class="sig-name descname"><span class="pre">ROW</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'</span></em><a class="headerlink" href="#bamboo.util.string.CircularChar.ROW" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ROW</code><em class="property"> = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'</em><a class="headerlink" href="#bamboo.util.string.CircularChar.ROW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="bamboo.util.string.CircularChar.TAIL">
-<code class="sig-name descname"><span class="pre">TAIL</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'z'</span></em><a class="headerlink" href="#bamboo.util.string.CircularChar.TAIL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">TAIL</code><em class="property"> = 'z'</em><a class="headerlink" href="#bamboo.util.string.CircularChar.TAIL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.util.string.CircularChar.back">
-<code class="sig-name descname"><span class="pre">back</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">down</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.string.CircularChar.back" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">back</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">down</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.string.CircularChar.back" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.util.string.CircularChar.current">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">current</span></code><a class="headerlink" href="#bamboo.util.string.CircularChar.current" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">current</code><a class="headerlink" href="#bamboo.util.string.CircularChar.current" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.util.string.CircularChar.next">
-<code class="sig-name descname"><span class="pre">next</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">up</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.string.CircularChar.next" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">next</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">up</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.string.CircularChar.next" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt id="bamboo.util.string.CircularString">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.util.string.</span></code><code class="sig-name descname"><span class="pre">CircularString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.string.CircularString" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bamboo.util.string.</code><code class="sig-name descname">CircularString</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">length</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">begin</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.string.CircularString" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt id="bamboo.util.string.CircularString.back">
-<code class="sig-name descname"><span class="pre">back</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">down</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.string.CircularString.back" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">back</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">down</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.string.CircularString.back" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.util.string.CircularString.current">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">current</span></code><a class="headerlink" href="#bamboo.util.string.CircularString.current" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">current</code><a class="headerlink" href="#bamboo.util.string.CircularString.current" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.util.string.CircularString.next">
-<code class="sig-name descname"><span class="pre">next</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">up</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.string.CircularString.next" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="bamboo.util.string.ColorCode">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.util.string.</span></code><code class="sig-name descname"><span class="pre">ColorCode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.string.ColorCode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>An enumeration.</p>
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BG_BLACK">
-<code class="sig-name descname"><span class="pre">BG_BLACK</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[40m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BG_BLACK" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BG_BLUE">
-<code class="sig-name descname"><span class="pre">BG_BLUE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[44m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BG_BLUE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BG_CYAN">
-<code class="sig-name descname"><span class="pre">BG_CYAN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[46m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BG_CYAN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BG_DEFAULT">
-<code class="sig-name descname"><span class="pre">BG_DEFAULT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[49m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BG_DEFAULT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BG_GREEN">
-<code class="sig-name descname"><span class="pre">BG_GREEN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[42m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BG_GREEN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BG_MAGENTA">
-<code class="sig-name descname"><span class="pre">BG_MAGENTA</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[45m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BG_MAGENTA" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BG_RED">
-<code class="sig-name descname"><span class="pre">BG_RED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[41m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BG_RED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BG_WHITE">
-<code class="sig-name descname"><span class="pre">BG_WHITE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[47m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BG_WHITE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BG_YELLOW">
-<code class="sig-name descname"><span class="pre">BG_YELLOW</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[43m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BG_YELLOW" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BLACK">
-<code class="sig-name descname"><span class="pre">BLACK</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[30m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BLACK" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BLUE">
-<code class="sig-name descname"><span class="pre">BLUE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[34m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BLUE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.BOLD">
-<code class="sig-name descname"><span class="pre">BOLD</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[1m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.BOLD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.CYAN">
-<code class="sig-name descname"><span class="pre">CYAN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[36m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.CYAN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.DEFAULT">
-<code class="sig-name descname"><span class="pre">DEFAULT</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[39m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.DEFAULT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.GREEN">
-<code class="sig-name descname"><span class="pre">GREEN</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[32m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.GREEN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.INVISIBLE">
-<code class="sig-name descname"><span class="pre">INVISIBLE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[08m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.INVISIBLE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.MAGENTA">
-<code class="sig-name descname"><span class="pre">MAGENTA</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[35m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.MAGENTA" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.RED">
-<code class="sig-name descname"><span class="pre">RED</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[31m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.RED" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.RESET">
-<code class="sig-name descname"><span class="pre">RESET</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[0m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.RESET" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.REVERCE">
-<code class="sig-name descname"><span class="pre">REVERCE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[07m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.REVERCE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.UNDERLINE">
-<code class="sig-name descname"><span class="pre">UNDERLINE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[4m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.UNDERLINE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.WHITE">
-<code class="sig-name descname"><span class="pre">WHITE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[37m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.WHITE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt id="bamboo.util.string.ColorCode.YELLOW">
-<code class="sig-name descname"><span class="pre">YELLOW</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'\x1b[33m'</span></em><a class="headerlink" href="#bamboo.util.string.ColorCode.YELLOW" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">next</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">up</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.string.CircularString.next" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt id="bamboo.util.string.SerialString">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.util.string.</span></code><code class="sig-name descname"><span class="pre">SerialString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.string.SerialString" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">bamboo.util.string.</code><code class="sig-name descname">SerialString</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">length</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">begin</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.util.string.SerialString" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt id="bamboo.util.string.SerialString.current">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">current</span></code><a class="headerlink" href="#bamboo.util.string.SerialString.current" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">current</code><a class="headerlink" href="#bamboo.util.string.SerialString.current" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.util.string.SerialString.next">
-<code class="sig-name descname"><span class="pre">next</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">up</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.util.string.SerialString.next" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">next</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">up</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#bamboo.util.string.SerialString.next" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt id="bamboo.util.string.insert_colorcode">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.string.</span></code><code class="sig-name descname"><span class="pre">insert_colorcode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#bamboo.util.string.ColorCode" title="bamboo.util.string.ColorCode"><span class="pre">bamboo.util.string.ColorCode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.string.insert_colorcode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt id="bamboo.util.string.rand_string">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.string.</span></code><code class="sig-name descname"><span class="pre">rand_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.string.rand_string" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.string.</code><code class="sig-name descname">rand_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.string.rand_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -471,22 +340,22 @@
 <span id="bamboo-util-time-module"></span><h2>bamboo.util.time module<a class="headerlink" href="#module-bamboo.util.time" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="bamboo.util.time.get_datetime_rfc822">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.time.</span></code><code class="sig-name descname"><span class="pre">get_datetime_rfc822</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.time.get_datetime_rfc822" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.time.</code><code class="sig-name descname">get_datetime_rfc822</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeval</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.time.get_datetime_rfc822" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.util.time.rfc822_to_datetime">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.time.</span></code><code class="sig-name descname"><span class="pre">rfc822_to_datetime</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rfc822</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">datetime.datetime</span><a class="headerlink" href="#bamboo.util.time.rfc822_to_datetime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.time.</code><code class="sig-name descname">rfc822_to_datetime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rfc822</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; datetime.datetime<a class="headerlink" href="#bamboo.util.time.rfc822_to_datetime" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.util.time.rfc822_to_unix">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.time.</span></code><code class="sig-name descname"><span class="pre">rfc822_to_unix</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rfc822</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">float</span><a class="headerlink" href="#bamboo.util.time.rfc822_to_unix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.time.</code><code class="sig-name descname">rfc822_to_unix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rfc822</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#bamboo.util.time.rfc822_to_unix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.util.time.unix_to_rfc822">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.time.</span></code><code class="sig-name descname"><span class="pre">unix_to_rfc822</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unixtime</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.time.unix_to_rfc822" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.time.</code><code class="sig-name descname">unix_to_rfc822</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">unixtime</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.time.unix_to_rfc822" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -494,7 +363,7 @@
 <span id="bamboo-util-version-module"></span><h2>bamboo.util.version module<a class="headerlink" href="#module-bamboo.util.version" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="bamboo.util.version.resolve_version">
-<code class="sig-prename descclassname"><span class="pre">bamboo.util.version.</span></code><code class="sig-name descname"><span class="pre">resolve_version</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">major</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minor</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="headerlink" href="#bamboo.util.version.resolve_version" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.util.version.</code><code class="sig-name descname">resolve_version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">major</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">minor</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">patch</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">state</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#bamboo.util.version.resolve_version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -508,28 +377,35 @@
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="bamboo.request.html" class="btn btn-neutral float-left" title="bamboo.request package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+      
+        <a href="bamboo.request.html" class="btn btn-neutral float-left" title="bamboo.request package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, jjj999.
+        
+        &copy; Copyright 2021, jjj999
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 
 from __future__ import annotations
-import http.client as client
+from http.client import HTTPConnection, HTTPMessage, HTTPResponse
 from typing import Generic, Optional, Type
 
 from bamboo.api import BinaryApiData
@@ -11,15 +11,17 @@ from bamboo.util.deco import cached_property
 
 class Response(Generic[ResponseData_t]):
     
-    def __init__(self, 
-                 res: client.HTTPResponse, 
+    def __init__(self,
+                 conn: HTTPConnection,
+                 res: HTTPResponse, 
                  datacls: Type[ResponseData_t] = BinaryApiData
                  ) -> None:
+        self._conn = conn
         self._res = res
         self._datacls = datacls
 
     @property
-    def headers(self) -> client.HTTPMessage:
+    def headers(self) -> HTTPMessage:
         return self._res.msg
     
     def get_header(self, key: str) -> Optional[str]:
@@ -76,4 +78,13 @@ class Response(Generic[ResponseData_t]):
             return self._datacls(self.body, content_type)
         else:
             return datacls(self.body, content_type)
+    
+    def close(self) -> None:
+        self._conn.close()
+        
+    def __enter__(self) -> Response:
+        return self
+    
+    def __exit__(self, type, value, traceback) -> None:
+        self.close()
     

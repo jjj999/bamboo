@@ -11,12 +11,15 @@ from urllib.parse import parse_qs
 from bamboo.api import ApiData, ValidationFailedError
 from bamboo.base import (
     HTTPMethods, HTTPStatus, MediaTypes, ContentType,
-    DEFAULT_CONTENT_TYPE_PLAIN,
+    AuthSchemes, DEFAULT_CONTENT_TYPE_PLAIN,
 )
 from bamboo.error import (
+    DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR, 
+    DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR, 
     DEFAULT_HEADER_NOT_FOUND_ERROR, DEFAULT_NOT_APPLICABLE_IP_ERROR,
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR, ErrInfoBase,
 )
+from bamboo.util.convert import decode2binary
 from bamboo.util.deco import cached_property
 from bamboo.util.ip import is_valid_ipv4
 
@@ -113,6 +116,27 @@ class Endpoint:
     @property
     def client_ip(self) -> str:
         return self._environ.get("REMOTE_ADDR")
+    
+    @property
+    def requested_addr(self) -> Tuple[str, int]:
+        """Retrieve requested a pair of host name and port.
+
+        Returns
+        -------
+        Tuple[str, int]
+            A pair of host name and port
+        """
+        host = self._environ.get("HTTP_HOST")
+        if host:
+            host = host.split(":")[0]
+        else:
+            host = self._environ.get("SERVER_NAME")
+        
+        port = self._environ.get("SERVER_PORT")
+        if len(port):
+            port = int(port)
+        
+        return (host, port)
         
     def get_header(self, name: str) -> Optional[str]:
         """Try to retrieve a HTTP header.
@@ -736,3 +760,154 @@ def restricts_client(*client_ips: str,
     return register_restrictions
 
 # ----------------------------------------------------------------------------
+
+_HEADER_AUTHORIZATION = "Authorization"
+ATTR_AUTH_SCHEME = _get_bamboo_attr("auth_scheme")
+
+
+class MultipleAuthSchemeError(Exception):
+    """Raised if several authentication schemes of the 'Authorization' 
+    header are detected.
+    """
+    pass
+
+
+def get_auth_scheme(callback: Callback_t) -> Optional[str]:
+    return getattr(callback, ATTR_AUTH_SCHEME, None)
+    
+    
+def _set_auth_scheme(callback: Callback_t, scheme: str) -> None:
+    if hasattr(callback, ATTR_AUTH_SCHEME):
+        _scheme_registered = getattr(callback, ATTR_AUTH_SCHEME)
+        raise MultipleAuthSchemeError(
+            "Authentication scheme has been specified as "
+            f"'{_scheme_registered}'. Do not specify multiple schemes."
+        )
+    setattr(callback, ATTR_AUTH_SCHEME, scheme)
+    
+    
+def _validate_auth_header(value: str, scheme: str) -> Optional[str]:
+    value = value.split(" ")
+    if len(value) != 2:
+        return None
+    
+    _scheme, credentials = value
+    if _scheme != scheme:
+        return None
+    
+    return credentials
+    
+
+def basic_auth(err: ErrInfoBase = DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR
+               ) -> CallbackDecorator_t:
+    """Set callback up to require `Authorization` header in Basic 
+    authentication.
+
+    Parameters
+    ----------
+    err : ErrInfoBase, optional
+        Error sent when `Authorization` header is not found, received 
+        scheme doesn't match, or extracting user ID and password from 
+        credentials failes, 
+        by default DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR
+
+    Returns
+    -------
+    CallbackDecorator_t
+        Decorator to make callback to be set  up to require 
+        the `Authorization` header
+        
+    Examples
+    --------
+    ```
+    class MockEndpoint(Endpoint):
+    
+        @basic_auth()
+        def do_GET(self, user_id: str, password: str) -> None:
+            # It is guaranteed that request headers include the 
+            # `Authorization` header at this point, and user_id and 
+            # password are the ones extracted from the header.
+            
+            # Authenticate with any function working on your system.
+            authenticate(user_id, password)
+            
+            # Do something...
+    ```
+    """
+    def auth_header_checker(callback: Callback_t) -> Callback_t:
+        
+        @may_occur(err.__class__)
+        @has_header_of(_HEADER_AUTHORIZATION, err)
+        def _callback(self: Endpoint, *args) -> None:
+            val = self.get_header(_HEADER_AUTHORIZATION)
+            credentials = _validate_auth_header(val, AuthSchemes.basic)
+            if credentials is None:
+                self.send_err(err)
+                return
+            
+            credentials = decode2binary(credentials).decode().split(":")
+            if len(credentials) != 2:
+                self.send_err(err)
+                return
+            
+            user_id, pw = credentials
+            callback(self, user_id, pw)
+            
+        _callback.__dict__ = callback.__dict__
+        _set_auth_scheme(callback, AuthSchemes.basic)
+        return _callback
+    return auth_header_checker
+
+
+def bearer_auth(err: ErrInfoBase = DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR
+                ) -> CallbackDecorator_t:
+    """Set callback up to require `Authorization` header in token 
+    authentication for OAuth 2.0.
+
+    Parameters
+    ----------
+    err : ErrInfoBase, optional
+        Error sent when `Authorization` header is not found, or when received 
+        scheme doesn't match, 
+        by default DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR
+
+    Returns
+    -------
+    CallbackDecorator_t
+        Decorator to make callback to be set  up to require 
+        the `Authorization` header
+        
+    Examples
+    --------
+    ```
+    class MockEndpoint(Endpoint):
+    
+        @bearer_auth()
+        def do_GET(self, token: str) -> None:
+            # It is guaranteed that request headers include the 
+            # `Authorization` header at this point, and token is
+            # the one extracted from the header.
+            
+            # Authenticate with any function working on your system.
+            authenticate(token)
+            
+            # Do something...
+    ```
+    """
+    def auth_header_checker(callback: Callback_t) -> Callback_t:
+        
+        @may_occur(err.__class__)
+        @has_header_of(_HEADER_AUTHORIZATION, err)
+        def _callback(self: Endpoint, *args) -> None:
+            val = self.get_header(_HEADER_AUTHORIZATION)
+            token = _validate_auth_header(val, AuthSchemes.bearer)
+            if token is None:
+                self.send_err(err)
+                return
+            
+            callback(self, token)
+            
+        _callback.__dict__ = callback.__dict__
+        _set_auth_scheme(callback, AuthSchemes.bearer)
+        return _callback
+    return auth_header_checker

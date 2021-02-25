@@ -1,15 +1,12 @@
 
-
-from wsgiref.simple_server import make_server
-
-from bamboo import App, Endpoint, data_format
+from bamboo import App, Endpoint, data_format, TestExecutor
 from bamboo.api import JsonApiData
 
 
 app = App()
 
 
-class UnpsideDownRequest(JsonApiData):
+class UpsideDownRequest(JsonApiData):
     
     token: str
     
@@ -22,8 +19,8 @@ class UpsideDownResponse(JsonApiData):
 @app.route("upsidedown")
 class UpsideDownEndpoint(Endpoint):
 
-    @data_format(input=UnpsideDownRequest, output=UpsideDownResponse)
-    def do_GET(self, req_body: UnpsideDownRequest) -> None:
+    @data_format(input=UpsideDownRequest, output=UpsideDownResponse)
+    def do_GET(self, req_body: UpsideDownRequest) -> None:
         result = req_body.token[::-1]
 
         body = {"result": result}
@@ -31,12 +28,4 @@ class UpsideDownEndpoint(Endpoint):
 
 
 if __name__ == "__main__":
-    HOST_ADDRESS = ("localhost", 8000)
-    server = make_server("", 8000, app)
-
-    try:
-        print(f"Hosting on : {HOST_ADDRESS}...")
-        server.serve_forever()
-    except KeyboardInterrupt:
-        server.server_close()
-        print()
+    TestExecutor.debug(app, "upsidedown.log")

@@ -10,6 +10,7 @@ from typing import Any, Callable, List, Tuple
 from wsgiref.simple_server import make_server
 
 from bamboo.app import App
+from bamboo.util.string import ColorCode, insert_colorcode
 
 
 @dataclass
@@ -21,7 +22,7 @@ class ServerForm:
     
     Parameters
     ----------
-    hostname : str
+    host : str
         Hostname of the server
     port : int
         Port of the server
@@ -30,7 +31,7 @@ class ServerForm:
     path_log : str
         Path log of the server will be written
     """
-    hostname: str
+    host: str
     port: int
     app: App
     path_log: str
@@ -44,7 +45,7 @@ def serve_at(form: ServerForm) -> None:
     form : ServerForm
         Dataclass describing information of the server application
     """
-    server = make_server(form.hostname, form.port, form.app)
+    server = make_server(form.host, form.port, form.app)
     f_log = open(form.path_log, "wt")
     sys.stdout = f_log
     sys.stderr = f_log
@@ -150,6 +151,48 @@ class TestExecutor:
         """
         with self.start_serve(waiting=waiting):
             func(*args)
+           
+    @classmethod 
+    def debug(cls, app: App, path_log: str, host: str = "localhost", 
+              port: int = 8000, waiting: float = 0.05) -> None:
+        """Executes a server application for debug.
+        
+        This method is a kind of shorcut for launching a server application 
+        and can be used to debug the application. If you want to deploy an
+        application made with Bamboo, consider to use another WSGI server 
+        application for production.
+
+        Parameters
+        ----------
+        app : App
+            App object with implemented Endpoints
+        path_log : str
+            Path log of the server will be written
+        host : str, optional
+            Hostname of the server, by default "localhost"
+        port : int, optional
+            Port of the server, by default 8000
+        waiting : float, optional
+            Waiting time after running the applications, by default 0.05
+        """
+        form = ServerForm(host, port, app, path_log)
+        executor = cls(form)
+        
+        try:
+            print(f"Hosting on {host}:{port} ...")
+            print(insert_colorcode(
+                "WARNING: This is debug mode. "
+                "Do not use it in your production deployment.",
+                ColorCode.RED
+            ))
+            
+            executor.start_serve(waiting=waiting)
+            while True:
+                time.sleep(60 * 60)
+        except KeyboardInterrupt:
+            executor.close()
+            print("\nHosting terminated. The log was output into " +
+                  insert_colorcode(f"{path_log}", ColorCode.YELLOW) + ".")
             
     def __enter__(self) -> None:
         pass

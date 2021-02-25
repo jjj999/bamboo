@@ -30,3 +30,9 @@ Schemes = _Schemes()
 
 
 from bamboo.request.response import Response
+from bamboo.request import http, https
+
+
+__all__ = [
+    "ResponseData_t", "Schemes", "Response", "http", "https",
+]
