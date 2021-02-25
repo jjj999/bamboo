@@ -11,6 +11,8 @@ hug = "*"
 flask = "*"
 requests = "*"
 gunicorn = "*"
+fastapi = "*"
+uvicorn = "*"
 
 [packages]
 
