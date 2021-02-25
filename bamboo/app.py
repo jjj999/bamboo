@@ -132,7 +132,7 @@ class ParcelConfig:
         registered = getattr(self._endpoint_class, ATTR_PARCEL)
         registered[app] = parcel
         
-    def get(self, app: App) -> Optional[Parcel_t]:
+    def get(self, app: App) -> Parcel_t:
         """Retrieve parcel belonging to specified `app`/
 
         Parameters
@@ -142,13 +142,13 @@ class ParcelConfig:
 
         Returns
         -------
-        Optional[Parcel_t]
+        Parcel_t
             Parcel set to `Endpoint`, if not set yet, then `None`
         """
         if hasattr(self._endpoint_class, ATTR_PARCEL):
             registered = getattr(self._endpoint_class, ATTR_PARCEL)
             return registered.get(app)
-        return None
+        return ()
         
     def get_all(self) -> List[Tuple[App, Parcel_t]]:
         """Retrieve parcels belonging to all `App` objects.
@@ -240,15 +240,13 @@ class App:
         """
         return self._router.search_uris(endpoint)
     
-    def route(self, *locs: Location_t, parcel: Parcel_t = (),
+    def route(self, *locs: Location_t,
               version: Union[int, Tuple[int], None] = None
               ) -> Callable[[Type[Endpoint]], Type[Endpoint]]:
         """Register combination of URI and `Endpoint` for routing.
 
         Parameters
         ----------
-        parcel : Parcel_t, optional
-            Pacel to be given to the `Endpoint`, by default ()
         version : Union[int, Tuple[int], None], optional
             Version of the `Endpoint`, by default None
 
@@ -270,11 +268,7 @@ class App:
                 # Do something...
         ```
         """
-        def register_endpoint(endpoint: Type[Endpoint]) -> Type[Endpoint]:
-            # parcel setting
-            parcel_config = ParcelConfig(endpoint)
-            parcel_config.set(self, parcel)
-            
+        def register_endpoint(endpoint: Type[Endpoint]) -> Type[Endpoint]:            
             # version setting
             ver_config = VersionConfig(endpoint)
             ver_config.set(self, version)
@@ -293,3 +287,16 @@ class App:
 
             return endpoint
         return register_endpoint
+    
+    def set_parcel(self, endpoint: Type[Endpoint], *parcel: Any) -> None:
+        """Set parcel to an endpoint.
+
+        Parameters
+        ----------
+        endpoint : Type[Endpoint]
+            `Endpoint` the `parcel` to be set
+        *parcel : Any
+            Pacel to be given to the `Endpoint`
+        """
+        parcel_config = ParcelConfig(endpoint)
+        parcel_config.set(self, parcel)
