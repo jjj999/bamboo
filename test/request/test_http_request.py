@@ -59,9 +59,9 @@ class TestHTTPRequest(unittest.TestCase):
         self.executor.close()
 
     def test_get_info(self):
-        res = http.request(self.url_info, "GET", datacls=InfoResponse)
-        print(res.headers)
-        data = res.attach()
+        with http.get(self.url_info, datacls=InfoResponse) as res:
+            print(res.headers)
+            data = res.attach()
         
         self.assertTrue(isinstance(data, InfoResponse))
         self.assertEqual(data.server_name, "Mocker")
@@ -71,8 +71,9 @@ class TestHTTPRequest(unittest.TestCase):
         with open(self.path_image_ideal, "rb") as f:
             image_ideal = f.read()
         
-        res = http.request(self.url_image, "GET")
-        data = res.body
+        with http.get(self.url_image) as res:
+            data = res.body
+            
         self.assertEqual(image_ideal, data)
 
 

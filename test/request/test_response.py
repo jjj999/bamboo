@@ -66,14 +66,14 @@ class TestResponse(unittest.TestCase):
         
         self.conn.request("GET", self.url_image)
         _res = self.conn.getresponse()
-        res = Response(_res)
-        self.assertEqual(image_ideal, res.body)
+        with Response(self.conn, _res) as res:
+            self.assertEqual(image_ideal, res.body)
         
     def test_attach_datacls(self):
         self.conn.request("GET", self.url_info)
         _res = self.conn.getresponse()
-        res = Response(_res, datacls=InfoResponse)
-        data = res.attach()
+        with Response(self.conn, _res, datacls=InfoResponse) as res:
+            data = res.attach()
         
         self.assertTrue(isinstance(data, InfoResponse))
         self.assertEqual(data.server_name, "Mocker")

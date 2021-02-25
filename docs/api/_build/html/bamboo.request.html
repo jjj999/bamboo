@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>bamboo.request package &mdash; bamboo 0.2.1 documentation</title>
   
@@ -16,10 +16,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -32,6 +29,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -53,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> bamboo
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> bamboo
           
 
           
@@ -151,8 +149,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -166,7 +162,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/bamboo.request.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -189,37 +185,37 @@
 <span id="bamboo-request-http-module"></span><h2>bamboo.request.http module<a class="headerlink" href="#module-bamboo.request.http" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="bamboo.request.http.delete">
-<code class="sig-prename descclassname"><span class="pre">bamboo.request.http.</span></code><code class="sig-name descname"><span class="pre">delete</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">uri:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">headers:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">body:</span> <span class="pre">Optional[bytes]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">json:</span> <span class="pre">Optional[Dict[str</span></em>, <em class="sig-param"><span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">query:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">List[str]]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">timeout:</span> <span class="pre">Optional[float]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">blocksize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">8192</span></em>, <em class="sig-param"><span class="pre">datacls:</span> <span class="pre">Type[ResponseData_t]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'bamboo.api.BinaryApiData'&gt;</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response"><span class="pre">bamboo.request.response.Response</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ResponseData_t</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.request.http.delete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.request.http.</code><code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">uri: str</em>, <em class="sig-param">headers: Dict[str</em>, <em class="sig-param">str] = {}</em>, <em class="sig-param">body: Optional[bytes] = None</em>, <em class="sig-param">json: Optional[Dict[str</em>, <em class="sig-param">Any]] = None</em>, <em class="sig-param">query: Dict[str</em>, <em class="sig-param">List[str]] = {}</em>, <em class="sig-param">timeout: Optional[float] = None</em>, <em class="sig-param">blocksize: int = 8192</em>, <em class="sig-param">datacls: Type[ResponseData_t] = &lt;class 'bamboo.api.BinaryApiData'&gt;</em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response">bamboo.request.response.Response</a><span class="p">[</span>ResponseData_t<span class="p">]</span><a class="headerlink" href="#bamboo.request.http.delete" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.request.http.get">
-<code class="sig-prename descclassname"><span class="pre">bamboo.request.http.</span></code><code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">uri:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">headers:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">body:</span> <span class="pre">Optional[bytes]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">json:</span> <span class="pre">Optional[Dict[str</span></em>, <em class="sig-param"><span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">query:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">List[str]]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">timeout:</span> <span class="pre">Optional[float]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">blocksize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">8192</span></em>, <em class="sig-param"><span class="pre">datacls:</span> <span class="pre">Type[ResponseData_t]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'bamboo.api.BinaryApiData'&gt;</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response"><span class="pre">bamboo.request.response.Response</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ResponseData_t</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.request.http.get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.request.http.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">uri: str</em>, <em class="sig-param">headers: Dict[str</em>, <em class="sig-param">str] = {}</em>, <em class="sig-param">body: Optional[bytes] = None</em>, <em class="sig-param">json: Optional[Dict[str</em>, <em class="sig-param">Any]] = None</em>, <em class="sig-param">query: Dict[str</em>, <em class="sig-param">List[str]] = {}</em>, <em class="sig-param">timeout: Optional[float] = None</em>, <em class="sig-param">blocksize: int = 8192</em>, <em class="sig-param">datacls: Type[ResponseData_t] = &lt;class 'bamboo.api.BinaryApiData'&gt;</em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response">bamboo.request.response.Response</a><span class="p">[</span>ResponseData_t<span class="p">]</span><a class="headerlink" href="#bamboo.request.http.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.request.http.head">
-<code class="sig-prename descclassname"><span class="pre">bamboo.request.http.</span></code><code class="sig-name descname"><span class="pre">head</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">uri:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">headers:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">body:</span> <span class="pre">Optional[bytes]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">json:</span> <span class="pre">Optional[Dict[str</span></em>, <em class="sig-param"><span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">query:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">List[str]]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">timeout:</span> <span class="pre">Optional[float]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">blocksize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">8192</span></em>, <em class="sig-param"><span class="pre">datacls:</span> <span class="pre">Type[ResponseData_t]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'bamboo.api.BinaryApiData'&gt;</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response"><span class="pre">bamboo.request.response.Response</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ResponseData_t</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.request.http.head" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.request.http.</code><code class="sig-name descname">head</code><span class="sig-paren">(</span><em class="sig-param">uri: str</em>, <em class="sig-param">headers: Dict[str</em>, <em class="sig-param">str] = {}</em>, <em class="sig-param">body: Optional[bytes] = None</em>, <em class="sig-param">json: Optional[Dict[str</em>, <em class="sig-param">Any]] = None</em>, <em class="sig-param">query: Dict[str</em>, <em class="sig-param">List[str]] = {}</em>, <em class="sig-param">timeout: Optional[float] = None</em>, <em class="sig-param">blocksize: int = 8192</em>, <em class="sig-param">datacls: Type[ResponseData_t] = &lt;class 'bamboo.api.BinaryApiData'&gt;</em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response">bamboo.request.response.Response</a><span class="p">[</span>ResponseData_t<span class="p">]</span><a class="headerlink" href="#bamboo.request.http.head" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.request.http.options">
-<code class="sig-prename descclassname"><span class="pre">bamboo.request.http.</span></code><code class="sig-name descname"><span class="pre">options</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">uri:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">headers:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">body:</span> <span class="pre">Optional[bytes]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">json:</span> <span class="pre">Optional[Dict[str</span></em>, <em class="sig-param"><span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">query:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">List[str]]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">timeout:</span> <span class="pre">Optional[float]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">blocksize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">8192</span></em>, <em class="sig-param"><span class="pre">datacls:</span> <span class="pre">Type[ResponseData_t]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'bamboo.api.BinaryApiData'&gt;</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response"><span class="pre">bamboo.request.response.Response</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ResponseData_t</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.request.http.options" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.request.http.</code><code class="sig-name descname">options</code><span class="sig-paren">(</span><em class="sig-param">uri: str</em>, <em class="sig-param">headers: Dict[str</em>, <em class="sig-param">str] = {}</em>, <em class="sig-param">body: Optional[bytes] = None</em>, <em class="sig-param">json: Optional[Dict[str</em>, <em class="sig-param">Any]] = None</em>, <em class="sig-param">query: Dict[str</em>, <em class="sig-param">List[str]] = {}</em>, <em class="sig-param">timeout: Optional[float] = None</em>, <em class="sig-param">blocksize: int = 8192</em>, <em class="sig-param">datacls: Type[ResponseData_t] = &lt;class 'bamboo.api.BinaryApiData'&gt;</em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response">bamboo.request.response.Response</a><span class="p">[</span>ResponseData_t<span class="p">]</span><a class="headerlink" href="#bamboo.request.http.options" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.request.http.post">
-<code class="sig-prename descclassname"><span class="pre">bamboo.request.http.</span></code><code class="sig-name descname"><span class="pre">post</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">uri:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">headers:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">body:</span> <span class="pre">Optional[bytes]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">json:</span> <span class="pre">Optional[Dict[str</span></em>, <em class="sig-param"><span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">query:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">List[str]]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">timeout:</span> <span class="pre">Optional[float]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">blocksize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">8192</span></em>, <em class="sig-param"><span class="pre">datacls:</span> <span class="pre">Type[ResponseData_t]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'bamboo.api.BinaryApiData'&gt;</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response"><span class="pre">bamboo.request.response.Response</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ResponseData_t</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.request.http.post" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.request.http.</code><code class="sig-name descname">post</code><span class="sig-paren">(</span><em class="sig-param">uri: str</em>, <em class="sig-param">headers: Dict[str</em>, <em class="sig-param">str] = {}</em>, <em class="sig-param">body: Optional[bytes] = None</em>, <em class="sig-param">json: Optional[Dict[str</em>, <em class="sig-param">Any]] = None</em>, <em class="sig-param">query: Dict[str</em>, <em class="sig-param">List[str]] = {}</em>, <em class="sig-param">timeout: Optional[float] = None</em>, <em class="sig-param">blocksize: int = 8192</em>, <em class="sig-param">datacls: Type[ResponseData_t] = &lt;class 'bamboo.api.BinaryApiData'&gt;</em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response">bamboo.request.response.Response</a><span class="p">[</span>ResponseData_t<span class="p">]</span><a class="headerlink" href="#bamboo.request.http.post" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.request.http.put">
-<code class="sig-prename descclassname"><span class="pre">bamboo.request.http.</span></code><code class="sig-name descname"><span class="pre">put</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">uri:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">headers:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">body:</span> <span class="pre">Optional[bytes]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">json:</span> <span class="pre">Optional[Dict[str</span></em>, <em class="sig-param"><span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">query:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">List[str]]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">timeout:</span> <span class="pre">Optional[float]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">blocksize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">8192</span></em>, <em class="sig-param"><span class="pre">datacls:</span> <span class="pre">Type[ResponseData_t]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'bamboo.api.BinaryApiData'&gt;</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response"><span class="pre">bamboo.request.response.Response</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ResponseData_t</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.request.http.put" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.request.http.</code><code class="sig-name descname">put</code><span class="sig-paren">(</span><em class="sig-param">uri: str</em>, <em class="sig-param">headers: Dict[str</em>, <em class="sig-param">str] = {}</em>, <em class="sig-param">body: Optional[bytes] = None</em>, <em class="sig-param">json: Optional[Dict[str</em>, <em class="sig-param">Any]] = None</em>, <em class="sig-param">query: Dict[str</em>, <em class="sig-param">List[str]] = {}</em>, <em class="sig-param">timeout: Optional[float] = None</em>, <em class="sig-param">blocksize: int = 8192</em>, <em class="sig-param">datacls: Type[ResponseData_t] = &lt;class 'bamboo.api.BinaryApiData'&gt;</em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response">bamboo.request.response.Response</a><span class="p">[</span>ResponseData_t<span class="p">]</span><a class="headerlink" href="#bamboo.request.http.put" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="bamboo.request.http.request">
-<code class="sig-prename descclassname"><span class="pre">bamboo.request.http.</span></code><code class="sig-name descname"><span class="pre">request</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">uri:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">method:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">headers:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">body:</span> <span class="pre">Optional[bytes]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">json:</span> <span class="pre">Optional[Dict[str</span></em>, <em class="sig-param"><span class="pre">Any]]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">query:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">List[str]]</span> <span class="pre">=</span> <span class="pre">{}</span></em>, <em class="sig-param"><span class="pre">timeout:</span> <span class="pre">Optional[float]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">blocksize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">8192</span></em>, <em class="sig-param"><span class="pre">datacls:</span> <span class="pre">Type[ResponseData_t]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'bamboo.api.BinaryApiData'&gt;</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response"><span class="pre">bamboo.request.response.Response</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ResponseData_t</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.request.http.request" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bamboo.request.http.</code><code class="sig-name descname">request</code><span class="sig-paren">(</span><em class="sig-param">uri: str</em>, <em class="sig-param">method: str</em>, <em class="sig-param">headers: Dict[str</em>, <em class="sig-param">str] = {}</em>, <em class="sig-param">body: Optional[bytes] = None</em>, <em class="sig-param">json: Optional[Dict[str</em>, <em class="sig-param">Any]] = None</em>, <em class="sig-param">query: Dict[str</em>, <em class="sig-param">List[str]] = {}</em>, <em class="sig-param">timeout: Optional[float] = None</em>, <em class="sig-param">blocksize: int = 8192</em>, <em class="sig-param">datacls: Type[ResponseData_t] = &lt;class 'bamboo.api.BinaryApiData'&gt;</em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#bamboo.request.response.Response" title="bamboo.request.response.Response">bamboo.request.response.Response</a><span class="p">[</span>ResponseData_t<span class="p">]</span><a class="headerlink" href="#bamboo.request.http.request" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -227,61 +223,61 @@
 <span id="bamboo-request-response-module"></span><h2>bamboo.request.response module<a class="headerlink" href="#module-bamboo.request.response" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="bamboo.request.response.Response">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">bamboo.request.response.</span></code><code class="sig-name descname"><span class="pre">Response</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">res:</span> <span class="pre">http.client.HTTPResponse</span></em>, <em class="sig-param"><span class="pre">datacls:</span> <span class="pre">Type[ResponseData_t]</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'bamboo.api.BinaryApiData'&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.request.response.Response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">bamboo.request.ResponseData_t</span></code>]</p>
+<em class="property">class </em><code class="sig-prename descclassname">bamboo.request.response.</code><code class="sig-name descname">Response</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.request.response.Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></p>
 <dl class="py method">
 <dt id="bamboo.request.response.Response.attach">
-<code class="sig-name descname"><span class="pre">attach</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datacls</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">ResponseData_t</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">ResponseData_t</span><a class="headerlink" href="#bamboo.request.response.Response.attach" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">attach</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">datacls</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Type<span class="p">[</span>ResponseData_t<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ResponseData_t<a class="headerlink" href="#bamboo.request.response.Response.attach" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="bamboo.request.response.Response.body">
-<code class="sig-name descname"><span class="pre">body</span></code><a class="headerlink" href="#bamboo.request.response.Response.body" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">body</code><a class="headerlink" href="#bamboo.request.response.Response.body" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.request.response.Response.content_length">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">content_length</span></code><a class="headerlink" href="#bamboo.request.response.Response.content_length" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">content_length</code><a class="headerlink" href="#bamboo.request.response.Response.content_length" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.request.response.Response.fileno">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fileno</span></code><a class="headerlink" href="#bamboo.request.response.Response.fileno" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">fileno</code><a class="headerlink" href="#bamboo.request.response.Response.fileno" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.request.response.Response.get_header">
-<code class="sig-name descname"><span class="pre">get_header</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#bamboo.request.response.Response.get_header" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_header</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#bamboo.request.response.Response.get_header" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.request.response.Response.headers">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">headers</span></code><a class="headerlink" href="#bamboo.request.response.Response.headers" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">headers</code><a class="headerlink" href="#bamboo.request.response.Response.headers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.request.response.Response.is_closed">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_closed</span></code><a class="headerlink" href="#bamboo.request.response.Response.is_closed" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">is_closed</code><a class="headerlink" href="#bamboo.request.response.Response.is_closed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.request.response.Response.ok">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ok</span></code><a class="headerlink" href="#bamboo.request.response.Response.ok" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">ok</code><a class="headerlink" href="#bamboo.request.response.Response.ok" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.request.response.Response.status">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">status</span></code><a class="headerlink" href="#bamboo.request.response.Response.status" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">status</code><a class="headerlink" href="#bamboo.request.response.Response.status" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.request.response.Response.url">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">url</span></code><a class="headerlink" href="#bamboo.request.response.Response.url" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">url</code><a class="headerlink" href="#bamboo.request.response.Response.url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="bamboo.request.response.Response.version">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">version</span></code><a class="headerlink" href="#bamboo.request.response.Response.version" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">version</code><a class="headerlink" href="#bamboo.request.response.Response.version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -297,29 +293,37 @@
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="bamboo.util.html" class="btn btn-neutral float-right" title="bamboo.util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="bamboo.nas.html" class="btn btn-neutral float-left" title="bamboo.nas package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+        <a href="bamboo.util.html" class="btn btn-neutral float-right" title="bamboo.util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="bamboo.nas.html" class="btn btn-neutral float-left" title="bamboo.nas package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, jjj999.
+        
+        &copy; Copyright 2021, jjj999
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

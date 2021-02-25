@@ -1,15 +1,13 @@
 
 from __future__ import annotations
-import http.client as client
-from json import dumps
+from http import client
 from typing import Any, Dict, List, Optional, Type
-from urllib.parse import parse_qs, urlparse
 
 from bamboo.api import BinaryApiData  
-from bamboo.base import HTTPMethods, MediaTypes
+from bamboo.base import HTTPMethods
 from bamboo.request import ResponseData_t, Schemes
+from bamboo.request.request_form import get_http_request_form
 from bamboo.request.response import Response
-from bamboo.util.convert import unparse_qs
 
 
 def request(uri: str, 
@@ -22,44 +20,13 @@ def request(uri: str,
             blocksize: int = 8192,
             datacls: Type[ResponseData_t] = BinaryApiData
             ) -> Response[ResponseData_t]:
-    # method management
-    method = method.upper()
-    if method not in HTTPMethods:
-        raise ValueError(f"Specified method '{method}' is not available.")
-    
-    # body management
-    if body and json:
-        raise ValueError("Request body is specified both 'body' and 'json'.")
-    if json:
-        body = dumps(json)
-        if "Content-Type" not in headers:
-            headers["Content-Type"] = MediaTypes.json
-    
-    parsed_uri = urlparse(uri)
-    if parsed_uri.scheme != Schemes.HTTP:
-        raise ValueError(f"Scheme of specified uri '{parsed_uri.scheme}' "
-                         "is not available. Use HTTP.")
-
-    # port management
-    port = parsed_uri.port
-    if not port:
-        port = None
-        
-    # query management
-    query_included = parse_qs(parsed_uri.query)
-    query_included.update(query)
-    query = unparse_qs(query_included)
-    
-    # path management
-    path = parsed_uri.path
-    if len(query):
-        path = "?".join((path, query))
-    
-    conn = client.HTTPConnection(parsed_uri.hostname, port=port,
+    form = get_http_request_form(Schemes.HTTP, uri, method, headers=headers,
+                          body=body, json=json, query=query)
+    conn = client.HTTPConnection(form.host, port=form.port,
                                  timeout=timeout, blocksize=blocksize)
-    conn.request(method, path, body=body, headers=headers)
+    conn.request(form.method, form.uri, body=form.body, headers=form.headers)
     _res = conn.getresponse()
-    return Response(_res, datacls=datacls)
+    return Response(conn, _res, datacls=datacls)
 
 
 def get(uri: str, 
