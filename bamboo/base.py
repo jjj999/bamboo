@@ -83,6 +83,34 @@ class _MediaTypes:
 MediaTypes = _MediaTypes()
 
 
+class _AuthSchemes:
+    """Singleton class to iterate authentication schemes of 
+    the Authorization header.
+    """
+    
+    basic = "Basic"
+    bearer = "Bearer"
+    digest = "Digest"
+    
+    __schemes = set((basic, bearer, digest))
+    
+    __instance = None
+    
+    def __new__(cls) -> _AuthSchemes:
+        if cls.__instance is None:
+            cls.__instance = super().__new__(cls)
+        return cls.__instance
+    
+    def __iter__(self):
+        return iter(self.__schemes)
+    
+    def __contains__(self, item: str):
+        return item in self.__schemes
+    
+    
+AuthSchemes = _AuthSchemes()
+
+
 @dataclass
 class ContentType:
     """`dataclass` for describing value of `Content-Type` header.

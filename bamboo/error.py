@@ -3,7 +3,7 @@ import json
 from typing import List, Optional, Tuple
 
 from bamboo.base import (
-    ContentType, HTTPStatus, ContentTypeHolder,
+    ContentType, HTTPStatus, ContentTypeHolder, AuthSchemes,
     DEFAULT_CONTENT_TYPE_PLAIN, DEFAULT_CONTENT_TYPE_JSON,
 )
 from bamboo.util.deco import class_property
@@ -64,13 +64,13 @@ class ErrInfoBase(ContentTypeHolder):
         body = self.get_body()
         return (stat, headers, body)
            
-           
+# ----------------------------------------------------------------------------
+
+# Default errors    ----------------------------------------------------------
+
 class DefaultNotFoundErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.NOT_FOUND
-    
-    
-DEFAULT_NOT_FOUND_ERROR = DefaultNotFoundErrInfo()
 
 
 class DefaultDataFormatErrInfo(ErrInfoBase):
@@ -78,24 +78,60 @@ class DefaultDataFormatErrInfo(ErrInfoBase):
     http_status = HTTPStatus.UNSUPPORTED_MEDIA_TYPE
 
 
-DEFUALT_INCORRECT_DATA_FORMAT_ERROR = DefaultDataFormatErrInfo()
-
-
 class DefaultHeaderNotFoundErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.BAD_REQUEST
     
 
-DEFAULT_HEADER_NOT_FOUND_ERROR = DefaultHeaderNotFoundErrInfo()
-
-
 class DefaultNotApplicableIpErrInfo(ErrInfoBase):
     
     http_status = HTTPStatus.FORBIDDEN
+
+
+_WWW_AUTH_HEADER = "WWW-Authentication"
+
+
+def get_auth_realm(scheme: str, msg: str) -> str:
+    return f'{scheme} realm="{msg}"'
+
+
+DEFAULT_REALM_MESSAGE = "SECRET AREA"
+
+
+def get_default_realm(scheme: str) -> str:
+    return get_auth_realm(scheme, DEFAULT_REALM_MESSAGE)
+
+
+class DefaultAuthHeaderNotFoundErrInfo(ErrInfoBase):
     
+    http_status = HTTPStatus.UNAUTHORIZED
+    
+    def __init__(self, scheme: str, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
+        self._scheme = scheme
+        
+    @property
+    def scheme(self) -> str:
+        return self._scheme
+    
+    def get_headers(self) -> List[Tuple[str, str]]:
+        value = get_default_realm(self._scheme)
+        return [(_WWW_AUTH_HEADER, value)]
+
+
+DEFAULT_NOT_FOUND_ERROR = DefaultNotFoundErrInfo()
+DEFUALT_INCORRECT_DATA_FORMAT_ERROR = DefaultDataFormatErrInfo()
+DEFAULT_HEADER_NOT_FOUND_ERROR = DefaultHeaderNotFoundErrInfo()
 DEFAULT_NOT_APPLICABLE_IP_ERROR = DefaultNotApplicableIpErrInfo()
+DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR =\
+    DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.basic)
+DEFAULT_DIGEST_AUTH_HEADER_NOT_FOUND_ERROR = \
+    DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.digest)
+DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR = \
+    DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.bearer)
 
+# ----------------------------------------------------------------------------
 
 class ApiErrInfo(ErrInfoBase):
     """ErrInfo to handle API error.
