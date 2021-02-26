@@ -18,9 +18,11 @@ class _HTTPMethods:
     DELETE = "DELETE"
     HEAD = "HEAD"
     OPTIONS = "OPTIONS"
+    PATCH = "PATCH"
+    TRACE = "TRACE"
     
     __methods = set((
-        GET, POST, PUT, DELETE, HEAD, OPTIONS
+        GET, POST, PUT, DELETE, HEAD, OPTIONS, PATCH, TRACE,
     ))
     
     __instance = None
