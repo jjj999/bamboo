@@ -1,23 +1,30 @@
 
 from abc import ABCMeta, abstractmethod
-from typing import Optional, Tuple, Union
+from typing import (
+    Optional,
+    Tuple,
+    Union,
+)
+
+
+__all__ = []
 
 
 class FlexibleLocation(metaclass=ABCMeta):
     """Base class of flexible location.
-    
-    Location is concept representing each pieces of path of URI, i.e. 
-    locations can configures a path of URI by joining them with 
-    separator `/`. 
-    
-    Location has type of `str` or subclasses of this class. If a location 
-    is `str`, then the location is called a static location. Otherwise, 
-    the location is called a flexible location. Flexible locations means 
-    location with some kind of logical rules of strings. The logic of rules 
-    can be implemented on `is_valid` method, returning if specified string 
-    is valid in the rules. 
+
+    Location is concept representing each pieces of path of URI, i.e.
+    locations can configures a path of URI by joining them with
+    separator `/`.
+
+    Location has type of `str` or subclasses of this class. If a location
+    is `str`, then the location is called a static location. Otherwise,
+    the location is called a flexible location. Flexible locations means
+    location with some kind of logical rules of strings. The logic of rules
+    can be implemented on `is_valid` method, returning if specified string
+    is valid in the rules.
     """
-    
+
     @abstractmethod
     def is_valid(self, loc: str) -> bool:
         pass
@@ -67,7 +74,7 @@ def is_duplicated_uri(uri_1: Uri_t, uri_2: Uri_t) -> bool:
                 continue
             if isinstance(loc_2, FlexibleLocation):
                 continue
-            
+
             if loc_1 != loc_2:
                 break
         else:
@@ -78,7 +85,7 @@ def is_duplicated_uri(uri_1: Uri_t, uri_2: Uri_t) -> bool:
 class AsciiDigitLocation(FlexibleLocation):
     """Flexible location representing location of number in ASCII code.
     """
-    
+
     def __init__(self, digits: int) -> None:
         """
         Parameters
@@ -93,9 +100,9 @@ class AsciiDigitLocation(FlexibleLocation):
         """
         if digits < 1:
             raise ValueError("'digits' must be bigger than 0.")
-        
+
         self._digits = digits
-        
+
     def is_valid(self, loc: str) -> bool:
         """Judge if specified `loc` is valid location or not.
 
@@ -110,12 +117,12 @@ class AsciiDigitLocation(FlexibleLocation):
             If specified location is valid or not
         """
         return loc.isascii() and loc.isdigit() and len(loc) == self._digits
-        
-        
+
+
 class AnyStringLocation(FlexibleLocation):
     """Flexible location representing string with no rules.
     """
-    
+
     def __init__(self, max: Optional[int] = None) -> None:
         """
         Parameters
@@ -127,17 +134,17 @@ class AnyStringLocation(FlexibleLocation):
         ------
         ValueError
             Raised if `max` is 0 or less
-            
+
         Notes
         -----
-        If the argument `max` is `None`, then any length of string 
+        If the argument `max` is `None`, then any length of string
         will be accepted.
         """
         if max and max < 1:
             raise ValueError("'max' must be bigger than 0.")
 
         self._max = max
-        
+
     def is_valid(self, loc: str) -> bool:
         """Judge if specified `loc` is valid location or not.
 
@@ -153,7 +160,7 @@ class AnyStringLocation(FlexibleLocation):
         """
         if self._max is None:
             return True
-        
+
         len_loc = len(loc)
         if len_loc > self._max or len_loc == 0:
             return False

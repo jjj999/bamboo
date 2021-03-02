@@ -1,38 +1,77 @@
 
-__version__ = "0.4.1"
+__version__ = "0.5.0"
+
 
 from bamboo.api import (
-    ApiData, ValidationFailedError, BinaryApiData, InvalidAnnotationError,
-    JsonApiData, XWWWFormUrlEncodedData,
+    ApiData,
+    BinaryApiData,
+    InvalidAnnotationError,
+    JsonApiDataBuilder,
+    JsonApiData,
+    ValidationFailedError,
+    XWWWFormUrlEncodedDataBuilder,
+    XWWWFormUrlEncodedData,
 )
-
 from bamboo.app import (
-    App, ParcelConfig, ATTR_PARCEL, VersionConfig, ATTR_VERSION,
+    AppBase,
+    ASGIHTTPApp,
+    ParcelConfig,
+    VersionConfig,
+    WSGIApp,
 )
-
 from bamboo.base import (
-    ContentType, ContentTypeHolder, MediaTypes, HTTPMethods, HTTPStatus,
+    ASGIHTTPEvents,
+    ASGIWebSocketEvents,
+    AuthSchemes,
+    ContentType,
+    ContentTypeHolder,
+    DEFAULT_CONTENT_TYPE_JSON,
+    DEFAULT_CONTENT_TYPE_PLAIN,
+    HTTPMethods,
+    HTTPStatus,
+    MediaTypes,
 )
-
 from bamboo.endpoint import (
-    StatusCodeAlreadySetError, Endpoint, ATTR_DATA_FORMAT, DataFormatInfo,
-    get_data_format_info, data_format, ATTR_HEADERS_REQUIRED, 
-    RequiredHeaderInfo, get_required_header_info, has_header_of,
-    ATTR_CLIENT_RESTRICTED, get_restricted_ip_info, restricts_client,
-    ATTR_ERRORS, get_errors_info, may_occur, _get_bamboo_attr,
+    ASGIEndpointBase,
+    ASGIHTTPEndpoint,
+    EndpointBase,
+    HTTPMixIn,
+    StatusCodeAlreadySetError,
+    WSGIEndpoint,
+    WSGIEndpointBase,
 )
-
 from bamboo.error import (
-    ErrInfoBase, ApiErrInfo, DEFAULT_NOT_FOUND_ERROR, 
-    DEFUALT_INCORRECT_DATA_FORMAT_ERROR, DEFAULT_HEADER_NOT_FOUND_ERROR,
+    ApiErrInfo,
+    DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR,
+    DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR,
+    DEFAULT_HEADER_NOT_FOUND_ERROR,
+    DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
     DEFAULT_NOT_APPLICABLE_IP_ERROR,
+    DEFAULT_NOT_FOUND_ERROR,
+    ErrInfoBase,
+    get_auth_realm,
+    get_default_auth_realm,
 )
-
+from bamboo.io import (
+    BufferedBinaryIterator,
+    BufferedConcatIterator,
+    BufferedFileIterator,
+    BufferedIteratorWrapper,
+    BufferedStreamIterator,
+    ResponseBodyIteratorBase,
+)
 from bamboo.location import (
-    FlexibleLocation, is_flexible_uri, is_duplicated_uri,
-    AsciiDigitLocation, AnyStringLocation,
+    AnyStringLocation,
+    AsciiDigitLocation,
+    FlexibleLocation,
+    is_duplicated_uri,
+    is_flexible_uri,
 )
-
-from bamboo.router import DuplicatedUriRegisteredError, Router
-
-from bamboo.test import ServerForm, TestExecutor
+from bamboo.router import (
+    DuplicatedUriRegisteredError,
+    Router
+)
+from bamboo.test import (
+    WSGIServerForm,
+    WSGITestExecutor
+)
