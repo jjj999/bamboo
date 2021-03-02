@@ -2,21 +2,25 @@
 
 import unittest
 
-from bamboo import App, Endpoint, VersionConfig
+from bamboo import (
+    WSGIApp,
+    WSGIEndpoint,
+    VersionConfig,
+)
 
 
-app = App()
+app = WSGIApp()
 
 
 @app.route("test", "hoge", version=1)
-class TestEndpointSingle(Endpoint):
+class TestEndpointSingle(WSGIEndpoint):
     ideal_uris = [
         ("v1", "test", "hoge"),
     ]
 
 
 @app.route("test", "hogehoge", version=(1, 2, 3))
-class TestEndpointMultiple(Endpoint):
+class TestEndpointMultiple(WSGIEndpoint):
     ideal_uris = [
         ("v1", "test", "hogehoge"),
         ("v2", "test", "hogehoge"),
@@ -25,46 +29,46 @@ class TestEndpointMultiple(Endpoint):
 
 
 @app.route("test", "hogest", version=None)
-class TestEndpointAny(Endpoint):
+class TestEndpointAny(WSGIEndpoint):
     ideal_uris = [
         ("test", "hogest")
     ]
 
 
-class TestEndpointNothing(Endpoint):
+class TestEndpointNothing(WSGIEndpoint):
     pass
 
 
 class TestVersion(unittest.TestCase):
-    
+
     def test_version_single(self):
         config = VersionConfig(TestEndpointSingle)
         self.assertEqual(config.get(app), (1,))
-        
+
         uris = app.seach_uris(TestEndpointSingle)
         for uri, ideal in zip(uris, TestEndpointSingle.ideal_uris):
             self.assertEqual(uri, ideal)
-        
+
     def test_version_multiple(self):
         config = VersionConfig(TestEndpointMultiple)
         self.assertEqual(config.get(app), (1, 2, 3))
-        
+
         uris = app.seach_uris(TestEndpointMultiple)
         for uri, ideal in zip(uris, TestEndpointMultiple.ideal_uris):
             self.assertEqual(uri, ideal)
-        
+
     def test_version_any(self):
         config = VersionConfig(TestEndpointAny)
         self.assertEqual(config.get(app), ())
-        
+
         uris = app.seach_uris(TestEndpointAny)
         for uri, ideal in zip(uris, TestEndpointAny.ideal_uris):
             self.assertEqual(uri, ideal)
-        
+
     def test_version_nothing(self):
         config = VersionConfig(TestEndpointNothing)
         self.assertEqual(config.get(app), None)
-        
-        
+
+
 if __name__ == "__main__":
     unittest.main()

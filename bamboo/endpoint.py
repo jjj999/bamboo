@@ -1,81 +1,326 @@
 
 from __future__ import annotations
-from dataclasses import dataclass
+
+from abc import ABCMeta, abstractmethod
+import codecs
 import inspect
+from io import BytesIO
 import json
+import os
 from typing import (
-    Any, Callable, Dict, List, Optional, Tuple, Type,
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    Union,
 )
 from urllib.parse import parse_qs
 
-from bamboo.api import ApiData, ValidationFailedError
 from bamboo.base import (
-    HTTPMethods, HTTPStatus, MediaTypes, ContentType,
-    AuthSchemes, DEFAULT_CONTENT_TYPE_PLAIN,
+    ASGIHTTPEvents,
+    ContentType,
+    DEFAULT_CONTENT_TYPE_PLAIN,
+    HTTPMethods,
+    HTTPStatus,
+    MediaTypes,
 )
-from bamboo.error import (
-    DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR, 
-    DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR, 
-    DEFAULT_HEADER_NOT_FOUND_ERROR, DEFAULT_NOT_APPLICABLE_IP_ERROR,
-    DEFUALT_INCORRECT_DATA_FORMAT_ERROR, ErrInfoBase,
+from bamboo.error import ErrInfoBase
+from bamboo.io import BufferedConcatIterator, BufferedFileIterator
+from bamboo.util.deco import (
+    awaitable_property,
+    awaitable_cached_property,
+    cached_property,
 )
-from bamboo.util.convert import decode2binary
-from bamboo.util.deco import cached_property
-from bamboo.util.ip import is_valid_ipv4
 
+
+__all__ = []
+
+
+# Base classes for each interfaces  ------------------------------------------
+
+class EndpointBase(metaclass=ABCMeta):
+    """Base class of Endpoint to define logic to requests.
+    """
+
+    def __init__(
+        self,
+        flexible_locs: Tuple[str, ...],
+        *parcel: Any
+    ) -> None:
+        self._flexible_locs = flexible_locs
+        self.setup(*parcel)
+
+    def setup(self, *parcel) -> None:
+        pass
+
+    @property
+    def flexible_locs(self) -> Tuple[str, ...]:
+        return self._flexible_locs
+
+    @property
+    @abstractmethod
+    def http_version(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def scheme(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_client_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        pass
+
+    @abstractmethod
+    def get_server_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        pass
+
+    @abstractmethod
+    def get_host_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        pass
+
+    @abstractmethod
+    def get_header(self, name: str) -> Optional[str]:
+        pass
+
+    @property
+    @abstractmethod
+    def path(self) -> str:
+        pass
+
+    @cached_property
+    @abstractmethod
+    def queries(self) -> Dict[str, str]:
+        pass
+
+    def get_query(self, name: str) -> List[str]:
+        return self.queries.get(name)
+
+    @cached_property
+    @abstractmethod
+    def content_type(self) -> Optional[ContentType]:
+        pass
+
+
+class WSGIEndpointBase(EndpointBase):
+
+    def __init__(
+        self,
+        environ: Dict[str, Any],
+        flexible_locs: Tuple[str, ...],
+        *parcel: Any
+    ) -> None:
+        super().__init__(flexible_locs, *parcel)
+
+        self._environ = environ
+
+    @property
+    def environ(self) -> Dict[str, Any]:
+        return self._environ
+
+    @property
+    def wsgi_version(self) -> str:
+        version = self._environ.get("wsgi.version")
+        return ".".join(map(str, version))
+
+    @property
+    def server_software(self) -> str:
+        return self._environ.get("SERVER_SOFTWARE")
+
+    @property
+    def http_version(self) -> str:
+        version = self._environ.get("SERVER_PROTOCOL")
+        return version.split("/")[1]
+
+    @property
+    def scheme(self) -> str:
+        return self._environ.get("wsgi.url_scheme")
+
+    def get_client_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        client = self._environ.get("REMOTE_ADDR")
+        port = self._environ.get("REMOTE_PORT")
+        if port:
+            port = int(port)
+        return (client, port)
+
+    def get_server_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        """Retrieve requested a pair of host name and port.
+
+        Returns
+        -------
+        Tuple[str, int]
+            A pair of host name and port
+        """
+        server = self._environ.get("SERVER_NAME")
+        port = self._environ.get("SERVER_PORT")
+        if port:
+            port = int(port)
+        return (server, port)
+
+    def get_host_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        http_host = self._environ.get("HTTP_HOST")
+        if http_host:
+            http_host = http_host.split(":")
+            if len(http_host) == 1:
+                return (http_host[0], None)
+            else:
+                host, port = http_host
+                port = int(port)
+                return (host, port)
+        return (None, None)
+
+    def get_header(self, name: str) -> Optional[str]:
+        """Try to retrieve a HTTP header.
+
+        Parameters
+        ----------
+        name : str
+            Header field to retrieve
+
+        Returns
+        -------
+        Optional[str]
+            Value of the field if exists, else None
+        """
+        name = "HTTP_" + name.replace("-", "_").upper()
+        return self._environ.get(name)
+
+    @property
+    def path(self) -> str:
+        return self._environ.get("PATH_INFO")
+
+    @cached_property
+    def queries(self) -> Dict[str, List[str]]:
+        return parse_qs(self._environ.get("QUERY_STRING"))
+
+    @cached_property
+    def content_type(self) -> Optional[ContentType]:
+        raw = self._environ.get("CONTENT_TYPE")
+        print(raw)
+        if raw:
+            return ContentType.parse(raw)
+        return None
+
+
+class ASGIEndpointBase(EndpointBase):
+
+    def __init__(
+        self,
+        scope: Dict[str, Any],
+        flexible_locs: Tuple[str, ...],
+        *parcel: Any
+    ) -> None:
+        super().__init__(flexible_locs, *parcel)
+
+        self._scope = scope
+
+        # TODO
+        #   Consider not mapping in this method.
+        req_headers = scope.get("headers")
+        self._req_headers = {}
+        if req_headers:
+            req_headers = dict([
+                map(codecs.decode, header) for header in req_headers
+            ])
+            self._req_headers.update(req_headers)
+
+    @property
+    def scope(self) -> Dict[str, Any]:
+        return self._scope
+
+    @property
+    def scope_type(self) -> str:
+        return self._scope.get("get")
+
+    @property
+    def asgi_version(self) -> str:
+        return self._scope.get("asgi").get("version")
+
+    @property
+    def spec_version(self) -> str:
+        return self._scope.get("asgi").get("spec_version")
+
+    @property
+    def http_version(self) -> str:
+        return self._scope.get("http_version")
+
+    @property
+    def scheme(self) -> str:
+        return self._scope.get("scheme")
+
+    def get_client_addr(self) -> Tuple[Optional[str], Optional[str]]:
+        client = self._scope.get("client")
+        if client:
+            return tuple(client)
+        return (None, None)
+
+    def get_server_addr(self) -> Tuple[Optional[str], Optional[str]]:
+        server = self._scope.get("server")
+        if server:
+            return tuple(server)
+        return (None, None)
+
+    def get_host_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        http_host = self.get_header("host")
+        if http_host:
+            http_host = http_host.split(":")
+            if len(http_host) == 1:
+                return (http_host[0], None)
+            else:
+                host, port = http_host
+                port = int(port)
+                return (host, port)
+        return (None, None)
+
+    def get_header(self, name: str) -> Optional[str]:
+        name = name.lower()
+        return self._req_headers.get(name)
+
+    @property
+    def path(self) -> str:
+        return self._scope.get("path")
+
+    @cached_property
+    def queries(self) -> Dict[str, List[str]]:
+        return parse_qs(self._scope.get("query_string").decode())
+
+    @cached_property
+    def content_type(self) -> Optional[ContentType]:
+        raw = self.get_header("Content-Type")
+        if raw:
+            return ContentType.parse(raw)
+        return None
+
+    @property
+    def raw_path(self) -> str:
+        return self._scope.get("raw_path")
+
+    @property
+    def root_path(self) -> str:
+        return self._scope.get("root_path")
+
+# ----------------------------------------------------------------------------
+
+# HTTP  ----------------------------------------------------------------------
 
 class StatusCodeAlreadySetError(Exception):
     """Raised if response status code has already been set."""
     pass
 
 
-class Endpoint:
-    """Base class of Endpoint to define logic to requests.
-    
-    Attributes
-    ----------
-    response_methods : Tuple[str]
-        Callbacks defined the class
-    """
-    
-    response_methods: Tuple[str]
-    
-    @classmethod
-    def _get_response_method_names(cls) -> Tuple[str]:
-        """Retrieve names of response methods defined on the class.
+class HTTPMixIn(metaclass=ABCMeta):
 
-        Returns
-        -------
-        Tuple[str]
-            Names of response methods.
-        """
-        result = []
-        for name, _ in inspect.getmembers(cls):
-            if len(name) < 3:
-                continue
-            if name[:3] == "do_" and name[3:] in HTTPMethods:
-                result.append(name[3:])
-        return tuple(result)
-    
-    def __init_subclass__(cls) -> None:
-        cls.response_methods = cls._get_response_method_names()
-        
-    def __init__(self, 
-                 environ: Dict[str, Any], 
-                 flexible_locs: Tuple[str, ...],
-                 *parcel
-                 ) -> None:
-        self._environ = environ
-        self._flexible_locs = flexible_locs
-        self._req_body = None
-        self._status: Optional[HTTPStatus] = None
-        self._headers: List[Tuple[str, str]] = []
-        self._res_body: bytes = b""
+    bufsize = 8192
 
-        self.setup(*parcel)
-        
     @classmethod
-    def _get_response_method(cls, method: str) -> Optional[Callback_t]:
+    def _get_response_method(
+        cls,
+        method: str
+    ) -> Optional[Callable[[EndpointBase], None]]:
         """Retrieve response methods with given HTTP method.
 
         Parameters
@@ -92,100 +337,47 @@ class Endpoint:
         if hasattr(cls, mname):
             return getattr(cls, mname)
         return None
-        
-    def _recv_body_secure(self) -> bytes:
-        """Receive request body securely.
 
-        Returns
-        -------
-        bytes
-            Request body
-        """
-        # TODO
-        #   Take measures against DoS attack.
-        body = self._environ.get("wsgi.input").read(self.content_length)
-        return body
-        
-    def setup(self, *parcel) -> None:
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+
+        # Check if bufsize is positive
+        if not (cls.bufsize > 0 and isinstance(cls.bufsize, int)):
+            raise ValueError(
+                f"{cls.__name__}.bufsize must be positive integer"
+            )
+
+    def __init__(self) -> None:
+        self._res_status: Optional[HTTPStatus] = None
+        self._res_headers: List[Tuple[str, str]] = []
+        self._res_body = BufferedConcatIterator(bufsize=self.bufsize)
+
+    @property
+    @abstractmethod
+    def content_length(self) -> Optional[int]:
         pass
-    
-    @property
-    def flexible_locs(self) -> Tuple[str, ...]:
-        return self._flexible_locs
-    
-    @property
-    def client_ip(self) -> str:
-        return self._environ.get("REMOTE_ADDR")
-    
-    @property
-    def requested_addr(self) -> Tuple[str, int]:
-        """Retrieve requested a pair of host name and port.
-
-        Returns
-        -------
-        Tuple[str, int]
-            A pair of host name and port
-        """
-        host = self._environ.get("HTTP_HOST")
-        if host:
-            host = host.split(":")[0]
-        else:
-            host = self._environ.get("SERVER_NAME")
-        
-        port = self._environ.get("SERVER_PORT")
-        if len(port):
-            port = int(port)
-        
-        return (host, port)
-        
-    def get_header(self, name: str) -> Optional[str]:
-        """Try to retrieve a HTTP header.
-
-        Parameters
-        ----------
-        name : str
-            Header field to retrieve
-
-        Returns
-        -------
-        Optional[str]
-            Value of the field if exists, else None
-        """
-        name = "HTTP_" + name.replace("-", "_").upper()
-        return self._environ.get(name)
-    
-    @cached_property
-    def content_type(self) -> ContentType:
-        raw = self._environ.get("CONTENT_TYPE")
-        return ContentType.parse(raw)
-    
-    @property
-    def content_length(self) -> int:
-        length = self._environ.get("CONTENT_LENGTH")
-        if length:
-            return int(length)
-        return 0
-    
-    @property
-    def path(self) -> str:
-        return self._environ.get("PATH_INFO")
 
     @property
-    def request_method(self) -> str:
-        return self._environ.get("REQUEST_METHOD").upper()
-    
-    @property
-    def query(self) -> Dict[str, str]:
-        return parse_qs(self._environ.get("QUERY_STRING"))
-    
-    @property
-    def body(self) -> bytes:
-        if self._req_body is None:
-            self._req_body = self._recv_body_secure()
-        return self._req_body
-    
-    def add_header(self, name: str, value: str, 
-                   **params: Optional[str]) -> None:
+    @abstractmethod
+    def method(self) -> str:
+        pass
+
+    @staticmethod
+    def make_header(
+        name: str,
+        value: str,
+        **params: str
+    ) -> Tuple[str, str]:
+        params = [f'; {header}={val}' for header, val in params.items()]
+        params = "".join(params)
+        return (name, value + params)
+
+    def add_header(
+        self,
+        name: str,
+        value: str,
+        **params: str
+    ) -> None:
         """Add response header with MIME parameters.
 
         Parameters
@@ -194,31 +386,43 @@ class Endpoint:
             Field name of the header
         value : str
             Value of the field
-        **params : Optional[str]
+        **params : str
             MIME parameters added to the field
         """
-        params = [f'; {header}={val}' for header, val in params.items()]
-        params = "".join(params)
-        self._headers.append((name, value + params))
-    
-    def add_headers(self, **headers: str) -> None:
+        self._res_headers.append(self.make_header(name, value, **params))
+
+    def add_headers(self, *headers: Tuple[str, str]) -> None:
         """Add response headers at once.
 
         Parameters
         ----------
         **headers : str
             Header's info whose header is the field name.
-            
+
         Notes
         -----
-        This method would be used shortcut to register multiple 
+        This method would be used as a shortcut to register multiple
         headers. If it requires adding MIME parameters, developers
         can use the 'add_header' method.
         """
-        for name, val in headers.items():
+        for name, val in headers:
             self.add_header(name, val)
-    
-    def _check_status_already_set(self) -> None:
+
+    def add_content_type(self, content_type: ContentType) -> None:
+        params = {}
+        if content_type.charset:
+            params["charset"] = content_type.charset
+        if content_type.boundary:
+            params["boundary"] = content_type.boundary
+        self.add_header("Content-Type", content_type.media_type, **params)
+
+    def add_content_length(self, length: int) -> None:
+        self.add_header("Content-Length", str(length))
+
+    def add_content_length_body(self, body: bytes) -> None:
+        self.add_header("Content-Length", str(len(body)))
+
+    def _set_status_safely(self, status: HTTPStatus) -> None:
         """Check if response status code already exists.
 
         Raises
@@ -226,28 +430,33 @@ class Endpoint:
         StatusCodeAlreadySetError
             Raised if response status code has already been set.
         """
-        if self._res_body:
+        if self._res_status:
             raise StatusCodeAlreadySetError(
-                "Response status code has already been set.")
-        
+                "Response status code has already been set."
+            )
+        self._res_status = status
+
     def send_only_status(self, status: HTTPStatus = HTTPStatus.OK) -> None:
         """Set specified status code to one of response.
-        
-        This method can be used if a callback doesn't need to send response 
-        body. 
+
+        This method can be used if a callback doesn't need to send response
+        body.
 
         Parameters
         ----------
         status : HTTPStatus, optional
             HTTP status of the response, by default `HTTPStatus.OK`
         """
-        self._check_status_already_set()
-        
-        self._status = status
-    
-    def send_body(self, body: bytes, 
-                  content_type: ContentType = DEFAULT_CONTENT_TYPE_PLAIN,
-                  status: HTTPStatus = HTTPStatus.OK) -> None:
+        self._set_status_safely(status)
+
+    def send_body(
+        self,
+        body: Union[bytes, Iterable[bytes]],
+        /,
+        *others: Union[bytes, Iterable[bytes]],
+        content_type: Optional[ContentType] = DEFAULT_CONTENT_TYPE_PLAIN,
+        status: HTTPStatus = HTTPStatus.OK
+    ) -> None:
         """Set given binary to the response body.
 
         Parameters
@@ -255,43 +464,53 @@ class Endpoint:
         body : bytes, optional
             Binary to be set to the response body, by default `b""`
         content_type : ContentType, optional
-            `Content-Type` header to be sent, 
+            `Content-Type` header to be sent,
             by default `DEFAULT_CONTENT_TYPE_PLAIN`
         status : HTTPStatus, optional
             HTTP status of the response, by default `HTTPStatus.OK`
-            
+
         Notes
         -----
-        If the parameter `content_type` is specified, then the `Content-Type` 
+        If the parameter `content_type` is specified, then the `Content-Type`
         header is to be added.
-        
-        `DEFAULT_CONTENT_TYPE_PLAIN` has its MIME type of `text/plain`, and the 
-        other attributes are `None`. If another value of `Content-Type` is 
-        needed, then you should generate new `ContentType` instance with 
+
+        `DEFAULT_CONTENT_TYPE_PLAIN` has its MIME type of `text/plain`, and the
+        other attributes are `None`. If another value of `Content-Type` is
+        needed, then you should generate new `ContentType` instance with
         attributes you want.
-            
-        Raisess
+
+        Raises
         ------
         StatusCodeAlreadySetError
             Raised if response status code has already been set.
         """
-        self._check_status_already_set()
+        self._set_status_safely(status)
 
-        self._status = status
-        self._res_body = body
-        
-        # Content-Type's parameters
-        params = {}
-        if content_type.charset:
-            params["charset"] = content_type.charset
-        if content_type.boundary:
-            params["boundary"] = content_type.boundary    
-    
-        self.add_header("Content-Type", content_type.media_type, **params)
-    
-    def send_json(self, body: Dict[str, Any], 
-                  status: HTTPStatus = HTTPStatus.OK,
-                  encoding: str = "UTF-8") -> None:
+        bodies = [body]
+        bodies.extend(others)
+
+        is_all_bytes = True
+        is_empty = False
+        for chunk in bodies:
+            is_all_bytes &= isinstance(chunk, bytes)
+            if is_all_bytes:
+                is_empty |= len(chunk) > 0
+            self._res_body.append(chunk)
+
+        if content_type:
+            self.add_content_type(content_type)
+
+        # Content-Length if avalidable
+        if is_all_bytes and not is_empty:
+            length = sum(map(len, bodies))
+            self.add_content_length("Content-Length", length)
+
+    def send_json(
+        self,
+        body: Dict[str, Any],
+        status: HTTPStatus = HTTPStatus.OK,
+        encoding: str = "UTF-8"
+    ) -> None:
         """Set given json data to the response body.
 
         Parameters
@@ -302,18 +521,38 @@ class Endpoint:
             HTTP status of the response, by default HTTPStatus.OK
         encoding : str, optional
             Encoding of the Json data, by default "UTF-8"
-            
+
         Raises
         ------
         StatusCodeAlreadySetError
             Raised if response status code has already been set.
         """
-        self._check_status_already_set()
-        
         body = json.dumps(body).encode(encoding=encoding)
-        content_type = ContentType(media_type=MediaTypes.json, charset=encoding)
+        content_type = ContentType(
+            media_type=MediaTypes.json,
+            charset=encoding
+        )
         self.send_body(body, content_type=content_type, status=status)
-    
+
+    def send_file(
+        self,
+        path: str,
+        fname: Optional[str] = None,
+        content_type: str = DEFAULT_CONTENT_TYPE_PLAIN,
+        status: HTTPStatus = HTTPStatus.OK
+    ) -> None:
+        file_iter = BufferedFileIterator(path)
+        self.send_body(file_iter, content_type=content_type, status=status)
+
+        length = os.path.getsize(path)
+        self.add_header("Content-Length", str(length))
+        if fname:
+            self.add_header(
+                "Content-Disposition",
+                "attachment",
+                filename=fname
+            )
+
     def send_err(self, err: ErrInfoBase) -> None:
         """Set error to the response body.
 
@@ -321,593 +560,154 @@ class Endpoint:
         ----------
         err : ErrInfoBase
             Error information to be sent
-            
+
         Raises
         ------
         StatusCodeAlreadySetError
             Raised if response status code has already been set.
         """
-        self._check_status_already_set()
+        status, headers, body = err.get_all_form()
+        self._set_status_safely(status)
+        self._attach_err_headers(headers)
+        self._res_body.append(body)
 
-        self._status = err.http_status
-        self._res_body = err.get_body()
-        
-        for name, val in err.get_headers():
-            self.add_header(name, val)
-        
-        if len(self._res_body):
-            self.add_header("Content-Type", err._content_type_,
-                            **err._content_type_args_)
+        if body:
+            content_type = err._content_type_
+            self.add_content_type(content_type)
+            self.add_content_length_body(body)
 
-
-# Signature of the callback of response method on sub classes of 
-# the Endpoint class.
-Callback_t = Callable[[Endpoint, Tuple[Any, ...]], None]
-CallbackDecorator_t = Callable[[Callback_t], Callback_t]
-
-def _get_bamboo_attr(attr: str) -> str:
-    return f"__bamboo_{attr}__"
+    @abstractmethod
+    def _attach_err_headers(self, headers: List[Tuple[str, str]]) -> None:
+        pass
 
 
-# Error Information ----------------------------------------------------------
+class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
 
-ATTR_ERRORS = _get_bamboo_attr("errors")
+    def __init__(
+        self,
+        environ: Dict[str, Any],
+        flexible_locs: Tuple[str, ...],
+        *parcel: Any
+    ) -> None:
+        WSGIEndpointBase.__init__(self, environ, flexible_locs, *parcel)
+        HTTPMixIn.__init__(self)
 
+    def _recv_body_secure(self) -> bytes:
+        """Receive request body securely.
 
-def get_errors_info(callback: Callback_t) -> List[Type[ErrInfoBase]]:
-    """Retrieve errors may occur at specified `callback`.
+        Returns
+        -------
+        bytes
+            Request body
+        """
+        # TODO
+        #   Take measures against DoS attack.
+        content_length = self.content_length
+        if content_length is None:
+            content_length = -1
 
-    Parameters
-    ----------
-    callback : Callback_t
-        Response method implemented on `Endpoint`
+        body = self._environ.get("wsgi.input").read(content_length)
+        return body
 
-    Returns
-    -------
-    List[Type[ErrInfoBase]]
-        `list` of error classes may occur
-    """
-    if hasattr(callback, ATTR_ERRORS):
-        return getattr(callback, ATTR_ERRORS)
-    return []
+    @cached_property
+    def body(self) -> bytes:
+        return self._recv_body_secure()
 
+    @property
+    def content_length(self) -> Optional[int]:
+        length = self._environ.get("CONTENT_LENGTH")
+        if length:
+            return int(length)
+        return None
 
-def may_occur(*errors: Type[ErrInfoBase]) -> CallbackDecorator_t:
-    """Register error classes to callback on `Endpoint`.
-    
-    Parameters
-    ----------
-    *errors : Type[ErrInfoBase]
-        Error classes which may occuur
+    @property
+    def method(self) -> str:
+        return self._environ.get("REQUEST_METHOD")
 
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to register error classes to callback
-        
-    Examples
-    --------
-    ```
-    class MockErrInfo(ErrInfo):
-        http_status = HTTPStatus.INTERNAL_SERVER_ERROR
-        
-        @classmethod
-        def get_body(cls) -> bytes:
-            return b"Intrernal server error occured"
-            
-    class MockEndpoint(Endpoint):
-        
-        @may_occur(MockErrInfo)
-        def do_GET(self) -> None:
-            # Do something...
-            
-            # It is possible to send error response.
-            if is_some_flag():
-                self.send_err(MockErrInfo)
-
-            self.send_body(status=HTTPStatus.OK)
-    ```
-    """
-    def attach_err_info(callback: Callback_t) -> Callback_t:
-        if not hasattr(callback, ATTR_ERRORS):
-            setattr(callback, ATTR_ERRORS, set())
-        
-        registered = getattr(callback, ATTR_ERRORS)
-        for err in errors:
-            registered.add(err)
-            
-        return callback
-    return attach_err_info
-
-# ----------------------------------------------------------------------------
-
-# Data Format   --------------------------------------------------------------
-
-ATTR_DATA_FORMAT = _get_bamboo_attr("data_format")
+    def _attach_err_headers(self, headers: List[Tuple[str, str]]) -> None:
+        self._res_headers = headers
 
 
-@dataclass
-class DataFormatInfo:
-    """`dataclass` with information of data format at callbacks on `Endpoint`.
-    
-    Attributes
-    ----------
-    input : Optional[Type[ApiData]]
-        Input data format, by default `None`
-    output : Optional[Type[ApiData]]
-        Output data format, by default `None`
-    is_validate : bool
-        If input data is to be validate, by default `True`
-    err_validate : ErrInfoBase
-        Error information sent when validation failes, 
-        by default `DEFUALT_INCORRECT_DATA_FORMAT_ERROR`
-    """
-    input: Optional[Type[ApiData]] = None
-    output: Optional[Type[ApiData]] = None
-    is_validate: bool = True
-    err_validate: ErrInfoBase = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
-    
-    
-def get_data_format_info(callback: Callback_t) -> Optional[DataFormatInfo]:
-    """Retrieve information of data format at `callback` on `Endpoint`.
+class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
 
-    Parameters
-    ----------
-    callback : Callback_t
-        Response method implemented on `Endpoint`
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
 
-    Returns
-    -------
-    Optional[DataFormatInfo]
-        Information of data format at the `callback`. If the `callback` is 
-        not decorated by `data_format` decorator, then returns `None`.
-    """
-    if hasattr(callback, ATTR_DATA_FORMAT):
-        info = getattr(callback, ATTR_DATA_FORMAT)
-        return DataFormatInfo(**info)
-    return None
-    
+        # NOTE
+        #   All response methods of its subclass must be awaitables.
+        for method in HTTPMethods:
+            callback = cls._get_response_method(method)
+            if callback and not inspect.iscoroutinefunction(callback):
+                raise TypeError(
+                    f"{cls.__name__}.{callback.__name__} must be an awaitable"
+                    ", not a callable."
+                )
 
-def data_format(input: Optional[Type[ApiData]] = None, 
-                output: Optional[Type[ApiData]] = None,
-                is_validate: bool = True,
-                err_validate: ErrInfoBase = 
-                DEFUALT_INCORRECT_DATA_FORMAT_ERROR) -> CallbackDecorator_t:
-    """Set data format of input/output data as API to `callback` on 
-    `Endpoint`.
-    
-    This decorator can be used to add attributes of data format information 
-    to a `callback`, and execute validation if input raw data has expected 
-    format defined on `input` argument. 
-    
-    To represent no data inputs/outputs, specify `input`/`output` arguments 
-    as `None`s. If `input` is `None`, then any data received from client will 
-    not be read. If `is_validate` is `False`, then validation will not be 
-    executed.
-    
-    To retrieve data format information, use `get_data_format_info` function.
+    def __init__(
+        self,
+        scope: Dict[str, Any],
+        receive: Callable[[], Awaitable[Dict[str, Any]]],
+        flexible_locs: Tuple[str, ...],
+        *parcel
+    ) -> None:
+        ASGIEndpointBase.__init__(self, scope, flexible_locs, *parcel)
+        HTTPMixIn.__init__(self)
 
-    Parameters
-    ----------
-    input : Optional[Type[ApiData]]
-        Input data format, by default `None`
-    output : Optional[Type[ApiData]]
-        Output data format, by default `None`
-    is_validate : bool, optional
-        If input data is to be validated, by default `True`
-    err_validate : ErrInfoBase
-        Error information sent when validation failes, 
-        by default `DEFUALT_INCORRECT_DATA_FORMAT_ERROR`
+        self._res_headers: List[Tuple[bytes, bytes]] = []
+        self._receive = receive
+        self._req_body = b""
+        self._is_disconnected = False
 
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to add attributes of data format information to callback
-        
-    Examples
-    --------
-    ```
-    class UserData(JsonApiData):
-        name: str
-        email: str
-        age: int
-    
-    class MockEndpoint(Endpoint):
-    
-        @data_format(input=UserData, output=None)
-        def do_GET(self, rec_body: UserData) -> None:
-            user_name = rec_body.name
-            # Do something...
-    ```
-    """
-    _format = {"input": input, "output": output, 
-               "err_validate": err_validate, "is_validate": is_validate}
-    
-    if is_validate and input:
-        def input_decoded(
-            callback: Callable[[Endpoint, ApiData, Tuple[Any, ...]], None]
-            ) -> Callback_t:
-            
-            @may_occur(err_validate.__class__)
-            def _callback(self: Endpoint, *args) -> None:
-                body = self.body
-                try:
-                    data = input(body, self.content_type)
-                except ValidationFailedError:
-                    self.send_err(err_validate)
-                    return
-                
-                callback(self, data, *args)
-                
-            _callback.__dict__ = callback.__dict__
-            setattr(callback, ATTR_DATA_FORMAT, _format)
-                
-            return _callback
-        return input_decoded
-    else:
-        def input_decoded(
-            callback: Callable[[Endpoint, Tuple[Any, ...]], None]
-            ) -> Callback_t:
-            setattr(callback, ATTR_DATA_FORMAT, _format)
-            
-            # NOTE
-            #   If input is None, then any response body would be received.
-            if input is None:
-                def _callback(self: Endpoint, *args) -> None:
-                    self._req_body = b""
-                    callback(self, *args)
-                _callback.__dict__ = callback.__dict__
-                return _callback
-            
-            return callback
-        return input_decoded
-    
-# ----------------------------------------------------------------------------
+    @awaitable_cached_property
+    async def body(self) -> bytes:
+        buffer = BytesIO()
+        more_body = True
 
-# Required Headers  ----------------------------------------------------------
+        while more_body:
+            chunk = await self._receive()
+            type = chunk.get("type")
+            if type == ASGIHTTPEvents.disconnect:
+                self._is_disconnected = True
+                break
 
-ATTR_HEADERS_REQUIRED = _get_bamboo_attr("headers_required")
+            buffer.write(chunk.get("body", b""))
+            more_body = chunk.get("more_body", False)
 
+        buffer.flush()
+        data = buffer.getvalue()
+        buffer.close()
+        return data
 
-@dataclass
-class RequiredHeaderInfo:
-    """`dataclass` with information of header which should be included in 
-    response headers.
-    
-    Attributes
-    ----------
-    header : str
-        Name of header
-    err : ErrInfoBase
-        Error information sent when the header is not included,
-        by default `DEFAULT_HEADER_NOT_FOUND_ERROR`
-    """
-    header: str
-    err: ErrInfoBase = DEFAULT_HEADER_NOT_FOUND_ERROR
-    
-    
-def get_required_header_info(callback: Callback_t
-                             ) -> List[RequiredHeaderInfo]:
-    """Retrieve information of headers which should be included in 
-    response headers.
+    @awaitable_property
+    async def is_disconnected(self) -> bool:
+        await self.body
+        return self._is_disconnected
 
-    Parameters
-    ----------
-    callback : Callback_t
-        Response method implemented on `Endpoint`
+    @property
+    def content_length(self) -> Optional[int]:
+        length = self.get_header("Content-Length")
+        if length:
+            return int(length)
+        return None
 
-    Returns
-    -------
-    List[RequiredHeaderInfo]
-        `list` of information of required headers
-    """
-    if hasattr(callback, ATTR_HEADERS_REQUIRED):
-        arr_info = getattr(callback, ATTR_HEADERS_REQUIRED)
-        return [RequiredHeaderInfo(*info) for info in arr_info]
-    return []
+    @property
+    def method(self) -> str:
+        return self._scope.get("method")
 
-
-def has_header_of(header: str, 
-                  err: ErrInfoBase = DEFAULT_HEADER_NOT_FOUND_ERROR
-                  ) -> CallbackDecorator_t:
-    """Set callback up to receive given header from clients.
-
-    If request headers don't include specified `header`, then response 
-    headers and body will be made based on `err` and sent.
-
-    Parameters
-    ----------
-    header : str
-        Name of header
-    err : ErrInfoBase, optional
-        Error information sent when specified `header` is not found of request 
-        headers, by default `DEFAULT_HEADER_NOT_FOUND_ERROR`
-
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to make callback to be set up to receive the header
-        
-    Examples
-    --------
-    ```
-    class BasicAuthHeaderNotFoundErrInfo(ErrInfoBase):
-        http_status = HTTPStatus.UNAUTHORIZED
-        
-        @classmethod
-        def get_headers(cls) -> List[Tuple[str, str]]:
-            return [("WWW-Authenticate", 'Basic realm="SECRET AREA"')]
-            
-    class MockEndpoint(Endpoint):
-    
-        @has_header_of("Authorization", BasicAuthHeaderNotFoundErrInfo)
-        def do_GET(self) -> None:
-            # It is guaranteed that request headers include the 
-            # `Authorization` header at this point.
-            header_auth = self.get_header("Authorization")
-            
-            # Do something...
-    ```
-    """
-    def header_checker(callback: Callback_t) -> Callback_t:
-        
-        @may_occur(err.__class__)
-        def _callback(self: Endpoint, *args) -> None:
-            val = self.get_header(header)
-            if val is None:
-                self.send_err(err)
-                return
-            callback(self, *args)
-        
-        _callback.__dict__ = callback.__dict__
-        if not hasattr(_callback, ATTR_HEADERS_REQUIRED):
-            setattr(_callback, ATTR_HEADERS_REQUIRED, set())
-        
-        headers_required = getattr(_callback, ATTR_HEADERS_REQUIRED)
-        headers_required.add((header, err))
-        return _callback
-    return header_checker
-
-# ----------------------------------------------------------------------------
-
-# IP restriction    ----------------------------------------------------------
-
-ATTR_CLIENT_RESTRICTED = _get_bamboo_attr("client_restricted")
-
-
-def get_restricted_ip_info(callback: Callback_t) -> List[str]:
-    """Retrieve IP addresses restricted at specified `callback`.
-
-    Parameters
-    ----------
-    callback : Callback_t
-        Response method implemented on `Endpoint`
-
-    Returns
-    -------
-    List[str]
-        `list` of restricted IP addresses
-    """
-    if hasattr(callback, ATTR_CLIENT_RESTRICTED):
-        return getattr(callback, ATTR_CLIENT_RESTRICTED)
-    return []
-
-
-def restricts_client(*client_ips: str, 
-                     err: ErrInfoBase = DEFAULT_NOT_APPLICABLE_IP_ERROR
-                     ) -> CallbackDecorator_t:
-    """Restrict IP addresses at callback.
-
-    Parameters
-    ----------
-    *client_ips : str
-        IP addresses to be allowed to request
-    err : ErrInfoBase, optional
-        Error information sent when request from IP not included specified IPs
-         comes, by default `DEFAULT_NOT_APPLICABLE_IP_ERROR`
-
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to make callback to be set up to restrict IP addresses
-        
-    Raises
-    ------
-    ValueError
-        Raised if invalid IP address is detected
-        
-    Examples
-    --------
-    ```
-    class MockEndpoint(Endpoint):
-        
-        # Restrict to allow only localhost to request 
-        # to this callback
-        @restricts_client("localhost")
-        def do_GET(self) -> None:
-            # Only localhost can access to the callback.
-        
-            # Do something...
-    ```
-    """
-    for ip in client_ips:
-        if not is_valid_ipv4(ip):
-            raise ValueError(f"{ip} is invalid IP address.")
-    
-    allowed_ips = set(client_ips)
-    # Convert localhost to the address
-    if "localhost" in allowed_ips:
-        allowed_ips.remove("localhost")
-        allowed_ips.add("127.0.0.1")
-    
-    def register_restrictions(callback: Callback_t) -> Callback_t:
-            
-        @may_occur(err.__class__)
-        def _callback(self: Endpoint, *args) -> None:
-            if self.client_ip not in allowed_ips:
-                self.send_err(err)
-                return
-            callback(self, *args)
-            
-        _callback.__dict__ = callback.__dict__
-        if not hasattr(callback, ATTR_CLIENT_RESTRICTED):
-            setattr(callback, ATTR_CLIENT_RESTRICTED, set())
-            
-        restrictions = getattr(callback, ATTR_CLIENT_RESTRICTED)
-        restrictions.update(*allowed_ips)
-            
-        return _callback
-    return register_restrictions
-
-# ----------------------------------------------------------------------------
-
-_HEADER_AUTHORIZATION = "Authorization"
-ATTR_AUTH_SCHEME = _get_bamboo_attr("auth_scheme")
-
-
-class MultipleAuthSchemeError(Exception):
-    """Raised if several authentication schemes of the 'Authorization' 
-    header are detected.
-    """
-    pass
-
-
-def get_auth_scheme(callback: Callback_t) -> Optional[str]:
-    return getattr(callback, ATTR_AUTH_SCHEME, None)
-    
-    
-def _set_auth_scheme(callback: Callback_t, scheme: str) -> None:
-    if hasattr(callback, ATTR_AUTH_SCHEME):
-        _scheme_registered = getattr(callback, ATTR_AUTH_SCHEME)
-        raise MultipleAuthSchemeError(
-            "Authentication scheme has been specified as "
-            f"'{_scheme_registered}'. Do not specify multiple schemes."
+    def add_header(
+        self,
+        name: str,
+        value: str,
+        **params: str
+    ) -> None:
+        header = tuple(
+            map(codecs.encode, self.make_header(name, value, **params))
         )
-    setattr(callback, ATTR_AUTH_SCHEME, scheme)
-    
-    
-def _validate_auth_header(value: str, scheme: str) -> Optional[str]:
-    value = value.split(" ")
-    if len(value) != 2:
-        return None
-    
-    _scheme, credentials = value
-    if _scheme != scheme:
-        return None
-    
-    return credentials
-    
+        self._res_headers.append(header)
 
-def basic_auth(err: ErrInfoBase = DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR
-               ) -> CallbackDecorator_t:
-    """Set callback up to require `Authorization` header in Basic 
-    authentication.
+    def _attach_err_headers(self, headers: List[Tuple[str, str]]) -> None:
+        self._res_headers = [
+            tuple(map(codecs.encode, header)) for header in headers
+        ]
 
-    Parameters
-    ----------
-    err : ErrInfoBase, optional
-        Error sent when `Authorization` header is not found, received 
-        scheme doesn't match, or extracting user ID and password from 
-        credentials failes, 
-        by default DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR
-
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to make callback to be set  up to require 
-        the `Authorization` header
-        
-    Examples
-    --------
-    ```
-    class MockEndpoint(Endpoint):
-    
-        @basic_auth()
-        def do_GET(self, user_id: str, password: str) -> None:
-            # It is guaranteed that request headers include the 
-            # `Authorization` header at this point, and user_id and 
-            # password are the ones extracted from the header.
-            
-            # Authenticate with any function working on your system.
-            authenticate(user_id, password)
-            
-            # Do something...
-    ```
-    """
-    def auth_header_checker(callback: Callback_t) -> Callback_t:
-        
-        @may_occur(err.__class__)
-        @has_header_of(_HEADER_AUTHORIZATION, err)
-        def _callback(self: Endpoint, *args) -> None:
-            val = self.get_header(_HEADER_AUTHORIZATION)
-            credentials = _validate_auth_header(val, AuthSchemes.basic)
-            if credentials is None:
-                self.send_err(err)
-                return
-            
-            credentials = decode2binary(credentials).decode().split(":")
-            if len(credentials) != 2:
-                self.send_err(err)
-                return
-            
-            user_id, pw = credentials
-            callback(self, user_id, pw)
-            
-        _callback.__dict__ = callback.__dict__
-        _set_auth_scheme(callback, AuthSchemes.basic)
-        return _callback
-    return auth_header_checker
-
-
-def bearer_auth(err: ErrInfoBase = DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR
-                ) -> CallbackDecorator_t:
-    """Set callback up to require `Authorization` header in token 
-    authentication for OAuth 2.0.
-
-    Parameters
-    ----------
-    err : ErrInfoBase, optional
-        Error sent when `Authorization` header is not found, or when received 
-        scheme doesn't match, 
-        by default DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR
-
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to make callback to be set  up to require 
-        the `Authorization` header
-        
-    Examples
-    --------
-    ```
-    class MockEndpoint(Endpoint):
-    
-        @bearer_auth()
-        def do_GET(self, token: str) -> None:
-            # It is guaranteed that request headers include the 
-            # `Authorization` header at this point, and token is
-            # the one extracted from the header.
-            
-            # Authenticate with any function working on your system.
-            authenticate(token)
-            
-            # Do something...
-    ```
-    """
-    def auth_header_checker(callback: Callback_t) -> Callback_t:
-        
-        @may_occur(err.__class__)
-        @has_header_of(_HEADER_AUTHORIZATION, err)
-        def _callback(self: Endpoint, *args) -> None:
-            val = self.get_header(_HEADER_AUTHORIZATION)
-            token = _validate_auth_header(val, AuthSchemes.bearer)
-            if token is None:
-                self.send_err(err)
-                return
-            
-            callback(self, token)
-            
-        _callback.__dict__ = callback.__dict__
-        _set_auth_scheme(callback, AuthSchemes.bearer)
-        return _callback
-    return auth_header_checker
+# ----------------------------------------------------------------------------
