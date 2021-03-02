@@ -1,79 +1,83 @@
 
 import unittest
 
-from bamboo import App, Endpoint, data_format
-from bamboo.api import JsonApiData
-from bamboo.base import ContentType, MediaTypes
+from bamboo import (
+    ContentType,
+    JsonApiData,
+    MediaTypes,
+    WSGIApp,
+    WSGIEndpoint,
+    WSGIServerForm,
+    WSGITestExecutor,
+)
 from bamboo.request import http
-from bamboo.test import ServerForm, TestExecutor
+from bamboo.sticky.http import data_format
 from bamboo.util.time import get_datetime_rfc822
 
+from . import PATH_IMAGE, get_log_name
 
-app = App()
+
+app = WSGIApp()
+NAME_SERVER = "Mocker"
+PATH_SERVER_LOG = get_log_name(__file__)
 
 
 class InfoResponse(JsonApiData):
-    
+
     server_name: str
     current_time: str
-    
-    
+
+
 @app.route("mock", "info")
-class MockInfoEndpoint(Endpoint):
-    
-    NAME_SERVER = "Mocker"
-    
+class MockInfoEndpoint(WSGIEndpoint):
+
     @data_format(input=None, output=InfoResponse)
     def do_GET(self) -> None:
         body = {
-            "server_name": self.NAME_SERVER,
+            "server_name": NAME_SERVER,
             "current_time": get_datetime_rfc822()
         }
         self.send_json(body)
 
 
 @app.route("mock", "image")
-class MockImageEndpoint(Endpoint):
-    
-    PATH_IMAGE = "elephant.jpg"
+class MockImageEndpoint(WSGIEndpoint):
 
     def do_GET(self) -> None:
-        with open(self.PATH_IMAGE, "rb") as f:
+        with open(PATH_IMAGE, "rb") as f:
             image = f.read()
-            
-        self.send_body(image, ContentType(MediaTypes.jpeg))
-    
+
+        self.send_body(image, content_type=ContentType(MediaTypes.jpeg))
+
 
 class TestHTTPRequest(unittest.TestCase):
-    
-    def setUp(self) -> None:
-        self.url_info = "http://localhost:8000/mock/info"
-        self.url_image = "http://localhost:8000/mock/image"
-        self.path_image_ideal = "elephant.jpg"
-        
-        form = ServerForm("", 8000, app, "test_http_request.log")
-        self.executor = TestExecutor(form)
-        self.executor.start_serve()
-        
-    def tearDown(self) -> None:
-        self.executor.close()
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        form = WSGIServerForm("", 8000, app, PATH_SERVER_LOG)
+        cls.executor = WSGITestExecutor(form)
+        cls.executor.start_serve()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.executor.close()
 
     def test_get_info(self):
-        with http.get(self.url_info, datacls=InfoResponse) as res:
-            print(res.headers)
+        uri = "http://localhost:8000/mock/info"
+        with http.get(uri, datacls=InfoResponse) as res:
             data = res.attach()
-        
+
         self.assertTrue(isinstance(data, InfoResponse))
-        self.assertEqual(data.server_name, "Mocker")
-        print(f"Response of 'current_time' : {data.current_time}")
-        
-    def test_get_image(self):
-        with open(self.path_image_ideal, "rb") as f:
+        self.assertEqual(data.server_name, NAME_SERVER)
+
+    def test_get_inmage(self):
+        with open(PATH_IMAGE, "rb") as f:
             image_ideal = f.read()
-        
-        with http.get(self.url_image) as res:
+
+        uri = "http://localhost:8000/mock/image"
+        with http.get(uri) as res:
             data = res.body
-            
+
         self.assertEqual(image_ideal, data)
 
 
