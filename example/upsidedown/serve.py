@@ -1,23 +1,28 @@
 
-from bamboo import App, Endpoint, data_format, TestExecutor
-from bamboo.api import JsonApiData
+from bamboo import (
+    JsonApiData,
+    WSGIApp,
+    WSGIEndpoint,
+    WSGITestExecutor,
+)
+from bamboo.sticky.http import data_format
 
 
-app = App()
+app = WSGIApp()
 
 
 class UpsideDownRequest(JsonApiData):
-    
+
     token: str
-    
-    
+
+
 class UpsideDownResponse(JsonApiData):
-    
+
     result: str
 
 
 @app.route("upsidedown")
-class UpsideDownEndpoint(Endpoint):
+class UpsideDownEndpoint(WSGIEndpoint):
 
     @data_format(input=UpsideDownRequest, output=UpsideDownResponse)
     def do_GET(self, req_body: UpsideDownRequest) -> None:
@@ -28,4 +33,4 @@ class UpsideDownEndpoint(Endpoint):
 
 
 if __name__ == "__main__":
-    TestExecutor.debug(app, "upsidedown.log")
+    WSGITestExecutor.debug(app, "upsidedown.log")

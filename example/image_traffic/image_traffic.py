@@ -1,40 +1,44 @@
 
-from bamboo import App, Endpoint, data_format
-from bamboo.api import JsonApiData
-from bamboo.location import AnyStringLocation
+from bamboo import (
+    AnyStringLocation,
+    JsonApiData,
+    WSGIApp,
+    WSGIEndpoint,
+    WSGIServerForm,
+    WSGITestExecutor
+)
 from bamboo.request import http
-from bamboo.test import ServerForm, TestExecutor
+from bamboo.sticky.http import data_format
 from bamboo.util.convert import encode_binary, decode2binary
 from bamboo.util.time import get_datetime_rfc822
 
 
-app = App()
-PATH_IMAGE = "elephant.jpg"
+app = WSGIApp()
 
 
 class MockResponseData(JsonApiData):
-    
+
     image: str
     datetime: str
 
 
-@app.route(AnyStringLocation(), "image", parcel=(PATH_IMAGE,))
-class MockServeImageEndpoint(Endpoint):
+@app.route(AnyStringLocation(), "image")
+class MockServeImageEndpoint(WSGIEndpoint):
     """Api class sending useless image to clients."""
-    
+
     def setup(self, path_img: str) -> None:
         self.path_img = path_img
-    
+
     @data_format(input=None, output=MockResponseData)
     def do_GET(self):
         with open(self.path_img, "rb") as f:
             img = f.read()
-                        
+
         body = {
             "image": encode_binary(img),
             "datetime": get_datetime_rfc822()
         }
-        
+
         self.send_json(body)
 
 
@@ -53,13 +57,16 @@ def request_image(uri: str, path_save: str) -> None:
         print("-------")
         for key, val in res.headers.items():
             print(f"{key} : {val}")
-            
+
 
 if __name__ == "__main__":
     me = "hoge"
     URI = f"http://localhost:8000/{me}/image"
+    PATH_IMAGE = "elephant.jpg"
     PATH_SAVE = "received.jpg"
-    
-    form = ServerForm("", 8000, app, "image_traffic.log")
-    executer = TestExecutor(form)
+
+    app.set_parcel(MockServeImageEndpoint, PATH_IMAGE)
+
+    form = WSGIServerForm("", 8000, app, "image_traffic.log")
+    executer = WSGITestExecutor(form)
     executer.exec(request_image, (URI, PATH_SAVE))

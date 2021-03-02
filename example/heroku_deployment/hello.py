@@ -1,19 +1,24 @@
 
-import bamboo
+from bamboo import (
+    JsonApiData,
+    WSGIApp,
+    WSGIEndpoint,
+)
+from bamboo.sticky.http import data_format
 
 
-app = bamboo.App()
+app = WSGIApp()
 
 
-class HelloData(bamboo.JsonApiData):
-    
+class HelloData(JsonApiData):
+
     text: str
-    
-    
+
+
 @app.route("hello")
-class HelloEndpoint(bamboo.Endpoint):
-    
-    @bamboo.data_format(input=None, output=HelloData)
+class HelloEndpoint(WSGIEndpoint):
+
+    @data_format(input=None, output=HelloData)
     def do_GET(self) -> None:
         body = {"text": "Hello, World!"}
         self.send_json(body)
