@@ -236,6 +236,11 @@
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="bamboo.request.response.Response.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#bamboo.request.response.Response.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="bamboo.request.response.Response.content_length">
 <em class="property">property </em><code class="sig-name descname">content_length</code><a class="headerlink" href="#bamboo.request.response.Response.content_length" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -285,6 +290,72 @@
 </div>
 <div class="section" id="module-bamboo.request">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bamboo.request" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="bamboo.request.Response">
+<em class="property">class </em><code class="sig-prename descclassname">bamboo.request.</code><code class="sig-name descname">Response</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamboo.request.Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></p>
+<dl class="py method">
+<dt id="bamboo.request.Response.attach">
+<code class="sig-name descname">attach</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">datacls</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Type<span class="p">[</span>ResponseData_t<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ResponseData_t<a class="headerlink" href="#bamboo.request.Response.attach" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="bamboo.request.Response.body">
+<code class="sig-name descname">body</code><a class="headerlink" href="#bamboo.request.Response.body" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#bamboo.request.Response.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.content_length">
+<em class="property">property </em><code class="sig-name descname">content_length</code><a class="headerlink" href="#bamboo.request.Response.content_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.fileno">
+<em class="property">property </em><code class="sig-name descname">fileno</code><a class="headerlink" href="#bamboo.request.Response.fileno" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.get_header">
+<code class="sig-name descname">get_header</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>str<span class="p">]</span><a class="headerlink" href="#bamboo.request.Response.get_header" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.headers">
+<em class="property">property </em><code class="sig-name descname">headers</code><a class="headerlink" href="#bamboo.request.Response.headers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.is_closed">
+<em class="property">property </em><code class="sig-name descname">is_closed</code><a class="headerlink" href="#bamboo.request.Response.is_closed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.ok">
+<em class="property">property </em><code class="sig-name descname">ok</code><a class="headerlink" href="#bamboo.request.Response.ok" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.status">
+<em class="property">property </em><code class="sig-name descname">status</code><a class="headerlink" href="#bamboo.request.Response.status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.url">
+<em class="property">property </em><code class="sig-name descname">url</code><a class="headerlink" href="#bamboo.request.Response.url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bamboo.request.Response.version">
+<em class="property">property </em><code class="sig-name descname">version</code><a class="headerlink" href="#bamboo.request.Response.version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
