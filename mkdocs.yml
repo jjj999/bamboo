@@ -1,0 +1,84 @@
+site_name: Bamboo
+site_description: The fast, beautiful and hackable Python web framework.
+site_url: https://jjj999.github.io/bamboo/
+
+docs_dir: docs
+repo_url: https://github.com/jjj999/bamboo
+repo_name: jjj999/bamboo
+copyright: Copyright &copy; 2021 Yunhyeon Jeong
+
+theme:
+  name: material
+  logo: res/take.png
+  favicon: res/take.png
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - search.highlight
+  language: ja
+  palette:
+    primary: green
+
+nav:
+  - Home: index.md
+  - Tutorials:
+    - tutorials/concept.md
+    - tutorials/sample_app.md
+    - tutorials/routing.md
+    - tutorials/define_api.md
+    - tutorials/make_endpoint_component.md
+    - tutorials/error_handling.md
+    - tutorials/test.md
+    - tutorials/various_endpoints.md
+    - tutorials/sticky.md
+    - tutorials/to_microservices.md
+  - Deployment:
+    - deploy/heroku.md
+  - API References:
+    - bamboo:
+      - api/bamboo/pkg.md
+      - api/bamboo/api.md
+      - api/bamboo/app.md
+      - api/bamboo/base.md
+      - api/bamboo/endpoint.md
+      - api/bamboo/error.md
+      - api/bamboo/io.md
+      - api/bamboo/location.md
+      - api/bamboo/router.md
+      - api/bamboo/test.md
+    - bamboo.request:
+      - api/bamboo_request/pkg.md
+      - api/bamboo_request/http.md
+      - api/bamboo_request/https.md
+    - bamboo.sticky:
+      - api/bamboo_sticky/pkg.md
+      - api/bamboo_sticky/http.md
+    - bamboo.util:
+      - api/bamboo_util/pkg.md
+      - api/bamboo_util/convert.md
+      - api/bamboo_util/deco.md
+      - api/bamboo_util/ip.md
+      - api/bamboo_util/string.md
+      - api/bamboo_util/time.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+extra:
+  alternate:
+    - name: 日本語
+      link: /
+      lang: ja
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jjj999/bamboo
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python

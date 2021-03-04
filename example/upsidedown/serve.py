@@ -33,4 +33,4 @@ class UpsideDownEndpoint(WSGIEndpoint):
 
 
 if __name__ == "__main__":
-    WSGITestExecutor.debug(app, "upsidedown.log")
+    WSGITestExecutor.debug(app)

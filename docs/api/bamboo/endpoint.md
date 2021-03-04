@@ -1,0 +1,3 @@
+# endpoint
+
+::: bamboo.endpoint

@@ -12,18 +12,18 @@ class UpsideDownResponse(JsonApiData):
 
 def request(uri: str, token: str) -> None:
     body = {"token": token}
-    res = http.get(uri, json=body, datacls=UpsideDownResponse)
+    with http.get(uri, json=body, datacls=UpsideDownResponse) as res:
 
-    print("Headers")
-    print("-------")
-    for k, v in res.headers.items():
-        print(f"{k} : {v}")
-    print()
+        print("Headers")
+        print("-------")
+        for k, v in res.headers.items():
+            print(f"{k} : {v}")
+        print()
 
-    body = res.attach()
-    print("Bodies")
-    print("------")
-    print(body.result)
+        body = res.attach()
+        print("Bodies")
+        print("------")
+        print(body.result)
 
 if __name__ == "__main__":
     URI = "http://localhost:8000/upsidedown"
