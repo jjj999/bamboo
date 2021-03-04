@@ -1,3 +1,10 @@
+future/
+exp/
+heroku_test
+*.drawio
+_local.py
+Pipfile.lock
+
 bigdata*
 
 # Byte-compiled / optimized / DLL files
