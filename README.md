@@ -1,6 +1,6 @@
 # Bamboo
 
-[![Bamboo](docs/res/bamboo.jpg)](https://jjj999.github.io/bamboo/)
+[![Bamboo](docs/res/bamboo.png)](https://jjj999.github.io/bamboo/)
 [![PyPI version](https://badge.fury.io/py/bamboo-core.svg)](http://badge.fury.io/py/bamboo-core)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.python.org/pypi/bamboo-core/)
 
