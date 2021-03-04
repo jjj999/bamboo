@@ -10,9 +10,8 @@ from bamboo.base import (
     AuthSchemes,
     ContentType,
     ContentTypeHolder,
-    DEFAULT_CONTENT_TYPE_JSON,
     DEFAULT_CONTENT_TYPE_PLAIN,
-    HTTPStatus,
+    HTTPStatus, MediaTypes,
 )
 from bamboo.util.deco import class_property
 
@@ -25,22 +24,11 @@ class ErrInfoBase(ContentTypeHolder):
 
     This class defines the attributes of all classes for error handling.
 
-    Attributes
-    ----------
-    http_status : HTTPStatus
-        HTTP status of the error
-    message : Optional[str]
-        short message for announcing error, default None
+    Attributes:
+        http_status (HTTPStatus) : HTTP status of the error.
+        _content_type_ (ContentType): Content type with `text/plain`.
     """
     http_status: HTTPStatus = HTTPStatus.BAD_REQUEST
-
-    # Optional short message for announcing error.
-    # If None, will be set as default message.
-    message: Optional[str] = None
-
-    def __init_subclass__(cls) -> None:
-        if cls.message is None:
-           cls.message = cls.http_status.description
 
     def __init__(self, *args, **kwargs) -> None:
         pass
@@ -52,10 +40,8 @@ class ErrInfoBase(ContentTypeHolder):
     def get_headers(self) -> List[Tuple[str, str]]:
         """Publishes additional headers for error response.
 
-        Returns
-        -------
-        List[Tuple[str, str]]
-            Additional headers
+        Returns:
+            Additional headers.
         """
         return []
 
@@ -63,13 +49,16 @@ class ErrInfoBase(ContentTypeHolder):
         """Publishes response body for error response.
 
         Returns
-        -------
-        bytes
-            Response body
+            Response body of the error.
         """
         return b""
 
     def get_all_form(self) -> Tuple[HTTPStatus, List[Tuple[str, str]], bytes]:
+        """Get status code, headers and body of repsponse of the error.
+
+        Returns:
+            Tuple of status code, headers and body of the error.
+        """
         stat = self.http_status
         headers = self.get_headers()
         body = self.get_body()
@@ -149,22 +138,16 @@ class ApiErrInfo(ErrInfoBase):
     emits Json data including error information defined by developer
     when the error is sent.
 
-    Attributes
-    ----------
-    http_status : HTTPStatus
-        HTTP status of the error
-    message : Optional[str]
-        Short message for announcing error, by default None
-    code : Optional[int]
-        Error code for your API, by default None
-    dev_message : Optional[str]
-        Message to explain developers the error, by default None
-    user_message : Optional[str]
-        Message to explain end users the error, by default None
-    info : Optional[str]
-        Information about the error, by default None
-    encoding : str
-        Encoding to encode response body, by default 'UTF-8'
+    Attributes:
+        http_status (HTTPStatus): HTTP status of the error.
+        message (Optional[str]): Short message for announcing error.
+        code (Optional[int]): Error code for your API.
+        dev_message (Optional[str]): Message to explain developers the error.
+        user_message (Optional[str]): Message to explain end users the error.
+        info (Optional[str]): Information about the error.
+        encoding (str): Encoding to encode response body.
+        _content_type_ (ContentType): Content type with `application/json` and
+            `charset` specified as the value of `encoding`.
     """
     code: Optional[int] = None
     dev_message: Optional[str] = None
@@ -174,7 +157,7 @@ class ApiErrInfo(ErrInfoBase):
 
     @class_property
     def _content_type_(cls) -> ContentType:
-        return DEFAULT_CONTENT_TYPE_JSON
+        return ContentType(MediaTypes.json, charset=cls.encoding)
 
     def get_body(self) -> Optional[bytes]:
         """Publishes response body for error response.

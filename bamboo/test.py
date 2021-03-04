@@ -29,16 +29,11 @@ class WSGIServerForm:
     This dataclass would be used to register as a form
     into test classes such as WSGITestExecutor.
 
-    Parameters
-    ----------
-    host : str
-        Hostname of the server
-    port : int
-        Port of the server
-    app : WSGIApp
-        WSGIApp object with implemented Endpoints
-    path_log : str
-        Path log of the server will be written
+    Args:
+        host: Hostname of the server.
+        port: Port of the server.
+        app: WSGIApp object with implemented Endpoints.
+        path_log: Path log of the server will be written.
     """
     host: str
     port: int
@@ -49,10 +44,8 @@ class WSGIServerForm:
 def serve_at(form: WSGIServerForm) -> None:
     """Subroutine for server application called at a child process.
 
-    Parameters
-    ----------
-    form : WSGIServerForm
-        Dataclass describing information of the server application
+    Args:
+        form: Dataclass describing information of the server application.
     """
     server = simple_server.make_server(form.host, form.port, form.app)
     f_log = open(form.path_log, "wt")
@@ -80,6 +73,11 @@ class WSGITestExecutor:
     """
 
     def __init__(self, *forms: WSGIServerForm) -> None:
+        """
+        Args:
+            *forms: Dataclass describing information of
+                the server application.
+        """
         self._forms: List[WSGIServerForm] = []
         self._children: List[Process] = []
 
@@ -88,10 +86,9 @@ class WSGITestExecutor:
     def add_forms(self, *forms: WSGIServerForm) -> None:
         """Add forms with information of server applications.
 
-        Parameters
-        ----------
-        *foms : WSGIServerForm
-            Dataclass describing information of the server application
+        Args:
+            *foms: Dataclass describing information of
+                the server application
         """
         for form in forms:
             self._forms.append(form)
@@ -103,24 +100,19 @@ class WSGITestExecutor:
         returns the object itself. So developer can use the with
         sentence and in it, can define logic of clients.
 
-        Parameters
-        ----------
-        waiting : float, optional
-            Waiting time after running the processes, by default 0.05
+        Args:
+        waiting: Waiting time after running the processes.
 
-        Returns
-        -------
-        WSGITestExecutor
-            This object itself
+        Returns:
+            This object itself.
 
-        Examples
-        --------
-        ```python
-        >>> holder = WSGITestExecutor(form)
-        >>> with holder.start_serve():
-        ...    res = http_get("http://localhost:8000/image")
-        >>> print(res.body)
-        ```
+        Examples:
+            ```python
+            >>> holder = WSGITestExecutor(form)
+            >>> with holder.start_serve():
+            ...    res = http_get("http://localhost:8000/image")
+            >>> print(res.body)
+            ```
         """
         for form in self._forms:
             child = Process(target=serve_at, args=(form,))
@@ -133,10 +125,8 @@ class WSGITestExecutor:
     def close(self, pop: bool = True) -> None:
         """Kill the all child processes derived from registered forms.
 
-        Parameters
-        ----------
-        pop : bool, optional
-            If removing the registered forms, by default True
+        Args:
+            pop: If the registered forms is to be removed.
         """
         for child in self._children:
             child.terminate()
@@ -154,26 +144,19 @@ class WSGITestExecutor:
     ) -> None:
         """Executes a simple client-server test.
 
-        Parameters
-        ----------
-        func : Callable[[Tuple[Any, ...]], None]
-            Function executed after all the server applications start
-        args : Tuple[Any, ...], optional
-            Arguments of the func, by default ()
-        waiting : float, optional
-            Waiting time after running the applications, by default 0.05
+        Args:
+            func: Function executed after all the server applications start.
+            args: Arguments of the func.
+            waiting: Waiting time after running the applications.
         """
         with self.start_serve(waiting=waiting):
             func(*args)
 
-    @classmethod
+    @staticmethod
     def debug(
-        cls,
         app: WSGIApp,
-        path_log: str,
         host: str = "localhost",
         port: int = 8000,
-        waiting: float = 0.05
     ) -> None:
         """Executes a server application for debug.
 
@@ -182,21 +165,12 @@ class WSGITestExecutor:
         application made with Bamboo, consider to use another WSGI server
         application for production.
 
-        Parameters
-        ----------
-        app : WSGIApp
-            WSGIApp object with implemented Endpoints
-        path_log : str
-            Path log of the server will be written
-        host : str, optional
-            Hostname of the server, by default "localhost"
-        port : int, optional
-            Port of the server, by default 8000
-        waiting : float, optional
-            Waiting time after running the applications, by default 0.05
+        Args:
+            app: WSGIApp object with implemented Endpoints.
+            host: Hostname of the server.
+            port: Port of the server.
         """
-        form = WSGIServerForm(host, port, app, path_log)
-        executor = cls(form)
+        server = simple_server.make_server(host, port, app)
 
         try:
             print(f"Hosting on {host}:{port} ...")
@@ -206,15 +180,10 @@ class WSGITestExecutor:
                 ColorCode.RED
             ))
 
-            executor.start_serve(waiting=waiting)
-            while True:
-                time.sleep(60 * 60)
+            server.serve_forever()
         except KeyboardInterrupt:
-            executor.close()
-            print(
-                "\nHosting terminated. The log was output into " +
-                insert_colorcode(f"{path_log}", ColorCode.YELLOW) + "."
-            )
+            server.server_close()
+            print()
 
     def __enter__(self) -> None:
         pass

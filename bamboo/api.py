@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
+from bamboo.util.deco import class_property
 import json
 from typing import (
     Any,
@@ -19,9 +20,10 @@ from urllib.parse import parse_qs
 from bamboo.base import (
     ContentType,
     ContentTypeHolder,
+    DEFAULT_CONTENT_TYPE_JSON,
+    DEFAULT_CONTENT_TYPE_PLAIN,
     MediaTypes,
 )
-from bamboo.util.deco import class_property
 
 
 __all__ = []
@@ -39,32 +41,24 @@ class ApiData(ContentTypeHolder, metaclass=ABCMeta):
     methods. Developers should implement `__init__` methods of the subclasses
     such that each objects has data with expected formats by implementors.
 
-    Notes
-    -----
-    This class is an abstract class. So, don't initilize it and specify it
-    as an argument of the `data_format` decorator.
+    Note:
+        This class is an abstract class. So, don't initilize it and specify it
+        as an argument of the `data_format` decorator.
 
-    Subclasses of this class should validate if raw data given to `__init__`
-    methods has expected formats. If the validation failes, the classes MUST
-    raise `ValidataionFailedError` to announce the failure to the
-    `data_format` decorator.
+        Subclasses of this class should validate if raw data given to
+        `__init__` methods has expected formats. If the validation failes,
+        the classes MUST raise `ValidataionFailedError` to announce the
+        failure to the `data_format` decorator.
     """
 
     @abstractmethod
     def __init__(self, raw: bytes, content_type: ContentType) -> None:
         """
-        Parameters
-        ----------
-        raw : bytes
-            Raw data to be validated
-        content_type : ContentType
-            Values of `Content-Type` header
+        Args:
+            raw : Raw data to be validated.
+            content_type : Values of `Content-Type` header.
         """
         pass
-
-    @class_property
-    def _content_type_(cls) -> str:
-        return MediaTypes.plain
 
 
 class ValidationFailedError(Exception):
@@ -78,36 +72,29 @@ class BinaryApiData(ApiData):
     This class can be used to describe raw data with no data format. So,
     any received data from clients is acceptable on the class.
 
-    Attributes
-    ----------
-    raw : bytes
-        Property of raw data
+    Attributes:
+        _content_type_ (ContentType): Content type with `text/plain`.
 
-    Examples
-    --------
-    ```
-    class MockEndpoint(Endpoint):
+    Examples:
+        ```python
+        class MockEndpoint(Endpoint):
 
-        @data_format(input=BinaryApiData, output=None)
-        def do_GET(self, rec_body: BinaryApiData) -> None:
-            # get raw data of request body
-            raw_data = rec_body.raw
-    ```
+            @data_format(input=BinaryApiData, output=None)
+            def do_GET(self, rec_body: BinaryApiData) -> None:
+                # get raw data of request body
+                raw_data = rec_body.raw
+        ```
     """
 
     def __init__(self, raw: bytes, content_type: ContentType) -> None:
         """
-        Parameters
-        ----------
-        raw : bytes
-            Raw data to be validated
-        content_type : ContentType
-            Values of `Content-Type` header
+        Args:
+            raw: Raw data to be validated.
+            content_type: Values of `Content-Type` header.
 
-        Notes
-        -----
-        In objects of this class, `content_type` is not used even if any
-        `content_type` is specified.
+        Note:
+            In objects of this class, `content_type` is not used even if any
+            `content_type` is specified.
         """
         super().__init__(raw, content_type)
 
@@ -119,7 +106,12 @@ class BinaryApiData(ApiData):
 
     @property
     def raw(self) -> bytes:
+        """Raw data of input binary."""
         return self._raw
+
+    @class_property
+    def _content_type_(cls) -> ContentType:
+        return DEFAULT_CONTENT_TYPE_PLAIN
 
 
 class InvalidAnnotationError(Exception):
@@ -136,16 +128,14 @@ class JsonApiDataBuilder:
     This utility class has some class methods for validating JSON data and
     building `JsonApiData` objects from raw data.
 
-    Attributes
-    ----------
-    NoneType : type
-        The type of None
-    TYPES_ARGS : Tuple[type]
-        Tuple of types acceptable to `JsonApiData` with no arguments
-    TYPES_ARGS_SET : Set[type]
-        Set of types acceptable to `JsonApiData` with no arguments
-    TYPES_ORIGIN : Tuple[type]
-        Tuple of types acceptable to `JsonApiData` with arguments
+    Attributes:
+        NoneType (type): The type of None.
+        TYPES_ARGS (Tuple[type]): Tuple of types acceptable to `JsonApiData`
+            with no arguments.
+        TYPES_ARGS_SET (Set[type]): Set of types acceptable to `JsonApiData`
+            with no arguments.
+        TYPES_ORIGIN (Tuple[type]): Tuple of types acceptable to
+            `JsonApiData` with arguments.
     """
 
     NoneType = type(None)
@@ -157,15 +147,12 @@ class JsonApiDataBuilder:
     def check_annotations(cls, *types: Type) -> None:
         """Check if types are convertable to JSON data.
 
-        Parameters
-        ----------
-        *types : Type
-            Classes to be checked
+        Args:
+            *types: Classes to be checked.
 
-        Raises
-        ------
-        InvalidAnnotationError
-            Raised if a type not convertable to JSON data is detected
+        Raises:
+            InvalidAnnotationError: Raised if a type not convertable to
+                JSON data is detected.
         """
         def checker(types: Sequence[Type]) -> None:
             for type_ in types:
@@ -210,15 +197,12 @@ class JsonApiDataBuilder:
     def has_valid_annotations(cls, apiclass: Type[JsonApiData]) -> None:
         """Check if `JsonApiData` has only arguments convertable to JSON.
 
-        Parameters
-        ----------
-        apiclass : Type[JsonApiData]
-            A subclass of the `JsonApiData`
+        Args:
+            apiclass: A subclass of the `JsonApiData`.
 
-        Raises
-        ------
-        InvalidAnnotationError
-            Raised if a type not convertable to JSON data is detected
+        Raises:
+            InvalidAnnotationError: Raised if a type not convertable to
+                JSON data is detected.
         """
         cls.check_annotations(*tuple(get_type_hints(apiclass).values()))
 
@@ -226,17 +210,13 @@ class JsonApiDataBuilder:
     def validate_obj(cls, obj: Any, objtype: Type) -> bool:
         """Validate if given object is acceptable as a value of `JsonApiData`.
 
-        Parameters
-        ----------
-        obj : Any
-            Value to be validated
-        objtype : Type
-            Type to be validated
+        Args:
+            obj: Value to be validated.
+            objtype: Type to be validated.
 
-        Returns
-        -------
-        bool
-            If the obj and objtype is acceptable to `JsonApiData`
+        Returns:
+            True if the obj and objtype is acceptable to `JsonApiData`,
+            False otherwise.
         """
         origin = get_origin(objtype)
         if origin is None:
@@ -266,22 +246,16 @@ class JsonApiDataBuilder:
     ) -> JsonApiData:
         """Build new `JsonApiData` object from raw data.
 
-        Parameters
-        ----------
-        apiclass : Type[JsonApiData]
-            Class of new object to be generated
-        data : Dict[str, Any]
-            Raw data converted as a dictionary
+        Args:
+            apiclass: Class of new object to be generated.
+            data: Raw data converted as a dictionary.
 
-        Returns
-        -------
-        JsonApiData
-            New object built
+        Returns:
+            New object built.
 
-        Raises
-        ------
-        ValidationFailedError
-            Raised if type validation of raw data failes
+        Raises:
+            ValidationFailedError: Raised if type validation of raw
+                data failes.
         """
         instance = apiclass.__new__(apiclass)
         annotations = get_type_hints(apiclass)
@@ -317,8 +291,11 @@ class JsonApiDataBuilder:
                     if possible in cls.TYPES_ARGS_SET:
                         setattr(instance, key_def, val)
                     elif possible == list:
-                        setattr(instance, key_def,
-                                cls._build_list(possible, val))
+                        setattr(
+                            instance,
+                            key_def,
+                            cls._build_list(possible, val)
+                        )
                     elif issubclass(possible, JsonApiData):
                         setattr(instance, key_def, cls.build(type_def, val))
                     else:
@@ -336,24 +313,18 @@ class JsonApiDataBuilder:
     ) -> ListJsonable_t:
         """Build list convertable to JSON data.
 
-        Parameters
-        ----------
-        type_def : ListJsonable_t
-            Type of object to be generated, must be list with an argument
-        val : list
-            Raw data converted as a list
+        Args:
+            type_def: Type of object to be generated, must be list with
+                an argument.
+            val: Raw data converted as a list.
 
-        Returns
-        -------
-        ListJsonable_t
-            Generated object
+        Returns:
+            The generated object.
 
-        Raises
-        ------
-        ValueError
-            Raised if `type_def` is not list with an argument
-        ValidationFailedError
-            Raised if the argument of `type_def` is not acceptable
+        Raises:
+            ValueError: Raised if `type_def` is not list with an argument.
+            ValidationFailedError: Raised if the argument of `type_def` is
+                not acceptable.
         """
         if not len(val):
             return val
@@ -384,33 +355,34 @@ class JsonApiData(ApiData):
     class-attribtues, which are used to validate if raw data has format
     the type hints define.
 
-    Examples
-    --------
-    - Defining subclass of this class
+    Attributes:
+        _content_type_ (ContentType): Content type with
+            `application/json; charset=UTF-8`.
 
-    ```
-    class User(JsonApiData):
-        name: str
-        email: str
-        age: int
+    Examples:
+        - Defining subclass of this class
+        ```python
+        class User(JsonApiData):
+            name: str
+            email: str
+            age: int
 
-    class MockApiData(JsonApiData):
-        users: List[User]
-    ```
+        class MockApiData(JsonApiData):
+            users: List[User]
+        ```
 
-    - Validating received data
+        - Validating received data
+        ```python
+        class MockEndpoint(Endpoint):
 
-    ```
-    class MockEndpoint(Endpoint):
+            @data_format(input=MockApiData, output=None)
+            def do_GET(self, rec_body: MockApiData) -> None:
+                # Do something...
 
-        @data_format(input=MockApiData, output=None)
-        def do_GET(self, rec_body: MockApiData) -> None:
-            # Do something...
-
-            # Example
-            for user in rec_body.users:
-                print(f"user name : {user.name}")
-    ```
+                # Example
+                for user in rec_body.users:
+                    print(f"user name : {user.name}")
+        ```
     """
 
     def __init_subclass__(cls) -> None:
@@ -421,12 +393,9 @@ class JsonApiData(ApiData):
     #   by defining attributes and their types.
     def __init__(self, raw: bytes, content_type: ContentType) -> None:
         """
-        Parameters
-        ----------
-        raw : bytes
-            Raw data to be validated
-        content_type : ContentType
-            Values of `Content-Type` header
+        Args:
+            raw: Raw data to be validated.
+            content_type: Values of `Content-Type` header.
         """
         super().__init__(raw, content_type)
 
@@ -465,11 +434,20 @@ class JsonApiData(ApiData):
         )
 
     @class_property
-    def _content_type_(cls) -> str:
-        return MediaTypes.json
+    def _content_type_(cls) -> ContentType:
+        return DEFAULT_CONTENT_TYPE_JSON
 
 
 class XWWWFormUrlEncodedDataBuilder:
+    """Builder for `XWWWFormUrlEncodedData`.
+
+    This utility class has some class methods for validating
+    request body with the `x-www-urlencoded` format.
+
+    Attributes:
+        TYPES_ARGS (Tuple[type]): Tuple of types acceptable to
+            `XWWWFormUrlEncodedData`.
+    """
 
     TYPES_ARGS = (str,)
 
@@ -477,20 +455,16 @@ class XWWWFormUrlEncodedDataBuilder:
     def check_annotations(cls, *types: Type) -> None:
         """Check if types are acceptable to `XWWWFormUriEncodedData` class.
 
-        Parameters
-        ----------
-        *types : Type
-            Classes to be checked
+        Args:
+            *types: Classes to be checked.
 
-        Raises
-        ------
-        InvalidAnnotationError
-            Raised if a type not acceptable
+        Raises:
+            InvalidAnnotationError: Raised if a type not acceptable.
         """
         for type_ in types:
             if type_ not in cls.TYPES_ARGS:
                 raise InvalidAnnotationError(
-                    f"{type_.__name__} is an unacceptable as a type "
+                    f"{type_.__name__} is unacceptable as a type "
                     "of attributes of XWWWFormUrlEncodedData."
                 )
 
@@ -502,15 +476,11 @@ class XWWWFormUrlEncodedDataBuilder:
         """Check if `XWWWFormUrlEncodedData` has only arguments with
         acceptable types.
 
-        Parameters
-        ----------
-        apiclass : Type[XWWWFormUrlEncodedData]
-            A subclass of the `XWWWFormUrlEncodedData`
+        Args:
+            apiclass: A subclass of the `XWWWFormUrlEncodedData`.
 
-        Raises
-        ------
-        InvalidAnnotationError
-            Raised if a type not acceptable
+        Raises:
+            InvalidAnnotationError: Raised if a type not acceptable.
         """
         cls.check_annotations(*tuple(get_type_hints(apiclass).values()))
 
@@ -522,22 +492,16 @@ class XWWWFormUrlEncodedDataBuilder:
     ) -> XWWWFormUrlEncodedData:
         """Build new `XWWWFormUrlEncodedData` object from raw data.
 
-        Parameters
-        ----------
-        apiclass : Type[XWWWFormUrlEncodedData]
-            Class of new object to be generated
-        data : str
-            Raw data already decoded
+        Args:
+            apiclass: Class of new object to be generated.
+            data: Raw data already decoded.
 
-        Returns
-        -------
-        XWWWFormUrlEncodedData
-            New object built
+        Returns:
+            New object built.
 
-        Raises
-        ------
-        ValidationFailedError
-            Raised if type validation of raw data failes
+        Raises:
+            ValidationFailedError: Raised if type validation of
+                raw data failes.
         """
         instance = apiclass.__new__(apiclass)
         annotations = get_type_hints(apiclass)
@@ -568,28 +532,29 @@ class XWWWFormUrlEncodedData(ApiData):
     raw data has format the type hints define. In this class, the type hints
     must be only `str`. Otherwise, `InvalidAnnotationError` will be raised.
 
-    Examples
-    --------
-    - Defining subclass of this class
+    Attributes:
+        _content_type_ (ContentType): Content type with
+            `application/x-www-form-urlencoded`.
 
-    ```
-    class UserCredentials(XWWWFormUrlEncodedData):
-        user_id: str
-        password: str
-    ```
+    Examples:
+        - Defining subclass of this class
+        ```python
+        class UserCredentials(XWWWFormUrlEncodedData):
+            user_id: str
+            password: str
+        ```
 
-    - Validating received data
+        - Validating received data
+        ```python
+        class MockEndpoint(Endpoint):
 
-    ```
-    class MockEndpoint(Endpoint):
+            @data_format(input=UserCredentials, output=None)
+            def do_GET(self, rec_body: UserCredentials) -> None:
+                # Do something...
 
-        @data_format(input=UserCredentials, output=None)
-        def do_GET(self, rec_body: UserCredentials) -> None:
-            # Do something...
-
-            # Example
-            authenticate(rec_body.user_id, rec_body.password)
-    ```
+                # Example
+                authenticate(rec_body.user_id, rec_body.password)
+        ```
     """
 
     def __init_subclass__(cls) -> None:
@@ -597,12 +562,9 @@ class XWWWFormUrlEncodedData(ApiData):
 
     def __init__(self, raw: bytes, content_type: ContentType) -> None:
         """
-        Parameters
-        ----------
-        raw : bytes
-            Raw data to be validated
-        content_type : ContentType
-            Values of `Content-Type` header
+        Args:
+            raw: Raw data to be validated.
+            content_type: Values of `Content-Type` header.
         """
         encoding = content_type.charset
         if encoding is None:
@@ -633,5 +595,5 @@ class XWWWFormUrlEncodedData(ApiData):
         self.__dict__.update(instance.__dict__)
 
     @class_property
-    def _content_type_(cls) -> str:
-        return MediaTypes.x_www_form_urlencoded
+    def _content_type_(cls) -> ContentType:
+        ContentType(MediaTypes.x_www_form_urlencoded)

@@ -70,6 +70,21 @@ def get(
     blocksize: int = 8192,
     datacls: Type[ResponseData_t] = BinaryApiData
 ) -> Response[ResponseData_t]:
+    """Request with the GET method on HTTP.
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.GET,
@@ -93,6 +108,21 @@ def post(
     blocksize: int = 8192,
     datacls: Type[ResponseData_t] = BinaryApiData
 ) -> Response[ResponseData_t]:
+    """Request with the POST method on HTTP.
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.POST,
@@ -116,6 +146,21 @@ def put(
     blocksize: int = 8192,
     datacls: Type[ResponseData_t] = BinaryApiData
 ) -> Response[ResponseData_t]:
+    """Request with the PUT method on HTTP.
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.PUT,
@@ -139,6 +184,21 @@ def delete(
     blocksize: int = 8192,
     datacls: Type[ResponseData_t] = BinaryApiData
 ) -> Response[ResponseData_t]:
+    """Request with the DELETE method on HTTP.
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.DELETE,
@@ -162,6 +222,21 @@ def head(
     blocksize: int = 8192,
     datacls: Type[ResponseData_t] = BinaryApiData
 ) -> Response[ResponseData_t]:
+    """Request with the HEAD method on HTTP.
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.HEAD,
@@ -185,6 +260,21 @@ def options(
     blocksize: int = 8192,
     datacls: Type[ResponseData_t] = BinaryApiData
 ) -> Response[ResponseData_t]:
+    """Request with the OPTIONS method on HTTP.
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.OPTIONS,
@@ -208,6 +298,21 @@ def patch(
     blocksize: int = 8192,
     datacls: Type[ResponseData_t] = BinaryApiData
 ) -> Response[ResponseData_t]:
+    """Request with the PATCH method on HTTP.
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.PATCH,
@@ -231,6 +336,21 @@ def trace(
     blocksize: int = 8192,
     datacls: Type[ResponseData_t] = BinaryApiData
 ) -> Response[ResponseData_t]:
+    """Request with the TRACE method on HTTP.
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.TRACE,

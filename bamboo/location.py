@@ -37,15 +37,12 @@ Uri_t = Tuple[Location_t]
 def is_flexible_uri(uri: Uri_t) -> bool:
     """Judge if specified `uri` has one or more flexible location.
 
-    Parameters
-    ----------
-    uri : Uri_t
-        URI pattern to be judged
+    Args:
+        uri: URI pattern to be judged.
 
-    Returns
-    -------
-    bool
-        If specified `uri` has one or more flexible location.
+    Returns:
+        True if specified `uri` has one or more flexible location,
+        False otherwise.
     """
     for loc in uri:
         if isinstance(loc, FlexibleLocation):
@@ -56,17 +53,12 @@ def is_flexible_uri(uri: Uri_t) -> bool:
 def is_duplicated_uri(uri_1: Uri_t, uri_2: Uri_t) -> bool:
     """Judge if a couple of specified URI patterns has same pattern.
 
-    Parameters
-    ----------
-    uri_1 : Uri_t
-        URI pattern to be judged
-    uri_2 : Uri_t
-        URI pattern to be judged
+    Args:
+        uri_1: URI pattern to be judged
+        uri_2: URI pattern to be judged
 
-    Returns
-    -------
-    bool
-        If two URIs has same pattern or not
+    Returns:
+        True if two URIs has same pattern, False otherwise.
     """
     if len(uri_1) == len(uri_2):
         for loc_1, loc_2 in zip(uri_1, uri_2):
@@ -88,15 +80,11 @@ class AsciiDigitLocation(FlexibleLocation):
 
     def __init__(self, digits: int) -> None:
         """
-        Parameters
-        ----------
-        digits : int
-            Number of digits which the location accepts
+        Args:
+            digits: Number of digits which the location accepts.
 
-        Raises
-        ------
-        ValueError
-            Raised if `digits` is 0 or less
+        Raises:
+            ValueError: Raised if `digits` is 0 or less.
         """
         if digits < 1:
             raise ValueError("'digits' must be bigger than 0.")
@@ -106,15 +94,11 @@ class AsciiDigitLocation(FlexibleLocation):
     def is_valid(self, loc: str) -> bool:
         """Judge if specified `loc` is valid location or not.
 
-        Parameters
-        ----------
-        loc : str
-            Location to be judged
+        Args:
+            loc: Location to be judged.
 
-        Returns
-        -------
-        bool
-            If specified location is valid or not
+        Returns:
+            True if specified location is valid, False otherwise.
         """
         return loc.isascii() and loc.isdigit() and len(loc) == self._digits
 
@@ -125,20 +109,15 @@ class AnyStringLocation(FlexibleLocation):
 
     def __init__(self, max: Optional[int] = None) -> None:
         """
-        Parameters
-        ----------
-        max : Optional[int], optional
-            Max length of string of location, by default `None`
+        Note:
+            If the argument `max` is `None`, then any length of string
+            will be accepted.
 
-        Raises
-        ------
-        ValueError
-            Raised if `max` is 0 or less
+        Args:
+            max: Max length of string of location.
 
-        Notes
-        -----
-        If the argument `max` is `None`, then any length of string
-        will be accepted.
+        Raises:
+            ValueError: Raised if `max` is 0 or less.
         """
         if max and max < 1:
             raise ValueError("'max' must be bigger than 0.")
@@ -148,15 +127,11 @@ class AnyStringLocation(FlexibleLocation):
     def is_valid(self, loc: str) -> bool:
         """Judge if specified `loc` is valid location or not.
 
-        Parameters
-        ----------
-        loc : str
-            Location to be judged
+        Args:
+            loc: Location to be judged.
 
-        Returns
-        -------
-        bool
-            If specified location is valid or not
+        Returns:
+            True if specified location is valid, False otherwise.
         """
         if self._max is None:
             return True

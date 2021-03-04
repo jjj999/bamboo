@@ -44,6 +44,12 @@ __all__ = []
 
 class EndpointBase(metaclass=ABCMeta):
     """Base class of Endpoint to define logic to requests.
+
+    Endpoint is one of the core concept of Bamboo, and this class defines
+    its basic behavior. All endpoints must inherit this class.
+
+    Note:
+        This class is an abstract class. Consider using its subclasses.
     """
 
     def __init__(
@@ -51,62 +57,174 @@ class EndpointBase(metaclass=ABCMeta):
         flexible_locs: Tuple[str, ...],
         *parcel: Any
     ) -> None:
+        """
+        Note:
+            DO NOT generate its instance. Its object will be initialized
+            by application object.
+
+        Args:
+            flexible_locs: Flexible locations requested.
+            *parcel: Parcel sent via application object.
+        """
         self._flexible_locs = flexible_locs
         self.setup(*parcel)
 
     def setup(self, *parcel) -> None:
+        """Execute setup of the endpoint object.
+
+        This method will execute at initialization of the object by specifying
+        parcel. The parcel is sent with `set_parcel()` method of
+        the application object which has included the object as one of
+        the its endpoints. This method can be used as a substitute for
+        the `__init__` method.
+
+        This method is useful in some cases like below:
+
+        - Making an endpoint class a reusable component
+        - Injecting environmental dependencies using something like a
+            setting file
+
+        Args:
+            *parcel: Parcel sent via application object.
+
+        Examples:
+            ```python
+            app = WSGIApp()
+
+            @app.route("hello")
+            class HelloEndpoint(WSGIEndpoint):
+
+                def setup(self, server_name: str) -> None:
+                    self._server_name = server_name
+
+                def do_GET(self) -> None:
+                    self.send_body(f"Hello from {self._server_name}".encode())
+
+            if __name__ == "__main__":
+                SERVER_NAME = "awesome_server"
+                app.set_parcel(HelloEndpoint, SERVER_NAME)
+
+                WSGITestExecutor.debug(app, "", 8000)
+            ```
+        """
         pass
 
     @property
     def flexible_locs(self) -> Tuple[str, ...]:
+        """Flexible locations extracted from requested URI.
+        """
         return self._flexible_locs
 
     @property
     @abstractmethod
     def http_version(self) -> str:
+        """HTTP Version on communication.
+        """
         pass
 
     @property
     @abstractmethod
     def scheme(self) -> str:
+        """Scheme of requested URI.
+        """
         pass
 
     @abstractmethod
     def get_client_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        """Retrieve client address, pair of its IP address and port.
+
+        Note:
+            IP address and port may be None if retrieving the address from
+            server application would fail, so it is recommended to confirm
+            your using server application's spec.
+
+        Returns:
+            Pair of IP and port of client.
+        """
         pass
 
     @abstractmethod
     def get_server_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        """Retrive server address, pair of its IP address and port.
+
+        Note:
+            IP address and port may be None if retrieving the address from
+            server application would fail, so it is recommended to confirm
+            your using server application's spec.
+
+        Returns:
+            Pair of IP and port of server.
+        """
         pass
 
     @abstractmethod
     def get_host_addr(self) -> Tuple[Optional[str], Optional[int]]:
+        """Retrive host name and port from requested headers.
+
+        Returns:
+            Pair of host name and port.
+        """
         pass
 
     @abstractmethod
     def get_header(self, name: str) -> Optional[str]:
+        """Retrive header value from requested headers.
+
+        Args:
+            name: Header name.
+
+        Returns:
+            Value of header if existing, None otherwise.
+        """
         pass
 
     @property
     @abstractmethod
     def path(self) -> str:
+        """Path of requested URI.
+        """
         pass
 
     @cached_property
     @abstractmethod
     def queries(self) -> Dict[str, str]:
+        """Query parameters specified to requested URI.
+        """
         pass
 
     def get_query(self, name: str) -> List[str]:
+        """Get value of query parameter.
+
+        Args:
+            name: Key name of the parameter
+
+        Returns:
+            Value of the parameter. The value of list may have multiple
+            items if client specifies the parameter in several times.
+        """
         return self.queries.get(name)
 
     @cached_property
     @abstractmethod
     def content_type(self) -> Optional[ContentType]:
+        """Content type of request body.
+
+        Returns:
+            Content type if existing, None otherwise.
+        """
         pass
 
 
 class WSGIEndpointBase(EndpointBase):
+    """Base class of endpoints compliant with the WSGI.
+
+    This class implements abstract methods of `EndpointBase` with the WSGI.
+    However, this class doesn't implement some methods to structure responses.
+
+    Note:
+        DO NOT use this class as the super class of your endpoints. Consider
+        to use subclasses of the class like `WSGIEndpoint`.
+    """
 
     def __init__(
         self,
@@ -114,21 +232,33 @@ class WSGIEndpointBase(EndpointBase):
         flexible_locs: Tuple[str, ...],
         *parcel: Any
     ) -> None:
+        """
+        Args:
+            environ: environ variable received from WSGI server.
+            flexible_locs: flexible locations requested.
+            *parcel: Parcel sent via application object.
+        """
         super().__init__(flexible_locs, *parcel)
 
         self._environ = environ
 
     @property
     def environ(self) -> Dict[str, Any]:
+        """environ variable received from WSGI server.
+        """
         return self._environ
 
     @property
     def wsgi_version(self) -> str:
+        """WSGI version number.
+        """
         version = self._environ.get("wsgi.version")
         return ".".join(map(str, version))
 
     @property
     def server_software(self) -> str:
+        """Software name of WSGI server.
+        """
         return self._environ.get("SERVER_SOFTWARE")
 
     @property
@@ -148,13 +278,6 @@ class WSGIEndpointBase(EndpointBase):
         return (client, port)
 
     def get_server_addr(self) -> Tuple[Optional[str], Optional[int]]:
-        """Retrieve requested a pair of host name and port.
-
-        Returns
-        -------
-        Tuple[str, int]
-            A pair of host name and port
-        """
         server = self._environ.get("SERVER_NAME")
         port = self._environ.get("SERVER_PORT")
         if port:
@@ -174,18 +297,6 @@ class WSGIEndpointBase(EndpointBase):
         return (None, None)
 
     def get_header(self, name: str) -> Optional[str]:
-        """Try to retrieve a HTTP header.
-
-        Parameters
-        ----------
-        name : str
-            Header field to retrieve
-
-        Returns
-        -------
-        Optional[str]
-            Value of the field if exists, else None
-        """
         name = "HTTP_" + name.replace("-", "_").upper()
         return self._environ.get(name)
 
@@ -200,13 +311,21 @@ class WSGIEndpointBase(EndpointBase):
     @cached_property
     def content_type(self) -> Optional[ContentType]:
         raw = self._environ.get("CONTENT_TYPE")
-        print(raw)
         if raw:
             return ContentType.parse(raw)
         return None
 
 
 class ASGIEndpointBase(EndpointBase):
+    """Base class of endpoints compliant with the ASGI.
+
+    This class implements abstract methods of `EndpointBase` with the ASGI.
+    However, this class doesn't implement some methods to structure responses.
+
+    Note:
+        DO NOT use this class as the super class of your endpoints. Consider
+        to use subclasses of the class like `ASGIHTTPEndpoint`.
+    """
 
     def __init__(
         self,
@@ -214,6 +333,12 @@ class ASGIEndpointBase(EndpointBase):
         flexible_locs: Tuple[str, ...],
         *parcel: Any
     ) -> None:
+        """
+        Args:
+            scope: scope variable received from ASGI server.
+            flexible_locs: Flexible locations requested.
+            *parcel: Parcel sent via application object.
+        """
         super().__init__(flexible_locs, *parcel)
 
         self._scope = scope
@@ -230,19 +355,39 @@ class ASGIEndpointBase(EndpointBase):
 
     @property
     def scope(self) -> Dict[str, Any]:
+        """scope variable received from ASGI server.
+        """
         return self._scope
 
     @property
     def scope_type(self) -> str:
-        return self._scope.get("get")
+        """Scope type on ASGI.
+        """
+        return self._scope.get("type")
 
     @property
     def asgi_version(self) -> str:
+        """ASGI version.
+        """
         return self._scope.get("asgi").get("version")
 
     @property
     def spec_version(self) -> str:
+        """Spec version on ASGI.
+        """
         return self._scope.get("asgi").get("spec_version")
+
+    @property
+    def raw_path(self) -> bytes:
+        """The original HTTP path received from client.
+        """
+        return self._scope.get("raw_path")
+
+    @property
+    def root_path(self) -> str:
+        """The root path ASGI application is mounted at.
+        """
+        return self._scope.get("root_path")
 
     @property
     def http_version(self) -> str:
@@ -295,14 +440,6 @@ class ASGIEndpointBase(EndpointBase):
             return ContentType.parse(raw)
         return None
 
-    @property
-    def raw_path(self) -> str:
-        return self._scope.get("raw_path")
-
-    @property
-    def root_path(self) -> str:
-        return self._scope.get("root_path")
-
 # ----------------------------------------------------------------------------
 
 # HTTP  ----------------------------------------------------------------------
@@ -313,6 +450,16 @@ class StatusCodeAlreadySetError(Exception):
 
 
 class HTTPMixIn(metaclass=ABCMeta):
+    """Mixin class for HTTP endpoints.
+
+    This class assumes that endpoint classes inherit this class for HTTP.
+    So, this class do not work alone.
+
+    Note:
+        DO NOT use this class alone. This class work correctly by inheriting
+        it, implementing its abstract methods, and call its `__init__()`
+        method in the one of the subclass.
+    """
 
     bufsize = 8192
 
@@ -323,15 +470,11 @@ class HTTPMixIn(metaclass=ABCMeta):
     ) -> Optional[Callable[[EndpointBase], None]]:
         """Retrieve response methods with given HTTP method.
 
-        Parameters
-        ----------
-        method : str
-            HTTP method
+        Args:
+            method: HTTP method
 
-        Returns
-        -------
-        Optional[Callable_t]
-            Callback with given name
+        Returns:
+            Callback with given name.
         """
         mname = "do_" + method
         if hasattr(cls, mname):
@@ -355,11 +498,15 @@ class HTTPMixIn(metaclass=ABCMeta):
     @property
     @abstractmethod
     def content_length(self) -> Optional[int]:
+        """Content length of request body if existing.
+        """
         pass
 
     @property
     @abstractmethod
     def method(self) -> str:
+        """HTTP method requested from client.
+        """
         pass
 
     @staticmethod
@@ -368,6 +515,13 @@ class HTTPMixIn(metaclass=ABCMeta):
         value: str,
         **params: str
     ) -> Tuple[str, str]:
+        """Make pair of header field and its value with other directives.
+
+        Args:
+            name: Field name of the header.
+            value: Value of the field.
+            **params: Directives added to the field.
+        """
         params = [f'; {header}={val}' for header, val in params.items()]
         params = "".join(params)
         return (name, value + params)
@@ -380,35 +534,33 @@ class HTTPMixIn(metaclass=ABCMeta):
     ) -> None:
         """Add response header with MIME parameters.
 
-        Parameters
-        ----------
-        name : str
-            Field name of the header
-        value : str
-            Value of the field
-        **params : str
-            MIME parameters added to the field
+        Args:
+            name: Field name of the header.
+            value: Value of the field.
+            **params: Directives added to the field.
         """
         self._res_headers.append(self.make_header(name, value, **params))
 
     def add_headers(self, *headers: Tuple[str, str]) -> None:
         """Add response headers at once.
 
-        Parameters
-        ----------
-        **headers : str
-            Header's info whose header is the field name.
+        Note:
+            This method would be used as a shortcut to register multiple
+            headers. If it requires adding MIME parameters, developers
+            can use the 'add_header' method.
 
-        Notes
-        -----
-        This method would be used as a shortcut to register multiple
-        headers. If it requires adding MIME parameters, developers
-        can use the 'add_header' method.
+        Args:
+            **headers: Header's info whose header is the field name.
         """
         for name, val in headers:
             self.add_header(name, val)
 
     def add_content_type(self, content_type: ContentType) -> None:
+        """Add Content-Type header of response.
+
+        Args:
+            content_type: Information of Content-Type header.
+        """
         params = {}
         if content_type.charset:
             params["charset"] = content_type.charset
@@ -417,18 +569,27 @@ class HTTPMixIn(metaclass=ABCMeta):
         self.add_header("Content-Type", content_type.media_type, **params)
 
     def add_content_length(self, length: int) -> None:
+        """Add Content-Length header of response.
+
+        Args:
+            length: Size of response body.
+        """
         self.add_header("Content-Length", str(length))
 
     def add_content_length_body(self, body: bytes) -> None:
+        """Add Content-Length header of response by response body.
+
+        Args:
+            body: Response body.
+        """
         self.add_header("Content-Length", str(len(body)))
 
     def _set_status_safely(self, status: HTTPStatus) -> None:
         """Check if response status code already exists.
 
-        Raises
-        ------
-        StatusCodeAlreadySetError
-            Raised if response status code has already been set.
+        Raises:
+            StatusCodeAlreadySetError: Raised if response status code has
+                already been set.
         """
         if self._res_status:
             raise StatusCodeAlreadySetError(
@@ -442,10 +603,8 @@ class HTTPMixIn(metaclass=ABCMeta):
         This method can be used if a callback doesn't need to send response
         body.
 
-        Parameters
-        ----------
-        status : HTTPStatus, optional
-            HTTP status of the response, by default `HTTPStatus.OK`
+        Args:
+            status: HTTP status of the response.
         """
         self._set_status_safely(status)
 
@@ -459,30 +618,23 @@ class HTTPMixIn(metaclass=ABCMeta):
     ) -> None:
         """Set given binary to the response body.
 
-        Parameters
-        ----------
-        body : bytes, optional
-            Binary to be set to the response body, by default `b""`
-        content_type : ContentType, optional
-            `Content-Type` header to be sent,
-            by default `DEFAULT_CONTENT_TYPE_PLAIN`
-        status : HTTPStatus, optional
-            HTTP status of the response, by default `HTTPStatus.OK`
+        Note:
+            If the parameter `content_type` is specified, then
+            the `Content-Type` header is to be added.
 
-        Notes
-        -----
-        If the parameter `content_type` is specified, then the `Content-Type`
-        header is to be added.
+            `DEFAULT_CONTENT_TYPE_PLAIN` has its MIME type of `text/plain`,
+            and the other attributes are `None`. If another value of
+            `Content-Type` is needed, then you should generate new
+            `ContentType` instance with attributes you want.
 
-        `DEFAULT_CONTENT_TYPE_PLAIN` has its MIME type of `text/plain`, and the
-        other attributes are `None`. If another value of `Content-Type` is
-        needed, then you should generate new `ContentType` instance with
-        attributes you want.
+        Args:
+            body: Binary to be set to the response body.
+            content_type: `Content-Type` header to be sent.
+            status: HTTP status of the response.
 
-        Raises
-        ------
-        StatusCodeAlreadySetError
-            Raised if response status code has already been set.
+        Raises:
+            StatusCodeAlreadySetError: Raised if response status code has
+                already been set.
         """
         self._set_status_safely(status)
 
@@ -513,19 +665,14 @@ class HTTPMixIn(metaclass=ABCMeta):
     ) -> None:
         """Set given json data to the response body.
 
-        Parameters
-        ----------
-        body : Dict[str, Any]
-            Json data to be set to the response body
-        status : HTTPStatus, optional
-            HTTP status of the response, by default HTTPStatus.OK
-        encoding : str, optional
-            Encoding of the Json data, by default "UTF-8"
+        Args:
+            body: Json data to be set to the response body.
+            status: HTTP status of the response.
+            encoding: Encoding of the Json data.
 
-        Raises
-        ------
-        StatusCodeAlreadySetError
-            Raised if response status code has already been set.
+        Raises:
+            StatusCodeAlreadySetError: Raised if response status code
+                has already been set.
         """
         body = json.dumps(body).encode(encoding=encoding)
         content_type = ContentType(
@@ -541,6 +688,14 @@ class HTTPMixIn(metaclass=ABCMeta):
         content_type: str = DEFAULT_CONTENT_TYPE_PLAIN,
         status: HTTPStatus = HTTPStatus.OK
     ) -> None:
+        """Set file to be sent as response.
+
+        Args:
+            path: File path.
+            fname: File name to be sent.
+            content_type: Content type of the response.
+            status: HTTP status of the response.
+        """
         file_iter = BufferedFileIterator(path)
         self.send_body(file_iter, content_type=content_type, status=status)
 
@@ -556,15 +711,12 @@ class HTTPMixIn(metaclass=ABCMeta):
     def send_err(self, err: ErrInfoBase) -> None:
         """Set error to the response body.
 
-        Parameters
-        ----------
-        err : ErrInfoBase
-            Error information to be sent
+        Args:
+            err: Error information to be sent.
 
-        Raises
-        ------
-        StatusCodeAlreadySetError
-            Raised if response status code has already been set.
+        Raises:
+            StatusCodeAlreadySetError: Raised if response status code
+                has already been set.
         """
         status, headers, body = err.get_all_form()
         self._set_status_safely(status)
@@ -578,10 +730,38 @@ class HTTPMixIn(metaclass=ABCMeta):
 
     @abstractmethod
     def _attach_err_headers(self, headers: List[Tuple[str, str]]) -> None:
+        """Update response headers for error response.
+
+        Args:
+            headers: Response headers of the error response.
+        """
         pass
 
 
 class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
+    """HTTP endpoint class compliant with the WSGI.
+
+    This class is a complete class of endpoints, communicating on HTTP.
+    This class has all attributes of `WSGIEndpointBase` and `HTTPMixIn`,
+    and you can define its subclass and use them in your response methods.
+
+    Examples:
+        ```python
+        app = WSGIApp()
+
+        @app.route("hello")
+        class HelloEndpoint(WSGIEndpoint):
+
+            # RECOMMEND to use `data_format` decorator
+            def do_GET(self) -> None:
+                response = {"greeting": "Hello, Client!"}
+                self.send_json(response)
+
+            def do_POST(self) -> None:
+                req_body = self.body
+                print(req_body)
+        ```
+    """
 
     def __init__(
         self,
@@ -589,16 +769,20 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
         flexible_locs: Tuple[str, ...],
         *parcel: Any
     ) -> None:
+        """
+        Args:
+            environ: environ variable received from WSGI server.
+            flexible_locs: flexible locations requested.
+            *parcel: Parcel sent via application object.
+        """
         WSGIEndpointBase.__init__(self, environ, flexible_locs, *parcel)
         HTTPMixIn.__init__(self)
 
     def _recv_body_secure(self) -> bytes:
         """Receive request body securely.
 
-        Returns
-        -------
-        bytes
-            Request body
+        Returns:
+            Request body sent to the endpoint.
         """
         # TODO
         #   Take measures against DoS attack.
@@ -611,6 +795,8 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
 
     @cached_property
     def body(self) -> bytes:
+        """Request body received from client.
+        """
         return self._recv_body_secure()
 
     @property
@@ -629,6 +815,29 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
 
 
 class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
+    """HTTP endpoint class compliant with the ASGI.
+
+    This class is a complete class of endpoints, communicating on HTTP.
+    This class has all attributes of `ASGIEndpointBase` and `HTTPMixIn`,
+    and you can define its subclass and use them in your response methods.
+
+    Examples:
+        ```python
+        app = ASGIHTTPApp()
+
+        @app.route("hello")
+        class HelloEndpoint(ASGIHTTPEndpoint):
+
+            # RECOMMEND to use `data_format` decorator
+            async def do_GET(self) -> None:
+                response = {"greeting": "Hello, Client!"}
+                self.send_json(response)
+
+            async def do_POST(self) -> None:
+                req_body = async self.body
+                print(req_body)
+        ```
+    """
 
     def __init_subclass__(cls) -> None:
         super().__init_subclass__()
@@ -650,6 +859,13 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
         flexible_locs: Tuple[str, ...],
         *parcel
     ) -> None:
+        """
+        Args:
+            scope: scope variable received from ASGI server.
+            receive: `receive` method given from ASGI server.
+            flexible_locs: Flexible locations requested.
+            *parcel: Parcel sent via application object.
+        """
         ASGIEndpointBase.__init__(self, scope, flexible_locs, *parcel)
         HTTPMixIn.__init__(self)
 
@@ -660,6 +876,8 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
 
     @awaitable_cached_property
     async def body(self) -> bytes:
+        """Request body received from client.
+        """
         buffer = BytesIO()
         more_body = True
 
@@ -680,6 +898,8 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
 
     @awaitable_property
     async def is_disconnected(self) -> bool:
+        """Whether the connection is closed or not.
+        """
         await self.body
         return self._is_disconnected
 

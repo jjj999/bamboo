@@ -14,6 +14,8 @@ __all__ = []
 
 
 class ResponseBodyIteratorBase:
+    """Base class of iterator for buffering response body.
+    """
 
     def __iter__(self) -> Iterable[bytes]:
         return self
@@ -26,8 +28,24 @@ class ResponseBodyIteratorBase:
 
 
 class BufferedBinaryIterator(ResponseBodyIteratorBase):
+    """Iterator for sending bytes as chunks.
+
+    Its object can be used to generate iterator from a bytes object, which
+    yields specified size of bytes objects.
+
+    Note:
+        Even if you generate its object from a bytes object sending to a client
+        and specify it as response body, there may be no effect on performance
+        of your web application. Its object should be used only for unifying
+        interface as a subclass of `ResponseBodyIteratorBase`.
+    """
 
     def __init__(self, data: bytes, bufsize: int = 8192) -> None:
+        """
+        Args:
+            data: A bytes object to be iterated.
+            bufsize: Chunk size of bytes objects yielded from the iterator.
+        """
         super().__init__()
 
         self._data = BytesIO(data)
@@ -47,12 +65,24 @@ BinaryReadableStream_t = TypeVar("BinaryReadableStream_t")
 
 
 class BufferedStreamIterator(ResponseBodyIteratorBase):
+    """Iterator of binary made with file-like object.
+
+    Its object can be used to iterate file-like obj of binary.
+    """
 
     def __init__(
         self,
         stream: BinaryReadableStream_t,
         bufsize: int = 8192
     ) -> None:
+        """
+        Args:
+            stream: File-like object readable binary.
+            bufsize: Chunk size of bytes objects yielded from the iterator.
+
+        Raises:
+            TypeError: Raised if `stream` is not readable.
+        """
         super().__init__()
 
         if not (isinstance(stream, IOBase) and hasattr(stream, "read")):
@@ -74,15 +104,36 @@ class BufferedStreamIterator(ResponseBodyIteratorBase):
 
 
 class BufferedFileIterator(BufferedStreamIterator):
+    """Iterator of binary made with file path.
+
+    Its object can be used to iterate file-like obj made with file path.
+    """
 
     def __init__(self, filename: str, bufsize: int = 8192) -> None:
+        """
+        Args:
+            filename: File path.
+            bufsize: Chunk size of bytes objects yielded from the iterator.
+        """
         file = open(filename, "br")
         super().__init__(file, bufsize=bufsize)
 
 
 class BufferedIteratorWrapper(ResponseBodyIteratorBase):
+    """Iterator wrapping iterator yeilding bytes objects.
+
+    Its object holds an iterator inner, which can yeilds bytes objects
+    with arbitary sizes, and its object yeilds bytes objects with specified
+    chunk size, i.e. this object changes chunk size of bytes yielded from
+    given iterator.
+    """
 
     def __init__(self, iter: Iterator[bytes], bufsize: int = 8192) -> None:
+        """
+        Args:
+            iter: Iterator wrapped.
+            bufsize: Chunk size of bytes objects yielded from the iterator.
+        """
         super().__init__()
 
         self._iter = iter
@@ -134,12 +185,22 @@ class BufferedIteratorWrapper(ResponseBodyIteratorBase):
 
 
 class BufferedConcatIterator(ResponseBodyIteratorBase):
+    """Iterator conbining serveral iterator yeilding bytes objects.
+
+    Its object can concatenate several iterator or bytes objects and behaves
+    as a single iterator yieding bytes objects with specified chunk size.
+    """
 
     def __init__(
         self,
         *items: Union[bytes, Iterator[bytes]],
         bufsize: int = 8192
     ) -> None:
+        """
+        Args:
+            *items: bytes objects or iterators yielding bytes.
+            bufsize: Chunk size of bytes objects yielded from the iterator.
+        """
         super().__init__()
 
         self._iters: Deque[Iterator[bytes]] = deque()
@@ -151,6 +212,11 @@ class BufferedConcatIterator(ResponseBodyIteratorBase):
             self.append(item)
 
     def append(self, item: Union[bytes, Iterator[bytes]]) -> None:
+        """Add bytes or iterator yielding bytes inside.
+
+        Args:
+            item: bytes object or iterator yielding bytes.
+        """
         if isinstance(item, bytes):
             self._iters.append(
                 BufferedBinaryIterator(item, bufsize=self._bufsize)

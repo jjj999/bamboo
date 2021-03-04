@@ -87,38 +87,33 @@ class HTTPErrorConfig(ConfigBase):
 def may_occur(*errors: Type[ErrInfoBase]) -> CallbackDecorator_t:
     """Register error classes to callback on `Endpoint`.
 
-    Parameters
-    ----------
-    *errors : Type[ErrInfoBase]
-        Error classes which may occuur
+    Args:
+        *errors: Error classes which may occuur.
 
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to register error classes to callback
+    Returns:
+        CallbackDecorator_t: Decorator to register
+            error classes to callback.
 
-    Examples
-    --------
-    ```
-    class MockErrInfo(ErrInfo):
-        http_status = HTTPStatus.INTERNAL_SERVER_ERROR
+    Examples:
+        ```python
+        class MockErrInfo(ErrInfo):
+            http_status = HTTPStatus.INTERNAL_SERVER_ERROR
 
-        @classmethod
-        def get_body(cls) -> bytes:
-            return b"Intrernal server error occured"
+            def get_body(self) -> bytes:
+                return b"Intrernal server error occured"
 
-    class MockEndpoint(Endpoint):
+        class MockEndpoint(WSGIEndpoint):
 
-        @may_occur(MockErrInfo)
-        def do_GET(self) -> None:
-            # Do something...
+            @may_occur(MockErrInfo)
+            def do_GET(self) -> None:
+                # Do something...
 
-            # It is possible to send error response.
-            if is_some_flag():
-                self.send_err(MockErrInfo)
+                # It is possible to send error response.
+                if is_some_flag():
+                    self.send_err(MockErrInfo())
 
-            self.send_body(status=HTTPStatus.OK)
-    ```
+                self.send_only_status()
+        ```
     """
 
     def wrapper(callback: Callback_t) -> Callback_t:
@@ -132,17 +127,12 @@ def may_occur(*errors: Type[ErrInfoBase]) -> CallbackDecorator_t:
 class DataFormatInfo:
     """`dataclass` with information of data format at callbacks on `Endpoint`.
 
-    Attributes
-    ----------
-    input : Optional[Type[ApiData]]
-        Input data format, by default `None`
-    output : Optional[Type[ApiData]]
-        Output data format, by default `None`
-    is_validate : bool
-        If input data is to be validate, by default `True`
-    err_validate : ErrInfoBase
-        Error information sent when validation failes,
-        by default `DEFUALT_INCORRECT_DATA_FORMAT_ERROR`
+    Attributes:
+        input (Optional[Type[ApiData]]): Input data format.
+        output (Optional[Type[ApiData]]): Output data format.
+        is_validate (bool): If input data is to be validate.
+        err_validate (ErrInfoBase): Error information sent
+            when validation failes.
     """
     input: Optional[Type[ApiData]] = None
     output: Optional[Type[ApiData]] = None
@@ -256,52 +246,41 @@ def data_format(
     is_validate: bool = True,
     err_validate: ErrInfoBase = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
 ) -> CallbackDecorator_t:
-    """Set data format of input/output data as API to `callback` on
+    """Set data format of input/output data as API to callback on
     `Endpoint`.
 
     This decorator can be used to add attributes of data format information
-    to a `callback`, and execute validation if input raw data has expected
-    format defined on `input` argument.
+    to a response method, and execute validation if input raw data has
+    expected format defined on `input` argument.
 
     To represent no data inputs/outputs, specify `input`/`output` arguments
-    as `None`s. If `input` is `None`, then any data received from client will
+    as `None`. If `input` is `None`, then any data received from client will
     not be read. If `is_validate` is `False`, then validation will not be
     executed.
 
-    To retrieve data format information, use `get_data_format_info` function.
+    Args:
+        input: Input data format.
+        output: Output data format.
+        is_validate: If input data is to be validated.
+        err_validate: Error information sent when validation failes.
 
-    Parameters
-    ----------
-    input : Optional[Type[ApiData]]
-        Input data format, by default `None`
-    output : Optional[Type[ApiData]]
-        Output data format, by default `None`
-    is_validate : bool, optional
-        If input data is to be validated, by default `True`
-    err_validate : ErrInfoBase
-        Error information sent when validation failes,
-        by default `DEFUALT_INCORRECT_DATA_FORMAT_ERROR`
+    Returns:
+        Decorator to add attributes of data format information to callback.
 
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to add attributes of data format information to callback
+    Examples:
+        ```python
+        class UserData(JsonApiData):
+            name: str
+            email: str
+            age: int
 
-    Examples
-    --------
-    ```
-    class UserData(JsonApiData):
-        name: str
-        email: str
-        age: int
+        class MockEndpoint(WSGIEndpoint):
 
-    class MockEndpoint(Endpoint):
-
-        @data_format(input=UserData, output=None)
-        def do_GET(self, rec_body: UserData) -> None:
-            user_name = rec_body.name
-            # Do something...
-    ```
+            @data_format(input=UserData, output=None)
+            def do_GET(self, rec_body: UserData) -> None:
+                user_name = rec_body.name
+                # Do something...
+        ```
     """
     dataformat = DataFormatInfo(input, output, is_validate, err_validate)
 
@@ -317,13 +296,9 @@ class RequiredHeaderInfo:
     """`dataclass` with information of header which should be included in
     response headers.
 
-    Attributes
-    ----------
-    header : str
-        Name of header
-    err : ErrInfoBase
-        Error information sent when the header is not included,
-        by default `DEFAULT_HEADER_NOT_FOUND_ERROR`
+    Attributes:
+        header: Name of header.
+        err: Error information sent when the header is not included.
     """
     header: str
     err: ErrInfoBase = DEFAULT_HEADER_NOT_FOUND_ERROR
@@ -399,39 +374,31 @@ def has_header_of(
     If request headers don't include specified `header`, then response
     headers and body will be made based on `err` and sent.
 
-    Parameters
-    ----------
-    header : str
-        Name of header
-    err : ErrInfoBase, optional
-        Error information sent when specified `header` is not found of request
-        headers, by default `DEFAULT_HEADER_NOT_FOUND_ERROR`
+    Args:
+        header: Name of header.
+        err: Error information sent when specified `header` is not found.
 
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to make callback to be set up to receive the header
+    Returns:
+        Decorator to make callback to be set up to receive the header.
 
-    Examples
-    --------
-    ```
-    class BasicAuthHeaderNotFoundErrInfo(ErrInfoBase):
-        http_status = HTTPStatus.UNAUTHORIZED
+    Examples:
+        ```python
+        class BasicAuthHeaderNotFoundErrInfo(ErrInfoBase):
+            http_status = HTTPStatus.UNAUTHORIZED
 
-        @classmethod
-        def get_headers(cls) -> List[Tuple[str, str]]:
-            return [("WWW-Authenticate", 'Basic realm="SECRET AREA"')]
+            def get_headers(self) -> List[Tuple[str, str]]:
+                return [("WWW-Authenticate", 'Basic realm="SECRET AREA"')]
 
-    class MockEndpoint(Endpoint):
+        class MockEndpoint(WSGIEndpoint):
 
-        @has_header_of("Authorization", BasicAuthHeaderNotFoundErrInfo)
-        def do_GET(self) -> None:
-            # It is guaranteed that request headers include the
-            # `Authorization` header at this point.
-            header_auth = self.get_header("Authorization")
+            @has_header_of("Authorization", BasicAuthHeaderNotFoundErrInfo())
+            def do_GET(self) -> None:
+                # It is guaranteed that request headers include the
+                # `Authorization` header at this point.
+                header_auth = self.get_header("Authorization")
 
-            # Do something...
-    ```
+                # Do something...
+        ```
     """
     info = RequiredHeaderInfo(header, err)
 
@@ -546,37 +513,29 @@ def restricts_client(
 ) -> CallbackDecorator_t:
     """Restrict IP addresses at callback.
 
-    Parameters
-    ----------
-    *client_ips : str
-        IP addresses to be allowed to request
-    err : ErrInfoBase, optional
-        Error information sent when request from IP not included specified IPs
-         comes, by default `DEFAULT_NOT_APPLICABLE_IP_ERROR`
+    Args:
+        *client_ips: IP addresses to be allowed to request
+        err: Error information sent when request from IP not included
+            specified IPs comes.
 
-    Returns
-    -------
-    CallbackDecorator_t
-        Decorator to make callback to be set up to restrict IP addresses
+    Returns:
+        Decorator to make callback to be set up to restrict IP addresses.
 
-    Raises
-    ------
-    ValueError
-        Raised if invalid IP address is detected
+    Raises:
+        ValueError: Raised if invalid IP address is detected
 
-    Examples
-    --------
-    ```
-    class MockEndpoint(Endpoint):
+    Examples:
+        ```python
+        class MockEndpoint(WSGIEndpoint):
 
-        # Restrict to allow only localhost to request
-        # to this callback
-        @restricts_client("localhost")
-        def do_GET(self) -> None:
-            # Only localhost can access to the callback.
+            # Restrict to allow only localhost to request
+            # to this callback
+            @restricts_client(ClientInfo("localhost"))
+            def do_GET(self) -> None:
+                # Only localhost can access to the callback.
 
-            # Do something...
-    ```
+                # Do something...
+        ```
     """
     def wrapper(callback: Callback_t) -> Callback_t:
         config = RestrictedClientsConfig(callback)
@@ -746,36 +705,30 @@ def basic_auth(
     """Set callback up to require `Authorization` header in Basic
     authentication.
 
-    Parameters
-    ----------
-    err : ErrInfoBase, optional
-        Error sent when `Authorization` header is not found, received
-        scheme doesn't match, or extracting user ID and password from
-        credentials failes,
-        by default DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR
+    Args:
+        err: Error sent when `Authorization` header is not found, received
+            scheme doesn't match, or extracting user ID and password from
+            credentials failes.
 
-    Returns
-    -------
-    CallbackDecorator_t
+    Returns:
         Decorator to make callback to be set  up to require
-        the `Authorization` header
+        the `Authorization` header.
 
-    Examples
-    --------
-    ```
-    class MockEndpoint(Endpoint):
+    Examples:
+        ```python
+        class MockEndpoint(WSGIEndpoint):
 
-        @basic_auth()
-        def do_GET(self, user_id: str, password: str) -> None:
-            # It is guaranteed that request headers include the
-            # `Authorization` header at this point, and user_id and
-            # password are the ones extracted from the header.
+            @basic_auth()
+            def do_GET(self, user_id: str, password: str) -> None:
+                # It is guaranteed that request headers include the
+                # `Authorization` header at this point, and user_id and
+                # password are the ones extracted from the header.
 
-            # Authenticate with any function working on your system.
-            authenticate(user_id, password)
+                # Authenticate with any function working on your system.
+                authenticate(user_id, password)
 
-            # Do something...
-    ```
+                # Do something...
+        ```
     """
     def wrapper(callback: Callback_t) -> Callback_t:
         config = AuthSchemeConfig(callback)
@@ -790,35 +743,29 @@ def bearer_auth(
     """Set callback up to require `Authorization` header in token
     authentication for OAuth 2.0.
 
-    Parameters
-    ----------
-    err : ErrInfoBase, optional
-        Error sent when `Authorization` header is not found, or when received
-        scheme doesn't match,
-        by default DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR
+    Args:
+        err : Error sent when `Authorization` header is not found, or
+            when received scheme doesn't match.
 
-    Returns
-    -------
-    CallbackDecorator_t
+    Returns:
         Decorator to make callback to be set  up to require
-        the `Authorization` header
+        the `Authorization` header.
 
-    Examples
-    --------
-    ```
-    class MockEndpoint(Endpoint):
+    Examples:
+        ```python
+        class MockEndpoint(WSGIEndpoint):
 
-        @bearer_auth()
-        def do_GET(self, token: str) -> None:
-            # It is guaranteed that request headers include the
-            # `Authorization` header at this point, and token is
-            # the one extracted from the header.
+            @bearer_auth()
+            def do_GET(self, token: str) -> None:
+                # It is guaranteed that request headers include the
+                # `Authorization` header at this point, and token is
+                # the one extracted from the header.
 
-            # Authenticate with any function working on your system.
-            authenticate(token)
+                # Authenticate with any function working on your system.
+                authenticate(token)
 
-            # Do something...
-    ```
+                # Do something...
+        ```
     """
     def wrapper(callback: Callback_t) -> Callback_t:
         config = AuthSchemeConfig(callback)

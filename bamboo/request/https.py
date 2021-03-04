@@ -80,6 +80,30 @@ def get(
     cert_file: Optional[str] = None,
     context: Optional[SSLContext] = None
 ) -> Response[ResponseData_t]:
+    """Request with the GET method on HTTPS.
+
+    Note:
+        Sometimes your specified arguments may cause security problems in
+        communications with the function. It is strongly recommended to
+        reference Python ssl module security considerations documents.
+        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+        key_file: Path of a public key file.
+        cert_file: Path of a certification file.
+        context: SSLContext of your communication.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.GET,
@@ -109,6 +133,30 @@ def post(
     cert_file: Optional[str] = None,
     context: Optional[SSLContext] = None
 ) -> Response[ResponseData_t]:
+    """Request with the POST method on HTTPS.
+
+    Note:
+        Sometimes your specified arguments may cause security problems in
+        communications with the function. It is strongly recommended to
+        reference Python ssl module security considerations documents.
+        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+        key_file: Path of a public key file.
+        cert_file: Path of a certification file.
+        context: SSLContext of your communication.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.POST,
@@ -138,6 +186,30 @@ def put(
     cert_file: Optional[str] = None,
     context: Optional[SSLContext] = None
 ) -> Response[ResponseData_t]:
+    """Request with the PUT method on HTTPS.
+
+    Note:
+        Sometimes your specified arguments may cause security problems in
+        communications with the function. It is strongly recommended to
+        reference Python ssl module security considerations documents.
+        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+        key_file: Path of a public key file.
+        cert_file: Path of a certification file.
+        context: SSLContext of your communication.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.PUT,
@@ -167,6 +239,30 @@ def delete(
     cert_file: Optional[str] = None,
     context: Optional[SSLContext] = None
 ) -> Response[ResponseData_t]:
+    """Request with the DELETE method on HTTPS.
+
+    Note:
+        Sometimes your specified arguments may cause security problems in
+        communications with the function. It is strongly recommended to
+        reference Python ssl module security considerations documents.
+        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+        key_file: Path of a public key file.
+        cert_file: Path of a certification file.
+        context: SSLContext of your communication.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.DELETE,
@@ -196,6 +292,30 @@ def head(
     cert_file: Optional[str] = None,
     context: Optional[SSLContext] = None
 ) -> Response[ResponseData_t]:
+    """Request with the HEAD method on HTTPS.
+
+    Note:
+        Sometimes your specified arguments may cause security problems in
+        communications with the function. It is strongly recommended to
+        reference Python ssl module security considerations documents.
+        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+        key_file: Path of a public key file.
+        cert_file: Path of a certification file.
+        context: SSLContext of your communication.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.HEAD,
@@ -225,6 +345,30 @@ def options(
     cert_file: Optional[str] = None,
     context: Optional[SSLContext] = None
 ) -> Response[ResponseData_t]:
+    """Request with the OPTIONS method on HTTPS.
+
+    Note:
+        Sometimes your specified arguments may cause security problems in
+        communications with the function. It is strongly recommended to
+        reference Python ssl module security considerations documents.
+        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+        key_file: Path of a public key file.
+        cert_file: Path of a certification file.
+        context: SSLContext of your communication.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.OPTIONS,
@@ -254,6 +398,30 @@ def patch(
     cert_file: Optional[str] = None,
     context: Optional[SSLContext] = None
 ) -> Response[ResponseData_t]:
+    """Request with the PATCH method on HTTPS.
+
+    Note:
+        Sometimes your specified arguments may cause security problems in
+        communications with the function. It is strongly recommended to
+        reference Python ssl module security considerations documents.
+        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+        key_file: Path of a public key file.
+        cert_file: Path of a certification file.
+        context: SSLContext of your communication.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.PATCH,
@@ -283,6 +451,30 @@ def trace(
     cert_file: Optional[str] = None,
     context: Optional[SSLContext] = None
 ) -> Response[ResponseData_t]:
+    """Request with the TRACE method on HTTPS.
+
+    Note:
+        Sometimes your specified arguments may cause security problems in
+        communications with the function. It is strongly recommended to
+        reference Python ssl module security considerations documents.
+        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+        key_file: Path of a public key file.
+        cert_file: Path of a certification file.
+        context: SSLContext of your communication.
+
+    Returns:
+        Response object generated with the response.
+    """
     return request(
         uri,
         HTTPMethods.TRACE,

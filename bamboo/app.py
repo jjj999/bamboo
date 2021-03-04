@@ -22,7 +22,7 @@ from bamboo.endpoint import (
     EndpointBase,
     WSGIEndpoint,
 )
-from bamboo.error import DEFAULT_NOT_FOUND_ERROR
+from bamboo.error import DEFAULT_NOT_FOUND_ERROR, ErrInfoBase
 from bamboo.io import BufferedConcatIterator
 from bamboo.location import Location_t, Uri_t
 from bamboo.router import Router, Endpoint_t
@@ -44,10 +44,8 @@ class VersionConfig:
 
     def __init__(self, endpoint: Type[EndpointBase]) -> None:
         """
-        Parameters
-        ----------
-        endpoint : Type[Endpoint]
-            `Endpoint` whose version is to be manipulated
+        Args:
+            endpoint: `Endpoint` whose version is to be manipulated
         """
         self._endpoint_class = endpoint
 
@@ -59,19 +57,14 @@ class VersionConfig:
     ) -> None:
         """Set version of `Endpoint`.
 
-        Parameters
-        ----------
-        app : AppBase
-            Application including the internal `Endpoint`
-        version : Union[int, Tuple[int], None], optional
-            Version to be set, by default `None`
-        force : bool, optional
-            If forcing to set the `version`, by default `False`
+        Args:
+            app: Application including the internal `Endpoint`.
+            version: Version to be set.
+            force: If forcing to set the `version`.
 
-        Raises
-        ------
-        ValueError
-            Raised if version of the `Endpoint` has already been set.
+        Raises:
+            ValueError: Raised if version of the `Endpoint` has already
+                been set.
         """
         if not hasattr(self._endpoint_class, ATTR_VERSION):
             setattr(self._endpoint_class, ATTR_VERSION, {})
@@ -94,15 +87,11 @@ class VersionConfig:
     def get(self, app: AppBase) -> Optional[Version_t]:
         """Retrieve version belonging to specified `app`.
 
-        Parameters
-        ----------
-        app : AppBase
-            Application including the internal `Endpoint`
+        Args:
+            app: Application including the internal `Endpoint`.
 
-        Returns
-        -------
-        Optional[Version_t]
-            Version set to `Endpoint`, if not set yet, then `None`
+        Returns:
+            Version set to `Endpoint`, if not set yet, then None.
         """
         if hasattr(self._endpoint_class, ATTR_VERSION):
             registered = getattr(self._endpoint_class, ATTR_VERSION)
@@ -112,10 +101,8 @@ class VersionConfig:
     def get_all(self) -> List[Tuple[AppBase, Version_t]]:
         """Retrieve versions belonging to all `AppBase` objects.
 
-        Returns
-        -------
-        List[Tuple[AppBase, Version_t]]
-            `list` of `tuple`s of `AppBase` objects and their versions
+        Returns:
+            List of tuples of `AppBase` objects and their versions.
         """
         if hasattr(self._endpoint_class, ATTR_VERSION):
             registered = getattr(self._endpoint_class, ATTR_VERSION)
@@ -135,22 +122,17 @@ class ParcelConfig:
 
     def __init__(self, endpoint: Type[EndpointBase]) -> None:
         """
-        Parameters
-        ----------
-        endpoint : Type[Endpoint]
-            `Endpoint` whose parcel is to be manipulated
+        Args:
+            endpoint : `Endpoint` whose parcel is to be manipulated.
         """
         self._endpoint_class = endpoint
 
     def set(self, app: AppBase, parcel: Parcel_t) -> None:
-        """Ser parcel of `Endpoint`
+        """Ser parcel of `Endpoint`.
 
-        Parameters
-        ----------
-        app : AppBase
-            Application including the internal `Endpoint`
-        parcel : Parcel_t
-            Parcel to be set
+        Args:
+            app: Application including the internal `Endpoint`.
+            parcel: Parcel to be set.
         """
         if not hasattr(self._endpoint_class, ATTR_PARCEL):
             setattr(self._endpoint_class, ATTR_PARCEL, {})
@@ -159,17 +141,13 @@ class ParcelConfig:
         registered[app] = parcel
 
     def get(self, app: AppBase) -> Parcel_t:
-        """Retrieve parcel belonging to specified `app`/
+        """Retrieve parcel belonging to specified `app`.
 
-        Parameters
-        ----------
-        app : AppBase
-            Application including the internal `Endpoint`
+        Args:
+            app: Application including the internal `Endpoint`
 
-        Returns
-        -------
-        Parcel_t
-            Parcel set to `Endpoint`, if not set yet, then `None`
+        Returns:
+            Parcel set to `Endpoint`, if not set yet, then `None`.
         """
         if hasattr(self._endpoint_class, ATTR_PARCEL):
             registered = getattr(self._endpoint_class, ATTR_PARCEL)
@@ -179,10 +157,8 @@ class ParcelConfig:
     def get_all(self) -> List[Tuple[AppBase, Parcel_t]]:
         """Retrieve parcels belonging to all `AppBase` objects.
 
-        Returns
-        -------
-        List[Tuple[AppBase, Parcel_t]]
-            `list` of `tuple`s of `AppBase` objects and their parcels
+        Returns:
+            List of tuples of `AppBase` objects and their parcels.
         """
         if hasattr(self._endpoint_class, ATTR_PARCEL):
             registered = getattr(self._endpoint_class, ATTR_PARCEL)
@@ -191,20 +167,39 @@ class ParcelConfig:
 
 
 class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
+    """Base class of all application in Bamboo.
+
+    Bamboo has two core concepts called application and endpoint, and
+    this class implements basic behavior of the former, e.g. containing
+    multiple endpoints, routing requests from URIs to endpoints and so on.
+
+    Note:
+        This class is an abstract class. Consider using its subclasses.
+
+    Attributes:
+        TAG_VERSION (str): Tag used when versions of `Endpoint`s are inserted
+            in front of paths of URIs. If you want, you can override the
+            value and set new favorite tag. By default, the tag is 'v'.
+    """
 
     TAG_VERSION = "v"
     __avalidable_endpoints = (EndpointBase,)
 
-    def __init__(self, is_version_inserted: bool = True) -> None:
+    def __init__(
+        self,
+        is_version_inserted: bool = True,
+        error_404: ErrInfoBase = DEFAULT_NOT_FOUND_ERROR
+    ) -> None:
         """
-        Parameters
-        ----------
-        is_version_inserted : bool, optional
-            If version is inserted at the head of paths of URIs,
-            by default `True`
+        Args:
+            is_version_inserted: If version is inserted at the head of
+                paths of URIs.
+            error_404: Error sending if a request to not registered URI or
+                HTTP method comes.
         """
         self._router: Router[Endpoint_t] = Router()
         self._is_version_isnerted = is_version_inserted
+        self._error_404 = error_404
 
     @abstractmethod
     def __call__(self, *args: Any, **kwds: Any) -> Any:
@@ -213,19 +208,32 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
     def seach_uris(self, endpoint: Type[Endpoint_t]) -> List[Uri_t]:
         """Retrieve all URI patterns of `Endpoint`.
 
-        Parameters
-        ----------
-        endpoint : Type[Endpoint]
-            `Endpoint` whose URIs to be searched
+        Note:
+            This method uses `bamboo.Router.search_uris()` method inner.
+            For more information, see the API document.
 
-        Returns
-        -------
-        List[Uri_t]
-            Result of searching
+        Args:
+            endpoint: `Endpoint` whose URIs to be searched.
+
+        Returns:
+            Result of searching.
         """
         return self._router.search_uris(endpoint)
 
     def validate(self, uri: str) -> Tuple[Tuple[str, ...], Optional[Type[Endpoint_t]]]:
+        """Validate specified `uri` and retrieve corresponding `Endpoint` class.
+
+        Note:
+            This method uses `bamboo.Router.validate()` method inner.
+            For more information, see the API document.
+
+        Args:
+            uri: Path of URI to be validated.
+
+        Returns:
+            Pair of values of flexible locations and `Endpoint` class if specified
+            `uri` is valid, otherwise, pari of empty tuple and None.
+        """
         return self._router.validate(uri)
 
     def route(
@@ -235,28 +243,23 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
     ) -> Callable[[Type[Endpoint_t]], Type[Endpoint_t]]:
         """Register combination of URI and `Endpoint` for routing.
 
-        Parameters
-        ----------
-        version : Union[int, Tuple[int], None], optional
-            Version of the `Endpoint`, by default None
+        Args:
+            version : Version of the `Endpoint`.
 
-        Returns
-        -------
-        Callable[[Type[Endpoint]], Type[Endpoint]]
-            Decorator to add combination of URI and `Endpoint`
+        Returns:
+            Decorator to add combination of URI and `Endpoint`.
 
-        Examples
-        --------
-        ```
-        app = App()
+        Examples:
+            ```python
+            app = App()
 
-        # set path of URI as `test/data/image` and version as 1
-        @app.route("test", "data", "image", version=1)
-        class MockEndpoint(Endpoint):
+            # Set path of URI as `test/data/image` and the version as 1
+            @app.route("test", "data", "image", version=1)
+            class MockEndpoint(Endpoint):
 
-            def do_GET(self) -> None:
-                # Do something...
-        ```
+                def do_GET(self) -> None:
+                    # Do something...
+            ```
         """
         def register_endpoint(endpoint: Type[Endpoint_t]) -> Type[Endpoint_t]:
             if not issubclass(endpoint, self.__avalidable_endpoints):
@@ -289,19 +292,36 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
     def set_parcel(self, endpoint: Type[Endpoint_t], *parcel: Any) -> None:
         """Set parcel to an endpoint.
 
-        Parameters
-        ----------
-        endpoint : Type[Endpoint]
-            `Endpoint` the `parcel` to be set
-        *parcel : Any
-            Pacel to be given to the `Endpoint`
+        This method enables to give objects to `Endpoint` objects
+        dynamically. A parcel is a set of objects delivered via the method,
+        and the `Endpoint` object of its destination receives it at
+        `EndpointBase.setup()` method.
+
+        Note:
+            For more information about the `bamboo.EndpointBase.setup()`,
+            see the API document.
+
+        Args:
+            endpoint: `Endpoint` the `parcel` to be set.
+            *parcel: Pacel to be given to the `Endpoint`.
         """
         parcel_config = ParcelConfig(endpoint)
         parcel_config.set(self, parcel)
 
 
 class WSGIApp(AppBase):
-    """Application objects compliant with the WSGI.
+    """Application compliant with the WSGI.
+
+    This class is a subclass of `AppBase` calss and implements the callbable
+    compliant with the WSGI.
+
+    Note:
+        This class can be used only for WSGI server. If you want to use
+        any ASGI servers, consider using `ASGIHTTPApp`.
+
+        This class can also route only `WSGIEndpoint`s. If you want to
+        another type of endpoint, consider implementation class of its
+        corresponding application.
     """
 
     __avalidable_endpoints = (WSGIEndpoint,)
@@ -330,21 +350,17 @@ class WSGIApp(AppBase):
         start_response(endpoint._res_status.wsgi, endpoint._res_headers)
         return endpoint._res_body
 
-    @staticmethod
-    def send_404(start_response: Callable) -> bytes:
+    def send_404(self, start_response: Callable) -> bytes:
         """Send `404` error code, i.e. `Resource Not Found` error.
 
-        Parameters
-        ----------
-        start_response : Callable
-            `start_response` callbale given from the WSGI application
+        Args:
+            start_response: `start_response` callable given from
+                the WSGI application.
 
-        Returns
-        -------
-        bytes
-            Response body
+        Returns:
+            Response body of the error.
         """
-        status, headers, res_body = DEFAULT_NOT_FOUND_ERROR.get_all_form()
+        status, headers, res_body = self._error_404.get_all_form()
         start_response(status.wsgi, headers)
         return res_body
 
@@ -373,6 +389,19 @@ class WSGIApp(AppBase):
 
 
 class ASGIHTTPApp(AppBase):
+    """Application compliant with the ASGI.
+
+    This class is a subclass of `AppBase` calss and implements the callbable
+    compliant with the ASGI.
+
+    Note:
+        This class can be used only for ASGI server. If you want to use
+        any WSGI servers, consider using `WSGIApp`.
+
+        This class can also route only `ASGIHTTPEndpoint`s. If you want to
+        another type of endpoint, consider implementation class of its
+        corresponding application.
+    """
 
     __avalidable_endpoints = (ASGIHTTPEndpoint,)
 
@@ -409,6 +438,13 @@ class ASGIHTTPApp(AppBase):
         status: HTTPStatus,
         headers: List[Tuple[bytes, bytes]]
     ) -> None:
+        """Start repsonse by sending response status and headers.
+
+        Args:
+            send: `send` awaitable given from the ASGI application.
+            status: Response status.
+            headers: Response headers.
+        """
         await send({
             "type": ASGIHTTPEvents.response_start,
             "status": status.asgi,
@@ -420,6 +456,12 @@ class ASGIHTTPApp(AppBase):
         send: Callable[[Dict[str, Any], Awaitable[None]]],
         body: BufferedConcatIterator
     ) -> None:
+        """Send response body.
+
+        Args:
+            send: `send` awaitable given from the ASGI application.
+            body: Response body made in an `Endpoint` object.
+        """
         for chunk in body:
             await send({
                 "type": ASGIHTTPEvents.response_body,
@@ -428,17 +470,21 @@ class ASGIHTTPApp(AppBase):
             })
         await send({"type": ASGIHTTPEvents.response_body})
 
-    @classmethod
     async def send_404(
-        cls,
+        self,
         send: Callable[[Dict[str, Any]], Awaitable[None]]
     ) -> None:
-        status, headers, res_body = DEFAULT_NOT_FOUND_ERROR.get_all_form()
+        """Send `404` error code, i.e. `Resource Not Found` error.
+
+        Args:
+            send: `send` awaitable given from the ASGI application.
+        """
+        status, headers, res_body = self._error_404.get_all_form()
         headers = [
             tuple(map(codecs.encode, header)) for header in headers
         ]
-        await cls.send_start(send, status, headers)
-        await cls.send_body(send, BufferedConcatIterator(res_body))
+        await self.send_start(send, status, headers)
+        await self.send_body(send, BufferedConcatIterator(res_body))
 
     def seach_uris(
         self,

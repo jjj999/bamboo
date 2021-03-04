@@ -14,7 +14,8 @@ __all__ = []
 
 
 class _HTTPMethods:
-    """Singleton class to iterate HTTP methods."""
+    """Iterator for HTTP methods.
+    """
 
     GET = "GET"
     POST = "POST"
@@ -54,7 +55,8 @@ HTTPMethods = _HTTPMethods()
 
 
 class _MediaTypes:
-    """Singleton class to iterate media types for communication."""
+    """Iterator for media types of body on communication.
+    """
 
     plain = "text/plain"
     html = "text/html"
@@ -111,8 +113,7 @@ MediaTypes = _MediaTypes()
 
 
 class _AuthSchemes:
-    """Singleton class to iterate authentication schemes of
-    the Authorization header.
+    """Iterator for authentication schemes of the Authorization header.
     """
 
     basic = "Basic"
@@ -143,6 +144,9 @@ AuthSchemes = _AuthSchemes()
 @dataclass
 class ContentType:
     """`dataclass` for describing value of `Content-Type` header.
+
+    Its object is often used when handling the value of `Content-Type` in
+    Bamboo.
     """
 
     media_type: Optional[str] = None
@@ -197,6 +201,8 @@ DEFAULT_CONTENT_TYPE_JSON = ContentType(MediaTypes.json, "UTF-8")
 
 
 class _ASGIHTTPEvents:
+    """Iterator for events of ASGI HTTP protocol.
+    """
 
     request = "http.request"
     response_start = "http.response.start"
@@ -224,6 +230,8 @@ class _ASGIHTTPEvents:
 
 
 class _ASGIWebSocketEvents:
+    """Iterator for events of ASGI WebSocket protocol.
+    """
 
     connect = "websocket.connect"
     accept = "websocket.accept"
@@ -261,11 +269,17 @@ ASGIWebSocketEvents = _ASGIWebSocketEvents()
 class HTTPStatus(int, Enum):
     """Enum which describes HTTP status.
 
-    Each class variables of the class have two main attributes of
-    'value' and 'description' as strings. 'value' means the enum value
-    and describes HTTP status for WSGI. 'description' is additional
-    attributes of the Enum, and describes short message of
-    the corresponding value.
+    Each class variables of the class have four main attributes:
+
+    - value
+    - wsgi
+    - asgi
+    - description
+
+    `value` means the enum value and describes HTTP status as int.
+    `wsgi` is str and used only for WSGI servers.
+    Similarly, `asgi` is int and only for ASGI servers.
+    'description' describes short message of corresponding HTTP satus.
     """
 
     def __new__(cls, value: int, wsgi: str, asgi: int, description: str = ""):
