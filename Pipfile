@@ -7,12 +7,13 @@ verify_ssl = true
 peewee = "*"
 psycopg2 = "*"
 falcon = "*"
-hug = "*"
 flask = "*"
-requests = "*"
 gunicorn = "*"
 fastapi = "*"
 uvicorn = "*"
+mkdocs-material = "*"
+mkdocstrings = "*"
+hug = "*"
 
 [packages]
 
