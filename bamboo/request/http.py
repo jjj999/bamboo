@@ -18,6 +18,7 @@ from bamboo.request.response import Response
 
 
 __all__ = [
+    "connect",
     "delete",
     "get",
     "head",
@@ -354,6 +355,44 @@ def trace(
     return request(
         uri,
         HTTPMethods.TRACE,
+        headers=headers,
+        body=body,
+        json=json,
+        query=query,
+        timeout=timeout,
+        blocksize=blocksize,
+        datacls=datacls
+    )
+
+
+def connect(
+    uri: str,
+    headers: Dict[str, str] = {},
+    body: Optional[bytes] = None,
+    json: Optional[Dict[str, Any]] = None,
+    query: Dict[str, List[str]] = {},
+    timeout: Optional[float] = None,
+    blocksize: int = 8192,
+    datacls: Type[ResponseData_t] = BinaryApiData
+) -> Response[ResponseData_t]:
+    """Request with the CONNECT method on HTTP.
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+
+    Returns:
+        Response object generated with the response.
+    """
+    return request(
+        uri,
+        HTTPMethods.CONNECT,
         headers=headers,
         body=body,
         json=json,

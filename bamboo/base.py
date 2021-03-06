@@ -25,6 +25,7 @@ class _HTTPMethods:
     OPTIONS = "OPTIONS"
     PATCH = "PATCH"
     TRACE = "TRACE"
+    CONNECT = "CONNECT"
 
     __methods = set((
         GET,

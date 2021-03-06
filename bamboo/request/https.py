@@ -19,6 +19,7 @@ from bamboo.request.response import Response
 
 
 __all__ = [
+    "connect",
     "delete",
     "get",
     "head",
@@ -478,6 +479,59 @@ def trace(
     return request(
         uri,
         HTTPMethods.TRACE,
+        headers=headers,
+        body=body,
+        json=json,
+        query=query,
+        timeout=timeout,
+        blocksize=blocksize,
+        datacls=datacls,
+        key_file=key_file,
+        cert_file=cert_file,
+        context=context
+    )
+
+
+def connect(
+    uri: str,
+    headers: Dict[str, str] = {},
+    body: Optional[bytes] = None,
+    json: Optional[Dict[str, Any]] = None,
+    query: Dict[str, List[str]] = {},
+    timeout: Optional[float] = None,
+    blocksize: int = 8192,
+    datacls: Type[ResponseData_t] = BinaryApiData,
+    key_file: Optional[str] = None,
+    cert_file: Optional[str] = None,
+    context: Optional[SSLContext] = None
+) -> Response[ResponseData_t]:
+    """Request with the CONNECT method on HTTPS.
+
+    Note:
+        Sometimes your specified arguments may cause security problems in
+        communications with the function. It is strongly recommended to
+        reference Python ssl module security considerations documents.
+        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+
+    Args:
+        uri: URI to be requested.
+        headers: Request headers.
+        body: Request body of bytes.
+        json: Request body of JSON.
+        query: Query parameters to be attached to the URI.
+        timeout: Seconds waiting for the connection.
+        blocksize: Block size of sending data.
+        datacls: `ApiData` or its subclass to be attached from the response body.
+        key_file: Path of a public key file.
+        cert_file: Path of a certification file.
+        context: SSLContext of your communication.
+
+    Returns:
+        Response object generated with the response.
+    """
+    return request(
+        uri,
+        HTTPMethods.CONNECT,
         headers=headers,
         body=body,
         json=json,
