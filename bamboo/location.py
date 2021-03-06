@@ -29,6 +29,9 @@ class FlexibleLocation(metaclass=ABCMeta):
     def is_valid(self, loc: str) -> bool:
         pass
 
+    def __str__(self) -> str:
+        return self.__class__.__name__
+
 
 Location_t = Union[str, FlexibleLocation]
 Uri_t = Tuple[Location_t]

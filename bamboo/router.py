@@ -52,7 +52,9 @@ class Router(Generic[Endpoint_t]):
         for uri_registered in self.uri2endpoint.keys():
             if is_duplicated_uri(uri_registered, uri):
                 raise DuplicatedUriRegisteredError(
-                    "Duplicated URIs were detected."
+                    "Duplicated URIs were detected.\n"
+                    f"URI pattern 1: {uri_registered}\n"
+                    f"URI pattern 2: {uri}"
                 )
 
         if is_flexible_uri(uri):
