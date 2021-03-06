@@ -143,6 +143,8 @@ class MockEndpoint(Endpoint):
 このままでもエラーの送信は機能しますが，`may_occur` デコレータを利用するとコールバックで送信されうるエラーを明示的に定義できます:
 
 ```python
+from bamboo.sticky.http import data_format, may_occur
+
 class MockEndpoint(Endpoint):
 
     @may_occur(MockErrInfo)

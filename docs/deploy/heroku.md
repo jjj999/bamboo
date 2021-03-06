@@ -108,7 +108,7 @@ def main(root: str):
 
 if __name__ == "__main__":
     # TODO EDIT host name
-    # ここは後ほど設定されるホスト名に編集する
+    # 控えておいたホスト名に編集する
     root = "https://XXXXXXXXXXXXXXXXXXXX.herokuapp.com"
     main(root)
 ```

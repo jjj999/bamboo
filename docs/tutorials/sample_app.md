@@ -82,6 +82,7 @@ HTTP をサポートするエンドポイントには**レスポンスメソッ�
 |       OPTIONS     |       do_OPTIONS        |
 |       PATCH       |       do_PATCH          |
 |       TRACE       |       do_TRACE          |
+|       CONNECT     |       do_CONNECT        |
 
 上の表で出てきたレスポンスメソッド名は全て実装する必要はありません．実装したいものだけ実装すれば OK です．また，複数のレスポンスメソッドを実装することも可能です．
 

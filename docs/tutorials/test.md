@@ -48,14 +48,15 @@ executor.exec(client_test)
 ## テストスクリプトの作成とテストの実行
 上述した `TestExecutor` オブジェクトを利用してテストスクリプトを作成できます．ここでは Python 標準ライブラリである [unittest](https://docs.python.org/ja/3.8/library/unittest.html) を使用したテストスクリプトの作成方法について説明します．`unittest` についての説明は行いませんので，その詳細は公式ドキュメントを参照してください．
 
-`unittest` では `unittest.TestCase` サブクラスを定義することでユニットテストの1つのケースを定義します．`TestCase` クラスには `setUp()` メソッドと `tearDown()` メソッドがあり，それぞれテストメソッド (test_XXXX で命名されたメソッド) 実行前後に実行されるメソッドです．この2つのメソッドと `TestExecutor` を利用することで，以下のように `unittest` のアーキテクチャに即したテストケースを定義できます:
+`unittest` では `unittest.TestCase` サブクラスを定義することでユニットテストの1つのケースを定義します．`TestCase` クラスには `setUpClass()` クラスメソッドと `tearDownClass()` クラスメソッドがあり，それぞれテスト開始時，終了時に一度だけ実行されるメソッドです．この2つのメソッドと `TestExecutor` を利用することで，以下のように `unittest` のアーキテクチャに即したテストケースを定義できます:
 
 ```python
 import unittest
 
 class UselessTest(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         # テスト実行前に実行される
         # サーバーを起動
         form1 = ServerForm("localhost", 8000, app1, "test_app1.log")
@@ -64,7 +65,8 @@ class UselessTest(unittest.TestCase):
         self.executor = TestExecutor(form1, form2)
         self.executor.start_serve()
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         # テスト実行後に実行される
         # サーバーを停止
         self.executor.close()
@@ -78,4 +80,4 @@ if __name__ == "__main__":
     unittest.main()
 ```
 
-このようにテストスクリプトを定義することで `unittest` の機能をそのまま利用することが出来ます．テストを実行するためには作成したテストスクリプトを実行するだけです．Bamboo 開発用のテストスクリプトはほとんどがこの方法で書かれています．[bamboo/test](../../test/) ディレクトリ内のテストコードからテストスクリプト作成のヒントが得られるかもしれません．
+このようにテストスクリプトを定義することで `unittest` の機能をそのまま利用することが出来ます．テストを実行するためには作成したテストスクリプトを実行するだけです．Bamboo 開発用のテストスクリプトはほとんどがこの方法で書かれています．[bamboo/test](https://github.com/jjj999/bamboo/tree/master/test) ディレクトリ内のテストコードからテストスクリプト作成のヒントが得られるかもしれません．

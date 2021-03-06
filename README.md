@@ -26,10 +26,10 @@ class MockEndpoint(WSGIEndpoint):
         self.send_body(b"Hello, World!")
 
 if __name__ == "__main__":
-    WSGITestExecutor.debug(app, "debug_app.log")
+    WSGITestExecutor.debug(app)
 ```
 
-上記スクリプトを実行後，ブラウザで http://localhost:8000/hello にアクセスしてみましょう．
+上記スクリプトを実行後，ブラウザで http://localhost:8000/hello にアクセスするとレスポンスを確認できます．
 
 ## API documentation
 Bamboo の API ドキュメントは[こちら](https://jjj999.github.io/bamboo/api/bamboo/)．
