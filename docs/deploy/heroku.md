@@ -47,7 +47,7 @@ Heroku でデプロイするには下記のファイル名と中身を持つフ�
 - requirements.txt
     ```
     -i https://pypi.org/simple
-    git+https://github.com/jjj999/bamboo.git@c26be5771e39bf8765fc9a3570e4c6b7fe7f3361#egg=bamboo
+    bamboo-core
     gunicorn==20.0.4
     ```
 - Procfile
