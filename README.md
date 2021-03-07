@@ -11,8 +11,8 @@
 $ python -m pip install bamboo-core
 ```
 
-## Usage
-詳細なドキュメントは[こちら](https://jjj999.github.io/bamboo/tutrials/concept/)を参照してください．以下は簡単な実装例です．
+## [Usage](https://jjj999.github.io/bamboo/tutorials/concept/)
+以下は簡単な実装例です．
 
 ```python
 from bamboo import WSGIApp, WSGIEndpoint, WSGITestExecutor
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 上記スクリプトを実行後，ブラウザで http://localhost:8000/hello にアクセスするとレスポンスを確認できます．
 
 ## API documentation
-Bamboo の API ドキュメントは[こちら](https://jjj999.github.io/bamboo/api/bamboo/)．
+API ドキュメントは[こちら](https://jjj999.github.io/bamboo/api/bamboo/pkg/)．
 
 ## Examples
 
