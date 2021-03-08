@@ -426,6 +426,12 @@ class ASGIEndpointBase(EndpointBase):
         return self._req_headers.get(name)
 
     @property
+    def headers(self) -> Dict[str, str]:
+        """Request headers.
+        """
+        return self._req_headers
+
+    @property
     def path(self) -> str:
         return self._scope.get("path")
 
