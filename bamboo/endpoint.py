@@ -661,7 +661,7 @@ class HTTPMixIn(metaclass=ABCMeta):
         # Content-Length if avalidable
         if is_all_bytes and not is_empty:
             length = sum(map(len, bodies))
-            self.add_content_length("Content-Length", length)
+            self.add_content_length(length)
 
     def send_json(
         self,
