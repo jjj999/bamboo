@@ -16,6 +16,7 @@ from typing import (
     List,
     Optional,
     Tuple,
+    TYPE_CHECKING,
     TypeVar,
     Union,
 )
@@ -38,10 +39,17 @@ from bamboo.util.deco import (
 )
 
 
+if TYPE_CHECKING:
+    from bamboo.app import (
+        AppBase,
+        WSGIApp,
+        ASGIHTTPApp,
+    )
+
+    App_t = TypeVar("App_t", bound=AppBase)
+
+
 __all__ = []
-
-
-App_t = TypeVar("App_t")
 
 
 # Base classes for each interfaces  ------------------------------------------
@@ -58,6 +66,7 @@ class EndpointBase(metaclass=ABCMeta):
 
     def __init__(
         self,
+        app: App_t,
         flexible_locs: Tuple[str, ...],
         *parcel: Any
     ) -> None:
@@ -70,6 +79,7 @@ class EndpointBase(metaclass=ABCMeta):
             flexible_locs: Flexible locations requested.
             *parcel: Parcel sent via application object.
         """
+        self._app = app
         self._flexible_locs = flexible_locs
         self.setup(*parcel)
 
@@ -112,6 +122,12 @@ class EndpointBase(metaclass=ABCMeta):
             ```
         """
         pass
+
+    @property
+    def app(self) -> App_t:
+        """Application object handling the endpoint.
+        """
+        return self._app
 
     @property
     def flexible_locs(self) -> Tuple[str, ...]:
@@ -232,6 +248,7 @@ class WSGIEndpointBase(EndpointBase):
 
     def __init__(
         self,
+        app: WSGIApp,
         environ: Dict[str, Any],
         flexible_locs: Tuple[str, ...],
         *parcel: Any
@@ -242,7 +259,7 @@ class WSGIEndpointBase(EndpointBase):
             flexible_locs: flexible locations requested.
             *parcel: Parcel sent via application object.
         """
-        super().__init__(flexible_locs, *parcel)
+        super().__init__(app, flexible_locs, *parcel)
 
         self._environ = environ
 
@@ -333,6 +350,7 @@ class ASGIEndpointBase(EndpointBase):
 
     def __init__(
         self,
+        app: App_t,
         scope: Dict[str, Any],
         flexible_locs: Tuple[str, ...],
         *parcel: Any
@@ -343,7 +361,7 @@ class ASGIEndpointBase(EndpointBase):
             flexible_locs: Flexible locations requested.
             *parcel: Parcel sent via application object.
         """
-        super().__init__(flexible_locs, *parcel)
+        super().__init__(app, flexible_locs, *parcel)
 
         self._scope = scope
 
@@ -796,6 +814,7 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
 
     def __init__(
         self,
+        app: WSGIApp,
         environ: Dict[str, Any],
         flexible_locs: Tuple[str, ...],
         *parcel: Any
@@ -806,7 +825,7 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
             flexible_locs: flexible locations requested.
             *parcel: Parcel sent via application object.
         """
-        WSGIEndpointBase.__init__(self, environ, flexible_locs, *parcel)
+        WSGIEndpointBase.__init__(self, app, environ, flexible_locs, *parcel)
         HTTPMixIn.__init__(self)
 
     def _recv_body_secure(self) -> bytes:
@@ -885,6 +904,7 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
 
     def __init__(
         self,
+        app: ASGIHTTPApp,
         scope: Dict[str, Any],
         receive: Callable[[], Awaitable[Dict[str, Any]]],
         flexible_locs: Tuple[str, ...],
@@ -897,7 +917,7 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
             flexible_locs: Flexible locations requested.
             *parcel: Parcel sent via application object.
         """
-        ASGIEndpointBase.__init__(self, scope, flexible_locs, *parcel)
+        ASGIEndpointBase.__init__(self, app, scope, flexible_locs, *parcel)
         HTTPMixIn.__init__(self)
 
         self._res_headers: List[Tuple[bytes, bytes]] = []

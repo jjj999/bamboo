@@ -18,7 +18,6 @@ from typing import (
 
 from bamboo.base import ASGIHTTPEvents, HTTPStatus
 from bamboo.endpoint import (
-    App_t,
     ASGIHTTPEndpoint,
     EndpointBase,
     WSGIEndpoint,
@@ -309,7 +308,7 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
 
     def graft(
         self,
-        *apps: App_t,
+        *apps: AppBase,
         onto: Tuple[StaticLocation_t, ...] = ()
     ) -> None:
         """Graft other applications as branches of the application's tree.
@@ -368,7 +367,7 @@ class WSGIApp(AppBase):
         if callback is None:
             return [self.send_404(start_response)]
 
-        endpoint = endpoint_class(environ, flexible_locs, *parcel)
+        endpoint = endpoint_class(self, environ, flexible_locs, *parcel)
         if pre_callback:
             pre_callback(endpoint)
         callback(endpoint)
@@ -447,7 +446,7 @@ class ASGIHTTPApp(AppBase):
         parcel_config = ParcelConfig(endpoint_class)
         parcel = parcel_config.get(self)
 
-        endpoint = endpoint_class(scope, receive, flexible_locs, *parcel)
+        endpoint = endpoint_class(self, scope, receive, flexible_locs, *parcel)
         callback = endpoint_class._get_response_method(method)
         if callback is None:
             await self.send_404(send)
