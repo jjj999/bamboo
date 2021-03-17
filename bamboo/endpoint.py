@@ -467,7 +467,28 @@ class HTTPMixIn(metaclass=ABCMeta):
         method in the one of the subclass.
     """
 
+    __PREFIX_RESPONSE = "do_"
+    __PREFIX_PRE_RESPONSE = "pre_"
+
     bufsize = 8192
+
+    @classmethod
+    def _get_pre_response_method(
+        cls,
+        method: str
+    ) -> Optional[Callable[[EndpointBase], None]]:
+        """Retrieve pre-response method corresponding with given HTTP method.
+
+        Args:
+            method: HTTP method
+
+        Returns:
+            Pre-response method with given name.
+        """
+        mname = cls.__PREFIX_PRE_RESPONSE + method
+        if hasattr(cls, mname):
+            return getattr(cls, mname)
+        return None
 
     @classmethod
     def _get_response_method(
@@ -482,7 +503,7 @@ class HTTPMixIn(metaclass=ABCMeta):
         Returns:
             Callback with given name.
         """
-        mname = "do_" + method
+        mname = cls.__PREFIX_RESPONSE + method
         if hasattr(cls, mname):
             return getattr(cls, mname)
         return None

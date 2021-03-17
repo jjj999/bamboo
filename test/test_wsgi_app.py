@@ -41,6 +41,17 @@ class AttributesEndpoint(WSGIEndpoint):
         self.send_only_status()
 
 
+@app.route("callback")
+class CallbackEndpoint(WSGIEndpoint):
+
+    def pre_GET(self) -> None:
+        self.word = "word"
+
+    def do_GET(self) -> None:
+        assert self.word == "word"
+        self.send_only_status()
+
+
 class WSGIAppTest(unittest.TestCase):
 
     @classmethod
@@ -58,6 +69,10 @@ class WSGIAppTest(unittest.TestCase):
 
     def test_attributes(self):
         with http.get("http://localhost:8000/attributes") as res:
+            self.assertTrue(res.ok)
+
+    def test_callback(self):
+        with http.get("http://localhost:8000/callback") as res:
             self.assertTrue(res.ok)
 
 

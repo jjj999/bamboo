@@ -341,11 +341,14 @@ class WSGIApp(AppBase):
         parcel_config = ParcelConfig(endpoint_class)
         parcel = parcel_config.get(self)
 
-        endpoint = endpoint_class(environ, flexible_locs, *parcel)
+        pre_callback = endpoint_class._get_pre_response_method(method)
         callback = endpoint_class._get_response_method(method)
         if callback is None:
             return [self.send_404(start_response)]
 
+        endpoint = endpoint_class(environ, flexible_locs, *parcel)
+        if pre_callback:
+            pre_callback(endpoint)
         callback(endpoint)
         start_response(endpoint._res_status.wsgi, endpoint._res_headers)
         return endpoint._res_body
