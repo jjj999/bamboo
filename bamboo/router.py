@@ -50,6 +50,7 @@ class Router(Generic[Endpoint_t]):
         Args:
             uri: URI pattern of the `Endpoint`.
             endpoint: `Endpoint` class to be registered.
+            version: Version of the `Endpoint`.
 
         Raises:
             DuplicatedUriRegisteredError: Raised if given URI pattern

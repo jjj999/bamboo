@@ -243,6 +243,7 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
         """Register combination of URI and `Endpoint` for routing.
 
         Args:
+            *locs: Locations of path of the URI bound with the `Endpoint`.
             version : Version of the `Endpoint`.
 
         Returns:
