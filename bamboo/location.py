@@ -34,7 +34,8 @@ class FlexibleLocation(metaclass=ABCMeta):
 
 
 Location_t = Union[str, FlexibleLocation]
-Uri_t = Tuple[Location_t]
+StaticLocation_t = str
+Uri_t = Tuple[Location_t, ...]
 
 
 def is_flexible_uri(uri: Uri_t) -> bool:

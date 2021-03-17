@@ -6,7 +6,7 @@ from typing import (
     Optional,
     Tuple,
     Type,
-    TypeVar,
+    TypeVar, Union,
 )
 
 from bamboo.location import (
@@ -35,10 +35,16 @@ class Router(Generic[Endpoint_t]):
     """
 
     def __init__(self) -> None:
+        self._raw_uri2endpoint: Uri2Endpoints_t = {}
         self.uri2endpoint: Uri2Endpoints_t = {}
         self.uris_flexible: List[Uri_t] = []
 
-    def register(self, uri: Uri_t, endpoint: Type[Endpoint_t]) -> None:
+    def register(
+        self,
+        uri: Uri_t,
+        endpoint: Type[Endpoint_t],
+        version: Union[str, Tuple[str, ...]] = ()
+    ) -> None:
         """Register combination of URI and `Endpoint`.
 
         Args:
@@ -49,17 +55,28 @@ class Router(Generic[Endpoint_t]):
             DuplicatedUriRegisteredError: Raised if given URI pattern
                 matches one already registered.
         """
-        for uri_registered in self.uri2endpoint.keys():
+        for uri_registered in self._raw_uri2endpoint.keys():
             if is_duplicated_uri(uri_registered, uri):
                 raise DuplicatedUriRegisteredError(
                     "Duplicated URIs were detected.\n"
                     f"URI pattern 1: {uri_registered}\n"
                     f"URI pattern 2: {uri}"
                 )
+        else:
+            self._raw_uri2endpoint[uri] = endpoint
 
-        if is_flexible_uri(uri):
-            self.uris_flexible.append(uri)
-        self.uri2endpoint[uri] = endpoint
+        if isinstance(version, str):
+            version = (version,)
+
+        if len(version):
+            uris = [(ver,) + uri for ver in version]
+        else:
+            uris = [uri]
+
+        for _uri in uris:
+            if is_flexible_uri(_uri):
+                self.uris_flexible.append(_uri)
+            self.uri2endpoint[_uri] = endpoint
 
     def validate(
         self,
@@ -87,6 +104,9 @@ class Router(Generic[Endpoint_t]):
             `uri` is valid.
         """
         uri = tuple(uri[1:].split("/"))
+        if not uri[0]:
+            uri = ()
+
         endpoint = self.uri2endpoint.get(uri)
         if endpoint:
             return ((), endpoint)

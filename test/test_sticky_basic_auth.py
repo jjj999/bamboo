@@ -29,7 +29,7 @@ def make_basic_credential(user_id: str, pw: str) -> str:
     return encode_base64_string(f"{user_id}:{pw}")
 
 
-@app_asgi.route("")
+@app_asgi.route()
 class TestASGIHTTPEndpoint(ASGIHTTPEndpoint):
 
     @basic_auth()
@@ -37,7 +37,7 @@ class TestASGIHTTPEndpoint(ASGIHTTPEndpoint):
         self.send_only_status()
 
 
-@app_wsgi.route("")
+@app_wsgi.route()
 class TestWSGIEndpoint(WSGIEndpoint):
 
     @basic_auth()
@@ -53,7 +53,7 @@ class TestStickyRestrictsClient(unittest.TestCase):
         form_wsgi = WSGIServerForm("", 8001, app_wsgi, PATH_WSGI_SERVER_LOG)
         cls.executor_asgi = ASGIHTTPTestExecutor(form_asgi).start_serve()
         cls.executor_wsgi = WSGITestExecutor(form_wsgi).start_serve()
-        cls.uri_asgi = "http://localhost:8000/"
+        cls.uri_asgi = "http://localhost:8000"
         cls.uri_wsgi = "http://localhost:8001"
 
     @classmethod

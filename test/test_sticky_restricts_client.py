@@ -24,7 +24,7 @@ CLIENT_CORRECT = ClientInfo("127.0.0.1")
 CLIENT_INCORRECT = ClientInfo("199.9.9.9")
 
 
-@app_asgi.route("")
+@app_asgi.route()
 class TestASGIHTTPEndpoint(ASGIHTTPEndpoint):
 
     @restricts_client(CLIENT_CORRECT)
@@ -36,7 +36,7 @@ class TestASGIHTTPEndpoint(ASGIHTTPEndpoint):
         self.send_only_status()
 
 
-@app_wsgi.route("")
+@app_wsgi.route()
 class TestWSGIEndpoint(WSGIEndpoint):
 
     @restricts_client(CLIENT_CORRECT)
@@ -56,7 +56,7 @@ class TestStickyRestrictsClient(unittest.TestCase):
         form_wsgi = WSGIServerForm("", 8001, app_wsgi, PATH_WSGI_SERVER_LOG)
         cls.executor_asgi = ASGIHTTPTestExecutor(form_asgi).start_serve()
         cls.executor_wsgi = WSGITestExecutor(form_wsgi).start_serve()
-        cls.uri_asgi = "http://localhost:8000/"
+        cls.uri_asgi = "http://localhost:8000"
         cls.uri_wsgi = "http://localhost:8001"
 
     @classmethod

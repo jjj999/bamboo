@@ -62,7 +62,7 @@ def make_test_api_data() -> Dict[str, Any]:
     }
 
 
-@app_asgi.route("")
+@app_asgi.route()
 class TestASGIHTTPEndpoint(ASGIHTTPEndpoint):
 
     @data_format(input=None, output=TestJsonApi)
@@ -79,7 +79,7 @@ class TestASGIHTTPEndpoint(ASGIHTTPEndpoint):
         self.send_only_status()
 
 
-@app_wsgi.route("")
+@app_wsgi.route()
 class TestWSGIEndpoint(WSGIEndpoint):
 
     @data_format(input=None, output=TestJsonApi)
@@ -104,7 +104,7 @@ class TestStickyDataFormat(unittest.TestCase):
         form_wsgi = WSGIServerForm("", 8001, app_wsgi, PATH_WSGI_SERVER_LOG)
         cls.executor_asgi = ASGIHTTPTestExecutor(form_asgi).start_serve()
         cls.executor_wsgi = WSGITestExecutor(form_wsgi).start_serve()
-        cls.uri_asgi = "http://localhost:8000/"
+        cls.uri_asgi = "http://localhost:8000"
         cls.uri_wsgi = "http://localhost:8001"
 
     @classmethod
