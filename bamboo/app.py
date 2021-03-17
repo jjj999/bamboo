@@ -18,14 +18,23 @@ from typing import (
 
 from bamboo.base import ASGIHTTPEvents, HTTPStatus
 from bamboo.endpoint import (
+    App_t,
     ASGIHTTPEndpoint,
     EndpointBase,
     WSGIEndpoint,
 )
 from bamboo.error import DEFAULT_NOT_FOUND_ERROR, ErrInfoBase
 from bamboo.io import BufferedConcatIterator
-from bamboo.location import Location_t, Uri_t
-from bamboo.router import Router, Endpoint_t
+from bamboo.location import (
+    Location_t,
+    StaticLocation_t,
+    Uri_t,
+)
+from bamboo.router import (
+    Endpoint_t,
+    Router,
+    Uri2Endpoints_t,
+)
 from bamboo.sticky import _get_bamboo_attr
 
 
@@ -70,11 +79,6 @@ class VersionConfig:
             setattr(self._endpoint_class, ATTR_VERSION, {})
 
         registered = getattr(self._endpoint_class, ATTR_VERSION)
-        current_version = registered.get(app)
-        if current_version and not force:
-            raise ValueError(
-                f"{self._endpoint_class.__name__} already has own version."
-                "If you want to overwirte it, set param 'force' True.")
 
         # Format to fit the type Version_t
         if version is None:
@@ -187,18 +191,14 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
 
     def __init__(
         self,
-        is_version_inserted: bool = True,
         error_404: ErrInfoBase = DEFAULT_NOT_FOUND_ERROR
     ) -> None:
         """
         Args:
-            is_version_inserted: If version is inserted at the head of
-                paths of URIs.
             error_404: Error sending if a request to not registered URI or
                 HTTP method comes.
         """
         self._router: Router[Endpoint_t] = Router()
-        self._is_version_isnerted = is_version_inserted
         self._error_404 = error_404
 
     @abstractmethod
@@ -274,17 +274,10 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
 
             # router setting
             _version = ver_config.get(self)
-            if self._is_version_isnerted and len(_version):
-                _version = ver_config.get(self)
-                if len(_version):
-                    uri_list = [
-                        (f"{self.TAG_VERSION}{ver_num}",) + locs
-                        for ver_num in _version
-                    ]
-                    for uri_version_included in uri_list:
-                        self._router.register(uri_version_included, endpoint)
-            else:
-                self._router.register(locs, endpoint)
+            assert _version is not None
+            if len(_version):
+                _version = tuple(f"{self.TAG_VERSION}{v}" for v in _version)
+            self._router.register(locs, endpoint, version=_version)
 
             return endpoint
         return register_endpoint
@@ -307,6 +300,35 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
         """
         parcel_config = ParcelConfig(endpoint)
         parcel_config.set(self, parcel)
+
+    @property
+    def tree(self) -> Uri2Endpoints_t:
+        """Tree of the application's endpoints.
+        """
+        return self._router.uri2endpoint.copy()
+
+    def graft(
+        self,
+        *apps: App_t,
+        onto: Tuple[StaticLocation_t, ...] = ()
+    ) -> None:
+        """Graft other applications as branches of the application's tree.
+
+        Args:
+            *apps: Branch applications.
+            onto: Root path of the branches.
+        """
+        for app in apps:
+            for locs, endpoint in app._router._raw_uri2endpoint.items():
+                locs = onto + locs
+
+                ver_config = VersionConfig(endpoint)
+                version = ver_config.get(app)
+                ver_config.set(self, version=version)
+                if len(version):
+                    version = tuple(f"{self.TAG_VERSION}{v}" for v in version)
+
+                self._router.register(locs, endpoint, version=version)
 
 
 class WSGIApp(AppBase):

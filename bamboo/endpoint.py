@@ -16,6 +16,7 @@ from typing import (
     List,
     Optional,
     Tuple,
+    TypeVar,
     Union,
 )
 from urllib.parse import parse_qs
@@ -38,6 +39,9 @@ from bamboo.util.deco import (
 
 
 __all__ = []
+
+
+App_t = TypeVar("App_t")
 
 
 # Base classes for each interfaces  ------------------------------------------
