@@ -121,13 +121,14 @@ class Router(Generic[Endpoint_t]):
 
             # Judging each locations
             for loc_req, loc_flex in zip(uri, flexible):
-                if loc_req == loc_flex:
-                    continue
                 if isinstance(loc_flex, FlexibleLocation):
                     if not loc_flex.is_valid(loc_req):
                         break
 
                     flexibles_received.append(loc_req)
+                else:
+                    if loc_req != loc_flex:
+                        break
             else:
                 # Correct case
                 endpoint = self.uri2endpoint.get(flexible)
