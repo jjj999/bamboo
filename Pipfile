@@ -5,7 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 peewee = "*"
-psycopg2 = "*"
+psycopg2-binary = "*"
 falcon = "*"
 flask = "*"
 gunicorn = "*"

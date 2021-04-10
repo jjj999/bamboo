@@ -207,7 +207,7 @@ class EndpointBase(metaclass=ABCMeta):
 
     @cached_property
     @abstractmethod
-    def queries(self) -> Dict[str, str]:
+    def queries(self) -> Dict[str, List[str]]:
         """Query parameters specified to requested URI.
         """
         pass
@@ -222,7 +222,10 @@ class EndpointBase(metaclass=ABCMeta):
             Value of the parameter. The value of list may have multiple
             items if client specifies the parameter in several times.
         """
-        return self.queries.get(name)
+        query = self.queries.get(name)
+        if query:
+            return query
+        return []
 
     @cached_property
     @abstractmethod
