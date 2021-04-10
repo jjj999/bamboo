@@ -204,7 +204,7 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         pass
 
-    def seach_uris(self, endpoint: Type[Endpoint_t]) -> List[Uri_t]:
+    def search_uris(self, endpoint: Type[Endpoint_t]) -> List[Uri_t]:
         """Retrieve all URI patterns of `Endpoint`.
 
         Note:
@@ -389,8 +389,8 @@ class WSGIApp(AppBase):
         start_response(status.wsgi, headers)
         return res_body
 
-    def seach_uris(self, endpoint: Type[WSGIEndpoint]) -> List[Uri_t]:
-        return super().seach_uris(endpoint)
+    def search_uris(self, endpoint: Type[WSGIEndpoint]) -> List[Uri_t]:
+        return super().search_uris(endpoint)
 
     def validate(
         self,
@@ -511,11 +511,11 @@ class ASGIHTTPApp(AppBase):
         await self.send_start(send, status, headers)
         await self.send_body(send, BufferedConcatIterator(res_body))
 
-    def seach_uris(
+    def search_uris(
         self,
         endpoint: Type[ASGIHTTPEndpoint]
     ) -> List[Uri_t]:
-        return super().seach_uris(endpoint)
+        return super().search_uris(endpoint)
 
     def validate(
         self,
