@@ -369,11 +369,19 @@ class WSGIApp(AppBase):
             return [self.send_404(start_response)]
 
         endpoint = endpoint_class(self, environ, flexible_locs, *parcel)
-        if pre_callback:
-            pre_callback(endpoint)
-        callback(endpoint)
-        start_response(endpoint._res_status.wsgi, endpoint._res_headers)
-        return endpoint._res_body
+        try:
+            if pre_callback:
+                pre_callback(endpoint)
+            callback(endpoint)
+        except ErrInfoBase as e:
+            status, headers, body = e.get_all_form()
+        else:
+            status = endpoint._res_status
+            headers = endpoint._res_headers
+            body = endpoint._res_body
+
+        start_response(status.wsgi, headers)
+        return body
 
     def send_404(self, start_response: Callable) -> bytes:
         """Send `404` error code, i.e. `Resource Not Found` error.
@@ -448,14 +456,28 @@ class ASGIHTTPApp(AppBase):
         parcel = parcel_config.get(self)
 
         endpoint = endpoint_class(self, scope, receive, flexible_locs, *parcel)
+        pre_callback = endpoint_class._get_pre_response_method(method)
         callback = endpoint_class._get_response_method(method)
         if callback is None:
             await self.send_404(send)
             return
 
-        await callback(endpoint)
-        await self.send_start(send, endpoint._res_status, endpoint._res_headers)
-        await self.send_body(send, endpoint._res_body)
+        try:
+            if pre_callback:
+                await pre_callback(endpoint)
+            await callback(endpoint)
+        except ErrInfoBase as e:
+            status, headers, body = e.get_all_form()
+            headers = [
+                tuple(map(codecs.encode, header)) for header in headers
+            ]
+        else:
+            status = endpoint._res_status
+            headers = endpoint._res_headers
+            body = endpoint._res_body
+
+        await self.send_start(send, status, headers)
+        await self.send_body(send, body)
 
     @staticmethod
     async def send_start(

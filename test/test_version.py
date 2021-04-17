@@ -45,7 +45,7 @@ class TestVersion(unittest.TestCase):
         config = VersionConfig(TestEndpointSingle)
         self.assertEqual(config.get(app), (1,))
 
-        uris = app.seach_uris(TestEndpointSingle)
+        uris = app.search_uris(TestEndpointSingle)
         for uri, ideal in zip(uris, TestEndpointSingle.ideal_uris):
             self.assertEqual(uri, ideal)
 
@@ -53,7 +53,7 @@ class TestVersion(unittest.TestCase):
         config = VersionConfig(TestEndpointMultiple)
         self.assertEqual(config.get(app), (1, 2, 3))
 
-        uris = app.seach_uris(TestEndpointMultiple)
+        uris = app.search_uris(TestEndpointMultiple)
         for uri, ideal in zip(uris, TestEndpointMultiple.ideal_uris):
             self.assertEqual(uri, ideal)
 
@@ -61,7 +61,7 @@ class TestVersion(unittest.TestCase):
         config = VersionConfig(TestEndpointAny)
         self.assertEqual(config.get(app), ())
 
-        uris = app.seach_uris(TestEndpointAny)
+        uris = app.search_uris(TestEndpointAny)
         for uri, ideal in zip(uris, TestEndpointAny.ideal_uris):
             self.assertEqual(uri, ideal)
 

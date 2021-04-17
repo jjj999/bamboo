@@ -1,9 +1,11 @@
 
 import json
 from typing import (
+    Iterable,
     List,
     Optional,
     Tuple,
+    Union,
 )
 
 from bamboo.base import (
@@ -13,13 +15,14 @@ from bamboo.base import (
     DEFAULT_CONTENT_TYPE_PLAIN,
     HTTPStatus, MediaTypes,
 )
+from bamboo.io import BufferedConcatIterator
 from bamboo.util.deco import class_property
 
 
 __all__ = []
 
 
-class ErrInfoBase(ContentTypeHolder):
+class ErrInfoBase(Exception, ContentTypeHolder):
     """Base class of all error handlings.
 
     This class defines the attributes of all classes for error handling.
@@ -29,9 +32,6 @@ class ErrInfoBase(ContentTypeHolder):
         _content_type_ (ContentType): Content type with `text/plain`.
     """
     http_status: HTTPStatus = HTTPStatus.BAD_REQUEST
-
-    def __init__(self, *args, **kwargs) -> None:
-        pass
 
     @class_property
     def _content_type_(cls) -> ContentType:
@@ -45,7 +45,7 @@ class ErrInfoBase(ContentTypeHolder):
         """
         return []
 
-    def get_body(self) -> bytes:
+    def get_body(self) -> Union[bytes, Iterable[bytes]]:
         """Publishes response body for error response.
 
         Returns
@@ -53,7 +53,13 @@ class ErrInfoBase(ContentTypeHolder):
         """
         return b""
 
-    def get_all_form(self) -> Tuple[HTTPStatus, List[Tuple[str, str]], bytes]:
+    def get_all_form(
+        self,
+    ) -> Tuple[
+        HTTPStatus,
+        List[Tuple[str, str]],
+        Union[bytes, Iterable[bytes]]
+    ]:
         """Get status code, headers and body of repsponse of the error.
 
         Returns:
@@ -62,7 +68,7 @@ class ErrInfoBase(ContentTypeHolder):
         stat = self.http_status
         headers = self.get_headers()
         body = self.get_body()
-        return (stat, headers, body)
+        return (stat, headers, BufferedConcatIterator(body))
 
 # ----------------------------------------------------------------------------
 
