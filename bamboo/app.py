@@ -22,7 +22,7 @@ from bamboo.endpoint import (
     EndpointBase,
     WSGIEndpoint,
 )
-from bamboo.error import DEFAULT_NOT_FOUND_ERROR, ErrInfoBase
+from bamboo.error import DEFAULT_NOT_FOUND_ERROR, ErrInfo
 from bamboo.io import BufferedConcatIterator
 from bamboo.location import (
     Location_t,
@@ -190,7 +190,7 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
 
     def __init__(
         self,
-        error_404: ErrInfoBase = DEFAULT_NOT_FOUND_ERROR
+        error_404: ErrInfo = DEFAULT_NOT_FOUND_ERROR
     ) -> None:
         """
         Args:
@@ -369,12 +369,19 @@ class WSGIApp(AppBase):
             return [self.send_404(start_response)]
 
         endpoint = endpoint_class(self, environ, flexible_locs, *parcel)
+        # NOTE
+        #   Subclasses of the ErrInfo must be raised in pre-response
+        #   methods or response methods. Otherwise, the errors behave
+        #   like ordinary exception objects.
         try:
             if pre_callback:
                 pre_callback(endpoint)
             callback(endpoint)
-        except ErrInfoBase as e:
+        except ErrInfo as e:
             status, headers, body = e.get_all_form()
+            # NOTE
+            #   Other exception not inheriting the ErrInfo class
+            #   are not to be catched here.
         else:
             status = endpoint._res_status
             headers = endpoint._res_headers
@@ -455,22 +462,29 @@ class ASGIHTTPApp(AppBase):
         parcel_config = ParcelConfig(endpoint_class)
         parcel = parcel_config.get(self)
 
-        endpoint = endpoint_class(self, scope, receive, flexible_locs, *parcel)
         pre_callback = endpoint_class._get_pre_response_method(method)
         callback = endpoint_class._get_response_method(method)
         if callback is None:
             await self.send_404(send)
             return
 
+        endpoint = endpoint_class(self, scope, receive, flexible_locs, *parcel)
+        # NOTE
+        #   Subclasses of the ErrInfo must be raised in pre-response
+        #   methods or response methods. Otherwise, the errors behave
+        #   like ordinary exception objects.
         try:
             if pre_callback:
                 await pre_callback(endpoint)
             await callback(endpoint)
-        except ErrInfoBase as e:
+        except ErrInfo as e:
             status, headers, body = e.get_all_form()
             headers = [
                 tuple(map(codecs.encode, header)) for header in headers
             ]
+            # NOTE
+            #   Other exceptions not inheriting the ErrInfo class
+            #   are not to be catched here.
         else:
             status = endpoint._res_status
             headers = endpoint._res_headers

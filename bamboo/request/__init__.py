@@ -1,7 +1,7 @@
-
 from __future__ import annotations
-
 from typing import TypeVar
+
+from ..api import ApiData
 
 
 __all__ = [
@@ -10,7 +10,7 @@ __all__ = [
 ]
 
 
-ResponseData_t = TypeVar("ResponseData_t")
+ResponseData_t = TypeVar("ResponseData_t", bound=ApiData)
 
 
 class _Schemes:

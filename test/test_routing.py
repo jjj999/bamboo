@@ -1,4 +1,3 @@
-
 import random
 import string
 from typing import List
@@ -42,7 +41,7 @@ class TestRouting(unittest.TestCase):
 
     def test_routing(self):
         # Make different uris
-        paths = list(set(rand_strings(100)))
+        paths = list(set(rand_strings(30)))
 
         def client():
             for i, path in enumerate(paths):

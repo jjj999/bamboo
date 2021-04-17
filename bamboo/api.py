@@ -1,6 +1,4 @@
-
 from __future__ import annotations
-
 from abc import ABCMeta, abstractmethod
 from bamboo.util.deco import class_property
 import json
@@ -72,9 +70,6 @@ class BinaryApiData(ApiData):
     This class can be used to describe raw data with no data format. So,
     any received data from clients is acceptable on the class.
 
-    Attributes:
-        _content_type_ (ContentType): Content type with `text/plain`.
-
     Examples:
         ```python
         class MockEndpoint(Endpoint):
@@ -110,7 +105,9 @@ class BinaryApiData(ApiData):
         return self._raw
 
     @class_property
-    def _content_type_(cls) -> ContentType:
+    def __content_type__(cls) -> ContentType:
+        """Content type with `text/plain`.
+        """
         return DEFAULT_CONTENT_TYPE_PLAIN
 
 
@@ -355,10 +352,6 @@ class JsonApiData(ApiData):
     class-attribtues, which are used to validate if raw data has format
     the type hints define.
 
-    Attributes:
-        _content_type_ (ContentType): Content type with
-            `application/json; charset=UTF-8`.
-
     Examples:
         - Defining subclass of this class
         ```python
@@ -399,29 +392,22 @@ class JsonApiData(ApiData):
         """
         super().__init__(raw, content_type)
 
-        encoding = content_type.charset
-        if encoding is None:
-            encoding = "UTF-8"
+        if content_type.charset is None:
+            content_type.charset = "UTF-8"
 
-        media_type = content_type.media_type
-        if media_type is None:
-            raise ValidationFailedError(
-                "'Content-Type' header was not specified. Specify "
-                f"'{MediaTypes.json}' as media type."
-            )
-        if media_type.lower() != MediaTypes.json:
+        if not self.verify_content_type(content_type):
             raise ValidationFailedError(
                 "Media type of 'Content-Type' header was not "
                 f"{MediaTypes.json}, but {content_type.media_type}."
             )
 
         try:
-            raw = raw.decode(encoding=encoding)
+            raw = raw.decode(encoding=content_type.charset)
             data = json.loads(raw)
         except UnicodeDecodeError:
             raise ValidationFailedError(
                 "Decoding raw data failed. The encoding was expected "
-                f"{encoding}, but not corresponded."
+                f"{content_type.charset}, but not corresponded."
             )
         except json.decoder.JSONDecodeError:
             raise ValidationFailedError(
@@ -434,7 +420,9 @@ class JsonApiData(ApiData):
         )
 
     @class_property
-    def _content_type_(cls) -> ContentType:
+    def __content_type__(cls) -> ContentType:
+        """Content type with `application/json; charset=UTF-8`.
+        """
         return DEFAULT_CONTENT_TYPE_JSON
 
 
@@ -532,10 +520,6 @@ class XWWWFormUrlEncodedData(ApiData):
     raw data has format the type hints define. In this class, the type hints
     must be only `str`. Otherwise, `InvalidAnnotationError` will be raised.
 
-    Attributes:
-        _content_type_ (ContentType): Content type with
-            `application/x-www-form-urlencoded`.
-
     Examples:
         - Defining subclass of this class
         ```python
@@ -566,17 +550,10 @@ class XWWWFormUrlEncodedData(ApiData):
             raw: Raw data to be validated.
             content_type: Values of `Content-Type` header.
         """
-        encoding = content_type.charset
-        if encoding is None:
-            encoding = "UTF-8"
+        if content_type.charset is None:
+            content_type.charset = "UTF-8"
 
-        media_type = content_type.media_type
-        if media_type is None:
-            raise ValidationFailedError(
-                "'Content-Type' header was not specified. Specify "
-                f"'{MediaTypes.x_www_form_urlencoded}' as media type."
-            )
-        if media_type.lower() != MediaTypes.x_www_form_urlencoded:
+        if not self.verify_content_type(content_type):
             raise ValidationFailedError(
                 "Media type of 'Content-Type' header is not "
                 f"{MediaTypes.x_www_form_urlencoded}, "
@@ -584,16 +561,18 @@ class XWWWFormUrlEncodedData(ApiData):
             )
 
         try:
-            raw = raw.decode(encoding=encoding)
+            raw = raw.decode(encoding=content_type.charset)
         except UnicodeDecodeError:
             raise ValidationFailedError(
                 "Decoding raw data failed. The encoding was expected "
-                f"{encoding}, but not corresponded."
+                f"{content_type.charset}, but not corresponded."
             )
 
         instance = XWWWFormUrlEncodedDataBuilder.build(self.__class__, raw)
         self.__dict__.update(instance.__dict__)
 
     @class_property
-    def _content_type_(cls) -> ContentType:
-        ContentType(MediaTypes.x_www_form_urlencoded)
+    def __content_type__(cls) -> ContentType:
+        """Content type with `application/x-www-form-urlencoded`.
+        """
+        return ContentType(MediaTypes.x_www_form_urlencoded)

@@ -1,4 +1,3 @@
-
 import unittest
 
 from bamboo.util.string import CircularChar, SerialString

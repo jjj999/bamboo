@@ -1,6 +1,4 @@
-
 from __future__ import annotations
-
 from abc import ABCMeta, abstractmethod
 import codecs
 import inspect
@@ -30,13 +28,13 @@ from bamboo.base import (
     HTTPStatus,
     MediaTypes,
 )
-from bamboo.error import ErrInfoBase
 from bamboo.io import BufferedConcatIterator, BufferedFileIterator
 from bamboo.util.deco import (
     awaitable_property,
     awaitable_cached_property,
     cached_property,
 )
+from bamboo.util.header import make_header
 
 
 if TYPE_CHECKING:
@@ -321,7 +319,13 @@ class WSGIEndpointBase(EndpointBase):
         return (None, None)
 
     def get_header(self, name: str) -> Optional[str]:
-        name = "HTTP_" + name.replace("-", "_").upper()
+        name = name.upper()
+        if name == "CONTENT-TYPE":
+            return self.content_type
+        if name == "CONTENT-LENGTH":
+            return self._environ.get("CONTENT_LENGTH")
+
+        name = "HTTP_" + name.replace("-", "_")
         return self._environ.get(name)
 
     @property
@@ -561,23 +565,6 @@ class HTTPMixIn(metaclass=ABCMeta):
         """
         pass
 
-    @staticmethod
-    def make_header(
-        name: str,
-        value: str,
-        **params: str
-    ) -> Tuple[str, str]:
-        """Make pair of header field and its value with other directives.
-
-        Args:
-            name: Field name of the header.
-            value: Value of the field.
-            **params: Directives added to the field.
-        """
-        params = [f'; {header}={val}' for header, val in params.items()]
-        params = "".join(params)
-        return (name, value + params)
-
     def add_header(
         self,
         name: str,
@@ -591,7 +578,7 @@ class HTTPMixIn(metaclass=ABCMeta):
             value: Value of the field.
             **params: Directives added to the field.
         """
-        self._res_headers.append(self.make_header(name, value, **params))
+        self._res_headers.append(make_header(name, value, **params))
 
     def add_headers(self, *headers: Tuple[str, str]) -> None:
         """Add response headers at once.
@@ -613,12 +600,7 @@ class HTTPMixIn(metaclass=ABCMeta):
         Args:
             content_type: Information of Content-Type header.
         """
-        params = {}
-        if content_type.charset:
-            params["charset"] = content_type.charset
-        if content_type.boundary:
-            params["boundary"] = content_type.boundary
-        self.add_header("Content-Type", content_type.media_type, **params)
+        self.add_header(*content_type.to_header())
 
     def add_content_length(self, length: int) -> None:
         """Add Content-Length header of response.
@@ -759,26 +741,6 @@ class HTTPMixIn(metaclass=ABCMeta):
                 "attachment",
                 filename=fname
             )
-
-    def send_err(self, err: ErrInfoBase) -> None:
-        """Set error to the response body.
-
-        Args:
-            err: Error information to be sent.
-
-        Raises:
-            StatusCodeAlreadySetError: Raised if response status code
-                has already been set.
-        """
-        status, headers, body = err.get_all_form()
-        self._set_status_safely(status)
-        self._attach_err_headers(headers)
-        self._res_body.append(body)
-
-        if body:
-            content_type = err._content_type_
-            self.add_content_type(content_type)
-            self.add_content_length_body(body)
 
     @abstractmethod
     def _attach_err_headers(self, headers: List[Tuple[str, str]]) -> None:
@@ -975,7 +937,7 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
         **params: str
     ) -> None:
         header = tuple(
-            map(codecs.encode, self.make_header(name, value, **params))
+            map(codecs.encode, make_header(name, value, **params))
         )
         self._res_headers.append(header)
 

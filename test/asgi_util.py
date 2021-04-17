@@ -1,6 +1,4 @@
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from multiprocessing import Process
 import os
@@ -63,7 +61,7 @@ class ASGIHTTPTestExecutor:
         for form in forms:
             self._forms.append(form)
 
-    def start_serve(self, waiting: float = 0.05) -> ASGIHTTPTestExecutor:
+    def start_serve(self, waiting: float = 0.1) -> ASGIHTTPTestExecutor:
         for form in self._forms:
             child = Process(target=serve_at, args=(form,))
             child.start()
@@ -113,7 +111,7 @@ class ASGIHTTPTestExecutor:
             executor.start_serve(waiting=waiting)
             while True:
                 time.sleep(60 * 60)
-        except KeyboardInterrupt:
+        finally:
             executor.close()
             print(
                 "\nHosting terminated. The log was output into " +

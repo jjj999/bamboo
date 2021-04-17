@@ -1,4 +1,3 @@
-
 from collections import deque
 from io import BytesIO, IOBase
 from typing import (

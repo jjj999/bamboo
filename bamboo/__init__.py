@@ -48,7 +48,7 @@ from bamboo.error import (
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
     DEFAULT_NOT_APPLICABLE_IP_ERROR,
     DEFAULT_NOT_FOUND_ERROR,
-    ErrInfoBase,
+    ErrInfo,
     get_auth_realm,
     get_default_auth_realm,
 )

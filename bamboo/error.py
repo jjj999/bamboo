@@ -1,4 +1,3 @@
-
 import json
 from typing import (
     Iterable,
@@ -22,19 +21,20 @@ from bamboo.util.deco import class_property
 __all__ = []
 
 
-class ErrInfoBase(Exception, ContentTypeHolder):
+class ErrInfo(Exception, ContentTypeHolder):
     """Base class of all error handlings.
 
     This class defines the attributes of all classes for error handling.
 
     Attributes:
         http_status (HTTPStatus) : HTTP status of the error.
-        _content_type_ (ContentType): Content type with `text/plain`.
     """
     http_status: HTTPStatus = HTTPStatus.BAD_REQUEST
 
     @class_property
-    def _content_type_(cls) -> ContentType:
+    def __content_type__(cls) -> ContentType:
+        """Content type with `text/plain`.
+        """
         return DEFAULT_CONTENT_TYPE_PLAIN
 
     def get_headers(self) -> List[Tuple[str, str]]:
@@ -68,28 +68,32 @@ class ErrInfoBase(Exception, ContentTypeHolder):
         stat = self.http_status
         headers = self.get_headers()
         body = self.get_body()
+
+        # NOTE
+        #   Automatically Content-Type header is to be added.
+        headers.append(self.__content_type__.to_header())
         return (stat, headers, BufferedConcatIterator(body))
 
 # ----------------------------------------------------------------------------
 
 # Default errors    ----------------------------------------------------------
 
-class DefaultNotFoundErrInfo(ErrInfoBase):
+class DefaultNotFoundErrInfo(ErrInfo):
 
     http_status = HTTPStatus.NOT_FOUND
 
 
-class DefaultDataFormatErrInfo(ErrInfoBase):
+class DefaultDataFormatErrInfo(ErrInfo):
 
     http_status = HTTPStatus.UNSUPPORTED_MEDIA_TYPE
 
 
-class DefaultHeaderNotFoundErrInfo(ErrInfoBase):
+class DefaultHeaderNotFoundErrInfo(ErrInfo):
 
     http_status = HTTPStatus.BAD_REQUEST
 
 
-class DefaultNotApplicableIpErrInfo(ErrInfoBase):
+class DefaultNotApplicableIpErrInfo(ErrInfo):
 
     http_status = HTTPStatus.FORBIDDEN
 
@@ -108,7 +112,7 @@ def get_default_auth_realm(scheme: str) -> str:
     return get_auth_realm(scheme, DEFAULT_REALM_MESSAGE)
 
 
-class DefaultAuthHeaderNotFoundErrInfo(ErrInfoBase):
+class DefaultAuthHeaderNotFoundErrInfo(ErrInfo):
 
     http_status = HTTPStatus.UNAUTHORIZED
 
@@ -137,7 +141,7 @@ DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR = \
 
 # ----------------------------------------------------------------------------
 
-class ApiErrInfo(ErrInfoBase):
+class ApiErrInfo(ErrInfo):
     """ErrInfo to handle API error.
 
     This ErrInfo has implemented method of 'get_body'. This class
@@ -146,23 +150,23 @@ class ApiErrInfo(ErrInfoBase):
 
     Attributes:
         http_status (HTTPStatus): HTTP status of the error.
-        message (Optional[str]): Short message for announcing error.
-        code (Optional[int]): Error code for your API.
+        code (str): Error code for your API.
         dev_message (Optional[str]): Message to explain developers the error.
         user_message (Optional[str]): Message to explain end users the error.
         info (Optional[str]): Information about the error.
         encoding (str): Encoding to encode response body.
-        _content_type_ (ContentType): Content type with `application/json` and
-            `charset` specified as the value of `encoding`.
     """
-    code: Optional[int] = None
+    code: str
     dev_message: Optional[str] = None
     user_message: Optional[str] = None
     info: Optional[str] = None
     encoding: str = "UTF-8"
 
     @class_property
-    def _content_type_(cls) -> ContentType:
+    def __content_type__(cls) -> ContentType:
+        """Content type with `application/json` and `charset` specified as
+        the value of `encoding`.
+        """
         return ContentType(MediaTypes.json, charset=cls.encoding)
 
     def get_body(self) -> Optional[bytes]:

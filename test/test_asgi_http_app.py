@@ -1,4 +1,3 @@
-
 import unittest
 
 from bamboo import ASGIHTTPApp, ASGIHTTPEndpoint

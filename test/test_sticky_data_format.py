@@ -1,6 +1,9 @@
-
 import random
-from typing import Any, Dict, List
+from typing import (
+    Any,
+    Dict,
+    List,
+)
 import unittest
 
 from bamboo import (
@@ -125,7 +128,7 @@ class TestStickyDataFormat(unittest.TestCase):
 
     def test_asgi_input_no_validation(self):
         data = make_test_api_data()
-        with http.post(self.uri_asgi, json=data) as res:
+        with http.delete(self.uri_asgi, json=data) as res:
             self.assertTrue(res.ok)
 
     def test_wsgi_output(self):
@@ -141,7 +144,7 @@ class TestStickyDataFormat(unittest.TestCase):
 
     def test_wsgi_input_no_validation(self):
         data = make_test_api_data()
-        with http.post(self.uri_wsgi, json=data) as res:
+        with http.delete(self.uri_wsgi, json=data) as res:
             self.assertTrue(res.ok)
 
 

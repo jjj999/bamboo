@@ -1,13 +1,12 @@
-
 from __future__ import annotations
-
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 import re
-from typing import Iterable, Optional
+from typing import Iterable, Optional, Tuple
 
 from bamboo.util.deco import class_property
+from bamboo.util.header import make_header
 
 
 __all__ = []
@@ -150,9 +149,22 @@ class ContentType:
     Bamboo.
     """
 
-    media_type: Optional[str] = None
+    media_type: str
     charset: Optional[str] = None
     boundary: Optional[str] = None
+
+    def to_header(self) -> Tuple[str, str]:
+        """Format contents as a Content-Type header.
+
+        Returns:
+            Header name and value of the header.
+        """
+        params = {}
+        if self.charset:
+            params["charset"] = self.charset
+        if self.boundary:
+            params["boundary"] = self.boundary
+        return make_header("Content-Type", self.media_type, **params)
 
     @classmethod
     def parse(cls, raw: str) -> ContentType:
@@ -169,11 +181,7 @@ class ContentType:
             New instance of this class based on the `raw` data
         """
         raw = re.split(";\s*", raw)
-        result = cls()
-
-        media_type = raw[0]
-        if len(media_type):
-            result.media_type = media_type
+        result = cls(raw[0])
 
         for directive, val in [item.split("=") for item in raw[1:]]:
             if directive == "charset":
@@ -190,8 +198,22 @@ class ContentTypeHolder(metaclass=ABCMeta):
 
     @class_property
     @abstractmethod
-    def _content_type_(cls) -> ContentType:
+    def __content_type__(cls) -> ContentType:
         pass
+
+    @classmethod
+    def verify_content_type(cls, content_type: ContentType) -> bool:
+        media_type_expected = cls.__content_type__.media_type.lower()
+        media_type_verified = content_type.media_type.lower()
+        if media_type_expected != media_type_verified:
+            return False
+
+        if cls.__content_type__.charset:
+            charset_expected = cls.__content_type__.charset.lower()
+            charset_verified = content_type.charset.lower()
+            if charset_expected != charset_verified:
+                return False
+        return True
 
 
 # NOTE

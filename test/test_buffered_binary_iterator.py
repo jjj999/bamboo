@@ -1,4 +1,3 @@
-
 from os import getrandom
 import unittest
 

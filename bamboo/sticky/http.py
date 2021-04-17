@@ -1,4 +1,3 @@
-
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 import inspect
@@ -19,7 +18,7 @@ from bamboo.error import (
     DEFAULT_HEADER_NOT_FOUND_ERROR,
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
     DEFAULT_NOT_APPLICABLE_IP_ERROR,
-    ErrInfoBase,
+    ErrInfo,
 )
 from bamboo.sticky import (
     Callback_ASGI_t,
@@ -73,18 +72,18 @@ class HTTPErrorConfig(ConfigBase):
             setattr(callback, self.ATTR, set())
 
         self._callback = callback
-        self._registered: Set[ErrInfoBase] = getattr(callback, self.ATTR)
+        self._registered: Set[ErrInfo] = getattr(callback, self.ATTR)
 
-    def get(self) -> Tuple[Type[ErrInfoBase], ...]:
+    def get(self) -> Tuple[Type[ErrInfo], ...]:
         return tuple(self._registered)
 
-    def set(self, *errors: Type[ErrInfoBase]) -> Callback_t:
+    def set(self, *errors: Type[ErrInfo]) -> Callback_t:
         for err in errors:
             self._registered.add(err)
         return self._callback
 
 
-def may_occur(*errors: Type[ErrInfoBase]) -> CallbackDecorator_t:
+def may_occur(*errors: Type[ErrInfo]) -> CallbackDecorator_t:
     """Register error classes to callback on `Endpoint`.
 
     Args:
@@ -131,13 +130,14 @@ class DataFormatInfo:
         input (Optional[Type[ApiData]]): Input data format.
         output (Optional[Type[ApiData]]): Output data format.
         is_validate (bool): If input data is to be validate.
-        err_validate (ErrInfoBase): Error information sent
+        err_validate (ErrInfo): Error information sent
             when validation failes.
     """
     input: Optional[Type[ApiData]] = None
     output: Optional[Type[ApiData]] = None
     is_validate: bool = True
-    err_validate: ErrInfoBase = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
+    err_validate: ErrInfo = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
+    err_noheader: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR
 
 
 class DataFormatConfig(ConfigBase):
@@ -177,13 +177,13 @@ class DataFormatConfig(ConfigBase):
     ) -> Callback_WSGI_t:
 
         @may_occur(dataformat.err_validate.__class__)
+        @has_header_of("Content-Type", dataformat.err_noheader)
         def _callback(self: WSGIEndpoint, *args) -> None:
             body = self.body
             try:
                 data = dataformat.input(body, self.content_type)
             except ValidationFailedError:
-                self.send_err(dataformat.err_validate)
-                return
+                raise dataformat.err_validate
 
             callback(self, data, *args)
 
@@ -210,13 +210,13 @@ class DataFormatConfig(ConfigBase):
     ) -> Callback_ASGI_t:
 
         @may_occur(dataformat.err_validate.__class__)
+        @has_header_of("Content-Type", dataformat.err_noheader)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             body = await self.body
             try:
                 data = dataformat.input(body, self.content_type)
             except ValidationFailedError:
-                self.send_err(dataformat.err_validate)
-                return
+                raise dataformat.err_validate
 
             await callback(self, data, *args)
 
@@ -244,7 +244,8 @@ def data_format(
     input: Optional[Type[ApiData]] = None,
     output: Optional[Type[ApiData]] = None,
     is_validate: bool = True,
-    err_validate: ErrInfoBase = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
+    err_validate: ErrInfo = DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
+    err_noheader: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR,
 ) -> CallbackDecorator_t:
     """Set data format of input/output data as API to callback on
     `Endpoint`.
@@ -282,7 +283,13 @@ def data_format(
                 # Do something...
         ```
     """
-    dataformat = DataFormatInfo(input, output, is_validate, err_validate)
+    dataformat = DataFormatInfo(
+        input,
+        output,
+        is_validate,
+        err_validate,
+        err_noheader,
+    )
 
     def wrapper(callback: Callback_t) -> Callback_t:
         config = DataFormatConfig(callback)
@@ -301,7 +308,7 @@ class RequiredHeaderInfo:
         err: Error information sent when the header is not included.
     """
     header: str
-    err: ErrInfoBase = DEFAULT_HEADER_NOT_FOUND_ERROR
+    err: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR
 
 
 class RequiredHeaderConfig(ConfigBase):
@@ -340,8 +347,8 @@ class RequiredHeaderConfig(ConfigBase):
         def _callback(self: WSGIEndpoint, *args) -> None:
             val = self.get_header(info.header)
             if val is None:
-                self.send_err(info.err)
-                return
+                raise info.err
+
             callback(self, *args)
 
         _callback.__dict__ = callback.__dict__
@@ -357,8 +364,8 @@ class RequiredHeaderConfig(ConfigBase):
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             val = self.get_header(info.header)
             if val is None:
-                self.send_err(info.err)
-                return
+                raise info.err
+
             await callback(self, *args)
 
         _callback.__dict__ = callback.__dict__
@@ -367,7 +374,7 @@ class RequiredHeaderConfig(ConfigBase):
 
 def has_header_of(
     header: str,
-    err: ErrInfoBase = DEFAULT_HEADER_NOT_FOUND_ERROR
+    err: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR
 ) -> CallbackDecorator_t:
     """Set callback up to receive given header from clients.
 
@@ -383,7 +390,7 @@ def has_header_of(
 
     Examples:
         ```python
-        class BasicAuthHeaderNotFoundErrInfo(ErrInfoBase):
+        class BasicAuthHeaderNotFoundErrInfo(ErrInfo):
             http_status = HTTPStatus.UNAUTHORIZED
 
             def get_headers(self) -> List[Tuple[str, str]]:
@@ -438,7 +445,7 @@ class RestrictedClientsConfig(ConfigBase):
     def set(
         self,
         *clients: ClientInfo,
-        err: ErrInfoBase = DEFAULT_NOT_APPLICABLE_IP_ERROR
+        err: ErrInfo = DEFAULT_NOT_APPLICABLE_IP_ERROR
     ) -> Callback_t:
         for client in clients:
             if not is_valid_ipv4(client.ip):
@@ -462,7 +469,7 @@ class RestrictedClientsConfig(ConfigBase):
     def decorate_wsgi(
         cls,
         callback: Callback_WSGI_t,
-        err: ErrInfoBase
+        err: ErrInfo
     ) -> Callback_WSGI_t:
         acceptables = getattr(callback, cls.ATTR, {})
 
@@ -471,11 +478,9 @@ class RestrictedClientsConfig(ConfigBase):
             client = ClientInfo(*self.get_client_addr())
             ports = acceptables.get(client.ip)
             if ports is None:
-                self.send_err(err)
-                return
+                raise err
             if not(None in ports or client.port in ports):
-                self.send_err(err)
-                return
+                raise err
 
             callback(self, *args)
 
@@ -486,7 +491,7 @@ class RestrictedClientsConfig(ConfigBase):
     def decorate_asgi(
         cls,
         callback: Callback_ASGI_t,
-        err: ErrInfoBase
+        err: ErrInfo
     ) -> Callback_ASGI_t:
         acceptables = getattr(callback, cls.ATTR, set())
 
@@ -495,11 +500,9 @@ class RestrictedClientsConfig(ConfigBase):
             client = ClientInfo(*self.get_client_addr())
             ports = acceptables.get(client.ip)
             if ports is None:
-                self.send_err(err)
-                return
+                raise err
             if not(None in ports or client.port in ports):
-                self.send_err(err)
-                return
+                raise err
 
             await callback(self, *args)
 
@@ -509,7 +512,7 @@ class RestrictedClientsConfig(ConfigBase):
 
 def restricts_client(
     *clients: ClientInfo,
-    err: ErrInfoBase = DEFAULT_NOT_APPLICABLE_IP_ERROR
+    err: ErrInfo = DEFAULT_NOT_APPLICABLE_IP_ERROR
 ) -> CallbackDecorator_t:
     """Restrict IP addresses at callback.
 
@@ -564,7 +567,7 @@ class AuthSchemeConfig(ConfigBase):
     def get(self) -> Optional[str]:
         return getattr(self._callback, self.ATTR, None)
 
-    def set(self, scheme: str, err: ErrInfoBase) -> Callback_t:
+    def set(self, scheme: str, err: ErrInfo) -> Callback_t:
         if hasattr(self._callback, self.ATTR):
             _scheme_registered = getattr(self._callback, self.ATTR)
             raise MultipleAuthSchemeError(
@@ -606,7 +609,7 @@ class AuthSchemeConfig(ConfigBase):
     def decorate_wsgi_basic(
         cls,
         callback: Callback_WSGI_t,
-        err: ErrInfoBase
+        err: ErrInfo
     ) -> Callback_WSGI_t:
 
         @may_occur(err.__class__)
@@ -615,13 +618,11 @@ class AuthSchemeConfig(ConfigBase):
             val = self.get_header(cls.HEADER_AUTHORIZATION)
             credentials = cls._validate_auth_header(val, AuthSchemes.basic)
             if credentials is None:
-                self.send_err(err)
-                return
+                raise err
 
             credentials = decode2binary(credentials).decode().split(":")
             if len(credentials) != 2:
-                self.send_err(err)
-                return
+                raise err
 
             user_id, pw = credentials
             callback(self, user_id, pw, *args)
@@ -633,7 +634,7 @@ class AuthSchemeConfig(ConfigBase):
     def decorate_asgi_basic(
         cls,
         callback: Callback_ASGI_t,
-        err: ErrInfoBase
+        err: ErrInfo
     ) -> Callback_ASGI_t:
 
         @may_occur(err.__class__)
@@ -642,13 +643,11 @@ class AuthSchemeConfig(ConfigBase):
             val = self.get_header(cls.HEADER_AUTHORIZATION)
             credentials = cls._validate_auth_header(val, AuthSchemes.basic)
             if credentials is None:
-                self.send_err(err)
-                return
+                raise err
 
             credentials = decode2binary(credentials).decode().split(":")
             if len(credentials) != 2:
-                self.send_err(err)
-                return
+                raise err
 
             user_id, pw = credentials
             await callback(self, user_id, pw, *args)
@@ -660,7 +659,7 @@ class AuthSchemeConfig(ConfigBase):
     def decorate_wsgi_bearer(
         cls,
         callback: Callback_WSGI_t,
-        err: ErrInfoBase
+        err: ErrInfo,
     ) -> Callback_WSGI_t:
 
         @may_occur(err.__class__)
@@ -669,8 +668,7 @@ class AuthSchemeConfig(ConfigBase):
             val = self.get_header(cls.HEADER_AUTHORIZATION)
             token = cls._validate_auth_header(val, AuthSchemes.bearer)
             if token is None:
-                self.send_err(err)
-                return
+                raise err
 
             callback(self, token, *args)
 
@@ -681,7 +679,7 @@ class AuthSchemeConfig(ConfigBase):
     def decorate_asgi_bearer(
         cls,
         callback: Callback_ASGI_t,
-        err: ErrInfoBase
+        err: ErrInfo,
     ) -> Callback_ASGI_t:
 
         @may_occur(err.__class__)
@@ -690,8 +688,7 @@ class AuthSchemeConfig(ConfigBase):
             val = self.get_header(cls.HEADER_AUTHORIZATION)
             token = cls._validate_auth_header(val, AuthSchemes.bearer)
             if token is None:
-                self.send_err(err)
-                return
+                raise err
 
             await callback(self, token, *args)
 
@@ -700,7 +697,7 @@ class AuthSchemeConfig(ConfigBase):
 
 
 def basic_auth(
-    err: ErrInfoBase = DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR
+    err: ErrInfo = DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR,
 ) -> CallbackDecorator_t:
     """Set callback up to require `Authorization` header in Basic
     authentication.
@@ -738,7 +735,7 @@ def basic_auth(
 
 
 def bearer_auth(
-    err: ErrInfoBase = DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR
+    err: ErrInfo = DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR,
 ) -> CallbackDecorator_t:
     """Set callback up to require `Authorization` header in token
     authentication for OAuth 2.0.

@@ -178,12 +178,14 @@ class Response(Generic[ResponseData_t]):
         content_type_raw = self.get_header("Content-Type")
         if content_type_raw:
             content_type = ContentType.parse(content_type_raw)
-        else:
-            content_type = ContentType()
 
         if datacls is None:
+            if content_type_raw is None:
+                content_type = self._datacls.__content_type__
             return self._datacls(self.body, content_type)
         else:
+            if content_type_raw is None:
+                content_type = datacls.__content_type__
             return datacls(self.body, content_type)
 
     def close(self) -> None:

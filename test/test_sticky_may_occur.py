@@ -1,15 +1,14 @@
-
 import unittest
 
 from bamboo import (
     ASGIHTTPEndpoint,
-    ErrInfoBase,
+    ErrInfo,
     WSGIEndpoint,
 )
 from bamboo.sticky.http import HTTPErrorConfig, may_occur
 
 
-ERRORS = [type(f"TestErr{i}", (ErrInfoBase,), {}) for i in range(10)]
+ERRORS = [type(f"TestErr{i}", (ErrInfo,), {}) for i in range(10)]
 
 
 class TestWSGIEndpoint(WSGIEndpoint):

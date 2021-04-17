@@ -1,7 +1,4 @@
-
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from multiprocessing import Process
 import signal
@@ -11,6 +8,7 @@ from typing import (
     Any,
     Callable,
     List,
+    Optional,
     Tuple,
 )
 from wsgiref import simple_server
@@ -53,13 +51,13 @@ def serve_at(form: WSGIServerForm) -> None:
     sys.stderr = f_log
 
     def server_close(signalnum, frame):
-        server.server_close()
         print()
         f_log.flush()
         f_log.close()
         sys.exit()
 
     signal.signal(signal.SIGTERM, server_close)
+    signal.signal(signal.SIGINT, server_close)
     server.serve_forever()
 
 
@@ -140,7 +138,7 @@ class WSGITestExecutor:
         self,
         func: Callable[[Tuple[Any, ...]], None],
         args: Tuple[Any, ...] = (),
-        waiting: float = 0.05
+        waiting: float = 0.1,
     ) -> None:
         """Executes a simple client-server test.
 
