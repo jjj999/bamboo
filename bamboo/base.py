@@ -313,6 +313,13 @@ class HTTPStatus(int, Enum):
         obj.description = description
         return obj
 
+    @classmethod
+    def get_status(cls, code: int) -> Optional[HTTPStatus]:
+        for stat in cls:
+            if stat.value == code:
+                return stat
+        return None
+
     CONTINUE = (
         100,
         "100 Continue",
