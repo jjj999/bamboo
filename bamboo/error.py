@@ -93,6 +93,11 @@ class DefaultHeaderNotFoundErrInfo(ErrInfo):
     http_status = HTTPStatus.BAD_REQUEST
 
 
+class DefaultQueryParamNotFoundErrInfo(ErrInfo):
+
+    http_status = HTTPStatus.BAD_REQUEST
+
+
 class DefaultNotApplicableIpErrInfo(ErrInfo):
 
     http_status = HTTPStatus.FORBIDDEN
@@ -133,6 +138,7 @@ class DefaultAuthHeaderNotFoundErrInfo(ErrInfo):
 DEFAULT_NOT_FOUND_ERROR = DefaultNotFoundErrInfo()
 DEFUALT_INCORRECT_DATA_FORMAT_ERROR = DefaultDataFormatErrInfo()
 DEFAULT_HEADER_NOT_FOUND_ERROR = DefaultHeaderNotFoundErrInfo()
+DEFAULT_QUERY_PARAM_NOT_FOUND_ERROR = DefaultQueryParamNotFoundErrInfo()
 DEFAULT_NOT_APPLICABLE_IP_ERROR = DefaultNotApplicableIpErrInfo()
 DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR =\
     DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.basic)

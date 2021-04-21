@@ -1,4 +1,4 @@
-__version__ = "0.7.1"
+__version__ = "0.7.2"
 
 
 from bamboo.api import (
@@ -47,6 +47,7 @@ from bamboo.error import (
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
     DEFAULT_NOT_APPLICABLE_IP_ERROR,
     DEFAULT_NOT_FOUND_ERROR,
+    DEFAULT_QUERY_PARAM_NOT_FOUND_ERROR,
     ErrInfo,
     get_auth_realm,
     get_default_auth_realm,

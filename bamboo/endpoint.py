@@ -28,6 +28,7 @@ from bamboo.base import (
     HTTPStatus,
     MediaTypes,
 )
+from bamboo.error import ErrInfo
 from bamboo.io import BufferedConcatIterator, BufferedFileIterator
 from bamboo.util.deco import (
     awaitable_property,
@@ -45,6 +46,9 @@ if TYPE_CHECKING:
     )
 
     App_t = TypeVar("App_t", bound=AppBase)
+
+
+_get_query_t = TypeVar("_get_query_t")
 
 
 __all__ = []
@@ -210,8 +214,8 @@ class EndpointBase(metaclass=ABCMeta):
         """
         pass
 
-    def get_query(self, name: str) -> List[str]:
-        """Get value of query parameter.
+    def get_queries(self, name: str) -> List[str]:
+        """Get values of query parameter.
 
         Args:
             name: Key name of the parameter
@@ -224,6 +228,29 @@ class EndpointBase(metaclass=ABCMeta):
         if query:
             return query
         return []
+
+    def get_unique_query(
+        self,
+        name: str,
+        default: _get_query_t = None,
+        err_not_unique: Optional[ErrInfo] = None,
+    ) -> Union[str, _get_query_t]:
+        """Get the first value of query parameter with specified name.
+
+        Args:
+            name: Key name of the parameter.
+            default: Default value if the parameter is empty.
+            err_not_unique: Error raised if multiple values of the name exist.
+
+        Returns:
+            The first value of the query parameter. If the `err_not_unique`
+            is specified, then the error is raised when the parameter is not
+            a single. If the parameter is empty, the `default` is returned.
+        """
+        values = self.get_queries(name)
+        if len(values) != 1 and err_not_unique:
+            raise err_not_unique
+        return values[0] if len(values) else default
 
     @cached_property
     @abstractmethod
