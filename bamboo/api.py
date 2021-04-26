@@ -136,7 +136,7 @@ class JsonApiDataBuilder:
     """
 
     NoneType = type(None)
-    TYPES_ARGS = (int, float, str, bool, NoneType)
+    TYPES_ARGS = (int, float, str, bool, dict, list, NoneType)
     TYPES_ARGS_SET = set(TYPES_ARGS)
     TYPES_ORIGIN = (list, Union)
 

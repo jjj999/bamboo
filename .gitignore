@@ -1,8 +1,5 @@
-future/
-exp/
-heroku_test
+.vscode/
 *.drawio
-_local.py
 Pipfile.lock
 
 bigdata*
