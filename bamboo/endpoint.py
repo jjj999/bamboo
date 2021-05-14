@@ -287,9 +287,8 @@ class WSGIEndpointBase(EndpointBase):
             flexible_locs: flexible locations requested.
             *parcel: Parcel sent via application object.
         """
-        super().__init__(app, flexible_locs, *parcel)
-
         self._environ = environ
+        super().__init__(app, flexible_locs, *parcel)
 
     @property
     def environ(self) -> Dict[str, Any]:
@@ -395,8 +394,6 @@ class ASGIEndpointBase(EndpointBase):
             flexible_locs: Flexible locations requested.
             *parcel: Parcel sent via application object.
         """
-        super().__init__(app, flexible_locs, *parcel)
-
         self._scope = scope
 
         # TODO
@@ -408,6 +405,8 @@ class ASGIEndpointBase(EndpointBase):
                 map(codecs.decode, header) for header in req_headers
             ])
             self._req_headers.update(req_headers)
+
+        super().__init__(app, flexible_locs, *parcel)
 
     @property
     def scope(self) -> Dict[str, Any]:
