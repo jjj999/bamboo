@@ -43,10 +43,6 @@ class TestJsonable(unittest.TestCase):
             JsonApiDataBuilder.check_annotations(List)
         self.assertIsInstance(err.exception, InvalidAnnotationError)
 
-        with self.assertRaises(InvalidAnnotationError) as err:
-            JsonApiDataBuilder.check_annotations(List[dict])
-        self.assertIsInstance(err.exception, InvalidAnnotationError)
-
     def test_jsonapi(self):
         JsonApiDataBuilder.has_valid_annotations(TestOuterApi)
 
