@@ -1,10 +1,5 @@
-future/
-exp/
-heroku_test
-*.drawio
-_local.py
 Pipfile.lock
-
+.vscode/
 bigdata*
 
 # Byte-compiled / optimized / DLL files
