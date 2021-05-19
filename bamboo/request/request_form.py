@@ -46,6 +46,9 @@ def get_http_request_form(
     # body management
     if body and json:
         raise ValueError("Request body is specified both 'body' and 'json'.")
+    if body:
+        if "Content-Type" not in headers:
+            headers["Content-Type"] = MediaTypes.plain
     if json:
         body = dumps(json)
         if "Content-Type" not in headers:
