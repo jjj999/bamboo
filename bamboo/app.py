@@ -358,7 +358,7 @@ class WSGIApp(AppBase):
 
         flexible_locs, endpoint_class = self.validate(path)
         if endpoint_class is None:
-            return [self.send_404(start_response)]
+            return self.send_404(start_response)
 
         parcel_config = ParcelConfig(endpoint_class)
         parcel = parcel_config.get(self)
@@ -366,7 +366,7 @@ class WSGIApp(AppBase):
         pre_callback = endpoint_class._get_pre_response_method(method)
         callback = endpoint_class._get_response_method(method)
         if callback is None:
-            return [self.send_404(start_response)]
+            return self.send_404(start_response)
 
         endpoint = endpoint_class(self, environ, flexible_locs, *parcel)
         # NOTE
@@ -390,7 +390,7 @@ class WSGIApp(AppBase):
         start_response(status.wsgi, headers)
         return body
 
-    def send_404(self, start_response: Callable) -> bytes:
+    def send_404(self, start_response: Callable) -> BufferedConcatIterator:
         """Send `404` error code, i.e. `Resource Not Found` error.
 
         Args:
