@@ -6,7 +6,7 @@ from typing import (
     Optional,
     Set,
     Tuple,
-    Type,
+    Type, Union,
 )
 
 from bamboo.api import ApiData, ValidationFailedError
@@ -18,6 +18,7 @@ from bamboo.error import (
     DEFAULT_HEADER_NOT_FOUND_ERROR,
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
     DEFAULT_NOT_APPLICABLE_IP_ERROR,
+    DEFAULT_QUERY_PARAM_NOT_FOUND_ERROR,
     ErrInfo,
 )
 from bamboo.sticky import (
@@ -177,7 +178,7 @@ class DataFormatConfig(ConfigBase):
     ) -> Callback_WSGI_t:
 
         @may_occur(dataformat.err_validate.__class__)
-        @has_header_of("Content-Type", dataformat.err_noheader)
+        @has_header_of("Content-Type", dataformat.err_noheader, add_arg=False)
         def _callback(self: WSGIEndpoint, *args) -> None:
             body = self.body
             try:
@@ -210,7 +211,7 @@ class DataFormatConfig(ConfigBase):
     ) -> Callback_ASGI_t:
 
         @may_occur(dataformat.err_validate.__class__)
-        @has_header_of("Content-Type", dataformat.err_noheader)
+        @has_header_of("Content-Type", dataformat.err_noheader, add_arg=False)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             body = await self.body
             try:
@@ -308,7 +309,8 @@ class RequiredHeaderInfo:
         err: Error information sent when the header is not included.
     """
     header: str
-    err: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR
+    err: ErrInfo
+    add_arg: bool
 
 
 class RequiredHeaderConfig(ConfigBase):
@@ -349,7 +351,10 @@ class RequiredHeaderConfig(ConfigBase):
             if val is None:
                 raise info.err
 
-            callback(self, *args)
+            if info.add_arg:
+                callback(self, val, *args)
+            else:
+                callback(self, *args)
 
         _callback.__dict__ = callback.__dict__
         return _callback
@@ -366,7 +371,10 @@ class RequiredHeaderConfig(ConfigBase):
             if val is None:
                 raise info.err
 
-            await callback(self, *args)
+            if info.add_arg:
+                await callback(self, val, *args)
+            else:
+                await callback(self, *args)
 
         _callback.__dict__ = callback.__dict__
         return _callback
@@ -374,7 +382,8 @@ class RequiredHeaderConfig(ConfigBase):
 
 def has_header_of(
     header: str,
-    err: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR
+    err: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR,
+    add_arg: bool = True,
 ) -> CallbackDecorator_t:
     """Set callback up to receive given header from clients.
 
@@ -407,7 +416,7 @@ def has_header_of(
                 # Do something...
         ```
     """
-    info = RequiredHeaderInfo(header, err)
+    info = RequiredHeaderInfo(header, err, add_arg)
 
     def wrapper(callback: Callback_t) -> Callback_t:
         config = RequiredHeaderConfig(callback)
@@ -462,7 +471,6 @@ class RestrictedClientsConfig(ConfigBase):
             func = self.decorate_asgi
         else:
             func = self.decorate_wsgi
-
         return func(self._callback, err)
 
     @classmethod
@@ -613,7 +621,7 @@ class AuthSchemeConfig(ConfigBase):
     ) -> Callback_WSGI_t:
 
         @may_occur(err.__class__)
-        @has_header_of(cls.HEADER_AUTHORIZATION, err)
+        @has_header_of(cls.HEADER_AUTHORIZATION, err, add_arg=False)
         def _callback(self: WSGIEndpoint, *args) -> None:
             val = self.get_header(cls.HEADER_AUTHORIZATION)
             credentials = cls._validate_auth_header(val, AuthSchemes.basic)
@@ -638,7 +646,7 @@ class AuthSchemeConfig(ConfigBase):
     ) -> Callback_ASGI_t:
 
         @may_occur(err.__class__)
-        @has_header_of(cls.HEADER_AUTHORIZATION, err)
+        @has_header_of(cls.HEADER_AUTHORIZATION, err, add_arg=False)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             val = self.get_header(cls.HEADER_AUTHORIZATION)
             credentials = cls._validate_auth_header(val, AuthSchemes.basic)
@@ -663,7 +671,7 @@ class AuthSchemeConfig(ConfigBase):
     ) -> Callback_WSGI_t:
 
         @may_occur(err.__class__)
-        @has_header_of(cls.HEADER_AUTHORIZATION, err)
+        @has_header_of(cls.HEADER_AUTHORIZATION, err, add_arg=False)
         def _callback(self: WSGIEndpoint, *args) -> None:
             val = self.get_header(cls.HEADER_AUTHORIZATION)
             token = cls._validate_auth_header(val, AuthSchemes.bearer)
@@ -683,7 +691,7 @@ class AuthSchemeConfig(ConfigBase):
     ) -> Callback_ASGI_t:
 
         @may_occur(err.__class__)
-        @has_header_of(cls.HEADER_AUTHORIZATION, err)
+        @has_header_of(cls.HEADER_AUTHORIZATION, err, add_arg=False)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             val = self.get_header(cls.HEADER_AUTHORIZATION)
             token = cls._validate_auth_header(val, AuthSchemes.bearer)
@@ -767,5 +775,108 @@ def bearer_auth(
     def wrapper(callback: Callback_t) -> Callback_t:
         config = AuthSchemeConfig(callback)
         return config.set(AuthSchemes.bearer, err)
+
+    return wrapper
+
+
+@dataclass(eq=True, frozen=True)
+class RequiredQueryInfo:
+    query: str
+    err_empty: ErrInfo
+    err_not_unique: Optional[ErrInfo]
+    add_arg: bool
+
+
+class RequiredQueryConfig(ConfigBase):
+
+    ATTR = _get_bamboo_attr("required_queries")
+
+    def __init__(self, callback: Callback_t) -> None:
+        super().__init__()
+
+        if not hasattr(callback, self.ATTR):
+            setattr(callback, self.ATTR, set())
+
+        self._callback = callback
+        self._registered: Set[RequiredQueryConfig] = getattr(callback, self.ATTR)
+
+    def get(self) -> Tuple[RequiredHeaderInfo]:
+        return tuple(self._registered)
+
+    def set(self, info: RequiredQueryInfo) -> Callback_t:
+        self._registered.add(info)
+
+        if inspect.iscoroutinefunction(self._callback):
+            func = self.decorate_asgi
+        else:
+            func = self.decorate_wsgi
+        return func(self._callback, info)
+
+    @staticmethod
+    def decorate_wsgi(
+        callback: Callback_WSGI_t,
+        info: RequiredQueryInfo,
+    ) -> Callback_WSGI_t:
+
+        @may_occur(
+            info.err_empty.__class__,
+            info.err_not_unique.__class__,
+        )
+        def _callback(self: WSGIEndpoint, *args) -> None:
+            val = self.get_unique_query(
+                info.query,
+                err_not_unique=info.err_not_unique,
+            )
+            if val is None:
+                raise info.err_empty
+
+            if info.add_arg:
+                callback(self, val, *args)
+            else:
+                callback(self, *args)
+
+        _callback.__dict__ = callback.__dict__
+        return _callback
+
+    @staticmethod
+    def decorate_asgi(
+        callback: Callback_ASGI_t,
+        info: RequiredQueryInfo,
+    ) -> Callback_ASGI_t:
+
+        @may_occur(
+            info.err_empty.__class__,
+            info.err_not_unique.__class__,
+        )
+        async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
+            val = self.get_unique_query(
+                info.query,
+                err_not_unique=info.err_not_unique,
+            )
+            if val is None:
+                raise info.err_empty
+
+            if info.add_arg:
+                await callback(self, val, *args)
+            else:
+                await callback(self, *args)
+
+        _callback.__dict__ = callback.__dict__
+        return _callback
+
+
+def has_query_of(
+    query: str,
+    err_empty: ErrInfo = DEFAULT_QUERY_PARAM_NOT_FOUND_ERROR,
+    err_not_unique: Optional[ErrInfo] = None,
+    add_arg: bool = True,
+) -> CallbackDecorator_t:
+    """Set callback up to receive given query parameter from clients.
+    """
+    info = RequiredQueryInfo(query, err_empty, err_not_unique, add_arg)
+
+    def wrapper(callback: Callback_t) -> Callback_t:
+        config = RequiredQueryConfig(callback)
+        return config.set(info)
 
     return wrapper

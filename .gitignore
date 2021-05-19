@@ -1,3 +1,5 @@
+.vscode/
+*.drawio
 Pipfile.lock
 .vscode/
 bigdata*

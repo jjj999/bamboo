@@ -36,7 +36,19 @@ class TestASGIHTTPEndpoint(ASGIHTTPEndpoint):
     @has_header_of(RANDOM_HEADERS[7][0])
     @has_header_of(RANDOM_HEADERS[8][0])
     @has_header_of(RANDOM_HEADERS[9][0])
-    async def do_GET(self) -> None:
+    async def do_GET(
+        self,
+        header0: str,
+        header1: str,
+        header2: str,
+        header3: str,
+        header4: str,
+        header5: str,
+        header6: str,
+        header7: str,
+        header8: str,
+        header9: str,
+    ) -> None:
         self.send_only_status()
 
 
@@ -53,7 +65,19 @@ class TestWSGIEndpoint(WSGIEndpoint):
     @has_header_of(RANDOM_HEADERS[7][0])
     @has_header_of(RANDOM_HEADERS[8][0])
     @has_header_of(RANDOM_HEADERS[9][0])
-    def do_GET(self) -> None:
+    def do_GET(
+        self,
+        header0: str,
+        header1: str,
+        header2: str,
+        header3: str,
+        header4: str,
+        header5: str,
+        header6: str,
+        header7: str,
+        header8: str,
+        header9: str,
+    ) -> None:
         self.send_only_status()
 
 
