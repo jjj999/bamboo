@@ -645,7 +645,6 @@ class HTTPMixIn(metaclass=ABCMeta):
     def send_body(
         self,
         body: Union[bytes, Iterable[bytes]],
-        /,
         *others: Union[bytes, Iterable[bytes]],
         content_type: Optional[ContentType] = DEFAULT_CONTENT_TYPE_PLAIN,
         status: HTTPStatus = HTTPStatus.OK

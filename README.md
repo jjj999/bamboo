@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.python.org/pypi/bamboo-core/)
 
 ## Installling
-* Python: >= 3.8
+* Python: >= 3.7
 
 ```
 $ python -m pip install bamboo-core

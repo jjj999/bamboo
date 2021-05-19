@@ -1,27 +1,18 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
-from bamboo.util.deco import class_property
 import json
-from typing import (
-    Any,
-    Dict,
-    Sequence,
-    Type,
-    TypeVar,
-    Union,
-    get_args,
-    get_origin,
-    get_type_hints,
-)
+import typing as t
 from urllib.parse import parse_qs
 
-from bamboo.base import (
+from .base import (
     ContentType,
     ContentTypeHolder,
     DEFAULT_CONTENT_TYPE_JSON,
     DEFAULT_CONTENT_TYPE_PLAIN,
     MediaTypes,
 )
+from .util.deco import class_property
+from .util.typing import get_args, get_origin
 
 
 __all__ = []
@@ -116,7 +107,7 @@ class InvalidAnnotationError(Exception):
     pass
 
 
-ListJsonable_t = TypeVar("ListJsonable_t")
+ListJsonable_t = t.TypeVar("ListJsonable_t")
 
 
 class JsonApiDataBuilder:
@@ -138,10 +129,10 @@ class JsonApiDataBuilder:
     NoneType = type(None)
     TYPES_ARGS = (int, float, str, bool, NoneType)
     TYPES_ARGS_SET = set(TYPES_ARGS)
-    TYPES_ORIGIN = (list, Union)
+    TYPES_ORIGIN = (list, t.Union)
 
     @classmethod
-    def check_annotations(cls, *types: Type) -> None:
+    def check_annotations(cls, *types: t.Type) -> None:
         """Check if types are convertable to JSON data.
 
         Args:
@@ -151,14 +142,14 @@ class JsonApiDataBuilder:
             InvalidAnnotationError: Raised if a type not convertable to
                 JSON data is detected.
         """
-        def checker(types: Sequence[Type]) -> None:
+        def checker(types: t.Sequence[t.Type]) -> None:
             for type_ in types:
                 origin = get_origin(type_)
                 if origin is None:
                     if issubclass(type_, cls.TYPES_ARGS):
                         continue
                     elif issubclass(type_, JsonApiData):
-                        checker(get_type_hints(JsonApiData).values())
+                        checker(t.get_type_hints(JsonApiData).values())
                     else:
                         raise InvalidAnnotationError(
                             f"{type_.__name__} is an unacceptable as a type "
@@ -173,7 +164,7 @@ class JsonApiDataBuilder:
                                 "Specify an argument of type to list."
                             )
                         checker([args[0]])
-                    elif origin == Union:
+                    elif origin == t.Union:
                         # Only Optional is admitted.
                         if not (len(args) == 2 and args[1] == cls.NoneType):
                             raise InvalidAnnotationError(
@@ -191,7 +182,7 @@ class JsonApiDataBuilder:
         checker(types)
 
     @classmethod
-    def has_valid_annotations(cls, apiclass: Type[JsonApiData]) -> None:
+    def has_valid_annotations(cls, apiclass: t.Type[JsonApiData]) -> None:
         """Check if `JsonApiData` has only arguments convertable to JSON.
 
         Args:
@@ -201,10 +192,10 @@ class JsonApiDataBuilder:
             InvalidAnnotationError: Raised if a type not convertable to
                 JSON data is detected.
         """
-        cls.check_annotations(*tuple(get_type_hints(apiclass).values()))
+        cls.check_annotations(*tuple(t.get_type_hints(apiclass).values()))
 
     @classmethod
-    def validate_obj(cls, obj: Any, objtype: Type) -> bool:
+    def validate_obj(cls, obj: t.Any, objtype: t.Type) -> bool:
         """Validate if given object is acceptable as a value of `JsonApiData`.
 
         Args:
@@ -227,7 +218,7 @@ class JsonApiDataBuilder:
                 inner_type = get_args(objtype)[0]
                 return cls.validate_obj(item, inner_type)
             return True
-        elif origin == Union:
+        elif origin == t.Union:
             is_good = False
             for arg in get_args(objtype):
                 is_good = is_good or cls.validate_obj(obj, arg)
@@ -238,8 +229,8 @@ class JsonApiDataBuilder:
     @classmethod
     def build(
         cls,
-        apiclass: Type[JsonApiData],
-        data: Dict[str, Any]
+        apiclass: t.Type[JsonApiData],
+        data: t.Dict[str, t.Any]
     ) -> JsonApiData:
         """Build new `JsonApiData` object from raw data.
 
@@ -255,7 +246,7 @@ class JsonApiDataBuilder:
                 data failes.
         """
         instance = apiclass.__new__(apiclass)
-        annotations = get_type_hints(apiclass)
+        annotations = t.get_type_hints(apiclass)
 
         # NOTE
         #   Ignore keys of data which is not defined in the apiclass.
@@ -283,7 +274,7 @@ class JsonApiDataBuilder:
             else:
                 if origin == list:
                     setattr(instance, key_def, cls._build_list(type_def, val))
-                elif origin == Union:
+                elif origin == t.Union:
                     possible = get_args(type_def)[0]
                     if possible in cls.TYPES_ARGS_SET:
                         setattr(instance, key_def, val)
@@ -325,7 +316,7 @@ class JsonApiDataBuilder:
         """
         if not len(val):
             return val
-        if not(get_origin(type_def) == list and len(get_args(type_def))):
+        if not (get_origin(type_def) == list and len(get_args(type_def))):
             raise ValueError("'type_def' must be list with an argument.")
 
         # Check type of inner value
@@ -440,7 +431,7 @@ class XWWWFormUrlEncodedDataBuilder:
     TYPES_ARGS = (str,)
 
     @classmethod
-    def check_annotations(cls, *types: Type) -> None:
+    def check_annotations(cls, *types: t.Type) -> None:
         """Check if types are acceptable to `XWWWFormUriEncodedData` class.
 
         Args:
@@ -459,7 +450,7 @@ class XWWWFormUrlEncodedDataBuilder:
     @classmethod
     def has_valid_annotations(
         cls,
-        apiclass: Type[XWWWFormUrlEncodedData]
+        apiclass: t.Type[XWWWFormUrlEncodedData]
     ) -> None:
         """Check if `XWWWFormUrlEncodedData` has only arguments with
         acceptable types.
@@ -470,12 +461,12 @@ class XWWWFormUrlEncodedDataBuilder:
         Raises:
             InvalidAnnotationError: Raised if a type not acceptable.
         """
-        cls.check_annotations(*tuple(get_type_hints(apiclass).values()))
+        cls.check_annotations(*tuple(t.get_type_hints(apiclass).values()))
 
     @classmethod
     def build(
         cls,
-        apiclass: Type[XWWWFormUrlEncodedData],
+        apiclass: t.Type[XWWWFormUrlEncodedData],
         data: str
     ) -> XWWWFormUrlEncodedData:
         """Build new `XWWWFormUrlEncodedData` object from raw data.
@@ -492,7 +483,7 @@ class XWWWFormUrlEncodedDataBuilder:
                 raw data failes.
         """
         instance = apiclass.__new__(apiclass)
-        annotations = get_type_hints(apiclass)
+        annotations = t.get_type_hints(apiclass)
         data = parse_qs(data)
 
         for key_def in annotations.keys():
