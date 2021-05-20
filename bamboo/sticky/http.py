@@ -2,11 +2,12 @@ from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 import inspect
 from typing import (
-    Any, Dict,
+    Any,
+    Dict,
     Optional,
     Set,
     Tuple,
-    Type, Union,
+    Type,
 )
 
 from bamboo.api import ApiData, ValidationFailedError
@@ -18,7 +19,6 @@ from bamboo.error import (
     DEFAULT_HEADER_NOT_FOUND_ERROR,
     DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
     DEFAULT_NOT_APPLICABLE_IP_ERROR,
-    DEFAULT_QUERY_PARAM_NOT_FOUND_ERROR,
     ErrInfo,
 )
 from bamboo.sticky import (
@@ -33,19 +33,11 @@ from bamboo.util.ip import is_valid_ipv4
 
 
 __all__ = [
-    "AuthSchemeConfig",
-    "ClientInfo",
-    "DataFormatConfig",
-    "DataFormatInfo",
-    "HTTPErrorConfig",
-    "MultipleAuthSchemeError",
-    "RequiredHeaderConfig",
-    "RequiredHeaderInfo",
-    "RestrictedClientsConfig",
     "basic_auth",
     "bearer_auth",
     "data_format",
     "has_header_of",
+    "has_query_of",
     "may_occur",
     "restricts_client",
 ]
@@ -781,10 +773,11 @@ def bearer_auth(
 
 @dataclass(eq=True, frozen=True)
 class RequiredQueryInfo:
+
     query: str
-    err_empty: ErrInfo
-    err_not_unique: Optional[ErrInfo]
-    add_arg: bool
+    err_empty: Optional[ErrInfo] = None
+    err_not_unique: Optional[ErrInfo] = None
+    add_arg: bool = True
 
 
 class RequiredQueryConfig(ConfigBase):
@@ -818,24 +811,35 @@ class RequiredQueryConfig(ConfigBase):
         info: RequiredQueryInfo,
     ) -> Callback_WSGI_t:
 
-        @may_occur(
-            info.err_empty.__class__,
-            info.err_not_unique.__class__,
-        )
         def _callback(self: WSGIEndpoint, *args) -> None:
-            val = self.get_unique_query(
-                info.query,
-                err_not_unique=info.err_not_unique,
-            )
-            if val is None:
-                raise info.err_empty
+            val = self.get_queries(info.query)
+            len_val = len(val)
+
+            if len_val == 0:
+                if info.err_empty:
+                    raise info.err_empty
+                else:
+                    val = None
+            elif len_val == 1:
+                if info.err_not_unique:
+                    raise info.err_not_unique
+                else:
+                    val = val[0]
 
             if info.add_arg:
                 callback(self, val, *args)
             else:
                 callback(self, *args)
 
-        _callback.__dict__ = callback.__dict__
+        errs = []
+        if info.err_empty:
+            errs.append(info.err_empty.__class__)
+        if info.err_not_unique:
+            errs.append(info.err_not_unique.__class__)
+        if len(errs):
+            _callback = may_occur(*errs)(_callback)
+
+        _callback.__dict__.update(callback.__dict__)
         return _callback
 
     @staticmethod
@@ -844,30 +848,41 @@ class RequiredQueryConfig(ConfigBase):
         info: RequiredQueryInfo,
     ) -> Callback_ASGI_t:
 
-        @may_occur(
-            info.err_empty.__class__,
-            info.err_not_unique.__class__,
-        )
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
-            val = self.get_unique_query(
-                info.query,
-                err_not_unique=info.err_not_unique,
-            )
-            if val is None:
-                raise info.err_empty
+            val = self.get_queries(info.query)
+            len_val = len(val)
+
+            if len_val == 0:
+                if info.err_empty:
+                    raise info.err_empty
+                else:
+                    val = None
+            elif len_val == 1:
+                if info.err_not_unique:
+                    raise info.err_not_unique
+                else:
+                    val = val[0]
 
             if info.add_arg:
                 await callback(self, val, *args)
             else:
                 await callback(self, *args)
 
-        _callback.__dict__ = callback.__dict__
+        errs = []
+        if info.err_empty:
+            errs.append(info.err_empty.__class__)
+        if info.err_not_unique:
+            errs.append(info.err_not_unique.__class__)
+        if len(errs):
+            _callback = may_occur(*errs)(_callback)
+
+        _callback.__dict__.update(callback.__dict__)
         return _callback
 
 
 def has_query_of(
     query: str,
-    err_empty: ErrInfo = DEFAULT_QUERY_PARAM_NOT_FOUND_ERROR,
+    err_empty: Optional[ErrInfo] = None,
     err_not_unique: Optional[ErrInfo] = None,
     add_arg: bool = True,
 ) -> CallbackDecorator_t:
