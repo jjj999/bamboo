@@ -11,7 +11,7 @@ from .base import (
     DEFAULT_CONTENT_TYPE_PLAIN,
     MediaTypes,
 )
-from .util.deco import class_property
+from .util.deco import cached_property, class_property
 from .util.typing import get_args, get_origin
 
 
@@ -394,7 +394,7 @@ class JsonApiData(ApiData):
 
         try:
             raw = raw.decode(encoding=content_type.charset)
-            data = json.loads(raw)
+            self._data = json.loads(raw)
         except UnicodeDecodeError:
             raise ValidationFailedError(
                 "Decoding raw data failed. The encoding was expected "
@@ -407,8 +407,14 @@ class JsonApiData(ApiData):
             )
 
         self.__dict__.update(
-            JsonApiDataBuilder.build(self.__class__, data).__dict__
+            JsonApiDataBuilder
+            .build(self.__class__, self._data)
+            .__dict__
         )
+
+    @property
+    def dict(self) -> t.Dict[str, t.Any]:
+        return self._data
 
     @class_property
     def __content_type__(cls) -> ContentType:
@@ -561,6 +567,10 @@ class XWWWFormUrlEncodedData(ApiData):
 
         instance = XWWWFormUrlEncodedDataBuilder.build(self.__class__, raw)
         self.__dict__.update(instance.__dict__)
+
+    @cached_property
+    def dict(self) -> t.Dict[str, t.Any]:
+        return {key: getattr(self, key) for key in t.get_type_hints(self).keys()}
 
     @class_property
     def __content_type__(cls) -> ContentType:
