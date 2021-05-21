@@ -1,5 +1,6 @@
 from collections import deque
 from io import BytesIO, IOBase
+import os
 from typing import (
     Deque,
     Iterable,
@@ -108,14 +109,28 @@ class BufferedFileIterator(BufferedStreamIterator):
     Its object can be used to iterate file-like obj made with file path.
     """
 
-    def __init__(self, filename: str, bufsize: int = 8192) -> None:
+    def __init__(
+        self,
+        path: str,
+        bufsize: int = 8192,
+        remove: bool = False,
+    ) -> None:
         """
         Args:
-            filename: File path.
+            path: File path.
             bufsize: Chunk size of bytes objects yielded from the iterator.
         """
-        file = open(filename, "br")
+        self._path = path
+        self._remove = remove
+
+        file = open(path, "br")
         super().__init__(file, bufsize=bufsize)
+
+    def __del__(self) -> None:
+        super().__del__()
+
+        if self._remove:
+            os.remove(self._path)
 
 
 class BufferedIteratorWrapper(ResponseBodyIteratorBase):
