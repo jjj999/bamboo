@@ -1,4 +1,4 @@
-__version__ = "0.7.10"
+__version__ = "0.7.11"
 
 
 from bamboo.api import (
@@ -7,7 +7,7 @@ from bamboo.api import (
     InvalidAnnotationError,
     JsonApiDataBuilder,
     JsonApiData,
-    ValidationFailedError,
+    ApiValidationFailedError,
     XWWWFormUrlEncodedDataBuilder,
     XWWWFormUrlEncodedData,
 )

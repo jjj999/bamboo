@@ -3,7 +3,7 @@ import dataclasses
 import inspect
 import typing as t
 
-from bamboo.api import ApiData, ValidationFailedError
+from bamboo.api import ApiData, ApiValidationFailedError
 from bamboo.base import AuthSchemes
 from bamboo.endpoint import ASGIHTTPEndpoint, WSGIEndpoint
 from bamboo.error import (
@@ -167,8 +167,8 @@ class DataFormatConfig(ConfigBase):
         def _callback(self: WSGIEndpoint, *args) -> None:
             body = self.body
             try:
-                data = dataformat.input(body, self.content_type)
-            except ValidationFailedError:
+                data = dataformat.input.__validate__(body, self.content_type)
+            except ApiValidationFailedError:
                 raise dataformat.err_validate
 
             callback(self, data, *args)
@@ -200,8 +200,8 @@ class DataFormatConfig(ConfigBase):
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             body = await self.body
             try:
-                data = dataformat.input(body, self.content_type)
-            except ValidationFailedError:
+                data = dataformat.input.__validate__(body, self.content_type)
+            except ApiValidationFailedError:
                 raise dataformat.err_validate
 
             await callback(self, data, *args)

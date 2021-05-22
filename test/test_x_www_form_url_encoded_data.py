@@ -4,7 +4,7 @@ from bamboo import (
     ContentType,
     MediaTypes,
     XWWWFormUrlEncodedData,
-    ValidationFailedError,
+    ApiValidationFailedError,
 )
 
 
@@ -26,20 +26,20 @@ data_duplicated_key = b"name=hogehoge&name=hogest&age=20&email=hoge@hoge.com"
 class TestXWWWFromUrlEncodedData(unittest.TestCase):
 
     def test_data_raw(self):
-        data = TestData(data_raw, ideal_content_type)
+        data = TestData.__validate__(data_raw, ideal_content_type)
         self.assertEqual(data.name, "hogehoge")
         self.assertEqual(int(data.age), 18)
         self.assertEqual(data.email, "hoge@hoge.com")
 
     def test_data_key_not_included(self):
-        with self.assertRaises(ValidationFailedError) as err:
-            data = TestData(data_key_not_included, ideal_content_type)
-        self.assertIsInstance(err.exception, ValidationFailedError)
+        with self.assertRaises(ApiValidationFailedError) as err:
+            data = TestData.__validate__(data_key_not_included, ideal_content_type)
+        self.assertIsInstance(err.exception, ApiValidationFailedError)
 
     def test_data_duplicated_key(self):
-        with self.assertRaises(ValidationFailedError) as err:
-            data = TestData(data_duplicated_key, ideal_content_type)
-        self.assertIsInstance(err.exception, ValidationFailedError)
+        with self.assertRaises(ApiValidationFailedError) as err:
+            data = TestData.__validate__(data_duplicated_key, ideal_content_type)
+        self.assertIsInstance(err.exception, ApiValidationFailedError)
 
 
 if __name__ == "__main__":

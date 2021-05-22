@@ -40,8 +40,9 @@ class ApiData(ContentTypeHolder, metaclass=ABCMeta):
         failure to the `data_format` decorator.
     """
 
+    @classmethod
     @abstractmethod
-    def __init__(self, raw: bytes, content_type: ContentType) -> None:
+    def __validate__(cls, raw: bytes, content_type: ContentType) -> ApiData:
         """
         Args:
             raw : Raw data to be validated.
@@ -50,7 +51,7 @@ class ApiData(ContentTypeHolder, metaclass=ABCMeta):
         pass
 
 
-class ValidationFailedError(Exception):
+class ApiValidationFailedError(Exception):
     """Raised if type validation of data failes."""
     pass
 
@@ -72,28 +73,35 @@ class BinaryApiData(ApiData):
         ```
     """
 
-    def __init__(self, raw: bytes, content_type: ContentType) -> None:
+    def __init__(self, data: bytes) -> None:
+        """
+        Args:
+            data: Binary data.
+        """
+        self._data = data
+
+    @classmethod
+    def __validate__(cls, raw: bytes, content_type: ContentType) -> BinaryApiData:
         """
         Args:
             raw: Raw data to be validated.
             content_type: Values of `Content-Type` header.
 
+        Returns:
+            The object of the class validated, if validation successes.
+
         Note:
             In objects of this class, `content_type` is not used even if any
             `content_type` is specified.
         """
-        super().__init__(raw, content_type)
-
         if not isinstance(raw, bytes):
-            raise ValidationFailedError(
-                f"'raw' must be a 'bytes', but was {raw.__class__.__name__}."
-            )
-        self._raw = raw
+            raise ApiValidationFailedError(f"'raw' must be a 'bytes'.")
+        return cls(raw)
 
     @property
     def raw(self) -> bytes:
         """Raw data of input binary."""
-        return self._raw
+        return self._data
 
     @class_property
     def __content_type__(cls) -> ContentType:
@@ -242,7 +250,7 @@ class JsonApiDataBuilder:
             New object built.
 
         Raises:
-            ValidationFailedError: Raised if type validation of raw
+            ApiValidationFailedError: Raised if type validation of raw
                 data failes.
         """
         instance = apiclass.__new__(apiclass)
@@ -252,13 +260,13 @@ class JsonApiDataBuilder:
         #   Ignore keys of data which is not defined in the apiclass.
         for key_def, type_def in annotations.items():
             if not (key_def in data or hasattr(apiclass, key_def)):
-                raise ValidationFailedError(
+                raise ApiValidationFailedError(
                     f"Raw data has no key of '{key_def}'."
                 )
 
             val = data.get(key_def)
             if not cls.validate_obj(val, type_def):
-                raise ValidationFailedError(
+                raise ApiValidationFailedError(
                     "Invalid type was detected in received json data. "
                     f"Expected: {type_def.__name__}; "
                     f"Detected: {val.__class__.__name__}"
@@ -287,7 +295,7 @@ class JsonApiDataBuilder:
                     elif issubclass(possible, JsonApiData):
                         setattr(instance, key_def, cls.build(type_def, val))
                     else:
-                        raise ValidationFailedError(
+                        raise ApiValidationFailedError(
                             f"{possible.__name__} is not acceptable as a type"
                             " of attributes of JsonApiData."
                         )
@@ -311,7 +319,7 @@ class JsonApiDataBuilder:
 
         Raises:
             ValueError: Raised if `type_def` is not list with an argument.
-            ValidationFailedError: Raised if the argument of `type_def` is
+            ApiValidationFailedError: Raised if the argument of `type_def` is
                 not acceptable.
         """
         if not len(val):
@@ -328,7 +336,7 @@ class JsonApiDataBuilder:
         elif get_origin(inner_type) == list:
             return [cls._build_list(inner_type, item) for item in val]
         else:
-            raise ValidationFailedError(
+            raise ApiValidationFailedError(
                 f"{inner_type.__name__} is not acceptable as a type of "
                 "attributes of JsonApiData."
             )
@@ -375,7 +383,14 @@ class JsonApiData(ApiData):
     # NOTE
     #   DO NOT override the method. This class should be used only
     #   by defining attributes and their types.
-    def __init__(self, raw: bytes, content_type: ContentType) -> None:
+    def __init__(self, **data: t.Any) -> None:
+        self._dict = data
+
+        mapped = JsonApiDataBuilder.build(self.__class__, data)
+        self.__dict__.update(mapped.__dict__)
+
+    @classmethod
+    def __validate__(cls, raw: bytes, content_type: ContentType) -> ApiData:
         """
         Args:
             raw: Raw data to be validated.
@@ -386,35 +401,30 @@ class JsonApiData(ApiData):
         if content_type.charset is None:
             content_type.charset = "UTF-8"
 
-        if not self.verify_content_type(content_type):
-            raise ValidationFailedError(
+        if not cls.verify_content_type(content_type):
+            raise ApiValidationFailedError(
                 "Media type of 'Content-Type' header was not "
                 f"{MediaTypes.json}, but {content_type.media_type}."
             )
 
         try:
             raw = raw.decode(encoding=content_type.charset)
-            self._data = json.loads(raw)
+            data = json.loads(raw)
         except UnicodeDecodeError:
-            raise ValidationFailedError(
+            raise ApiValidationFailedError(
                 "Decoding raw data failed. The encoding was expected "
                 f"{content_type.charset}, but not corresponded."
             )
         except json.decoder.JSONDecodeError:
-            raise ValidationFailedError(
+            raise ApiValidationFailedError(
                 "Decoding raw data failed."
                 "The raw data had invalid JSON format."
             )
-
-        self.__dict__.update(
-            JsonApiDataBuilder
-            .build(self.__class__, self._data)
-            .__dict__
-        )
+        return cls(**data)
 
     @property
     def dict(self) -> t.Dict[str, t.Any]:
-        return self._data
+        return self._dict
 
     @class_property
     def __content_type__(cls) -> ContentType:
@@ -470,6 +480,28 @@ class XWWWFormUrlEncodedDataBuilder:
         cls.check_annotations(*tuple(t.get_type_hints(apiclass).values()))
 
     @classmethod
+    def build_dict(
+        cls,
+        apiclass: t.Type[XWWWFormUrlEncodedData],
+        **data: str,
+    ) -> XWWWFormUrlEncodedData:
+        instance = apiclass.__new__(apiclass)
+        annotations = t.get_type_hints(apiclass)
+
+        for key in annotations.keys():
+            if key not in data:
+                raise ApiValidationFailedError(
+                    f"Raw data has no key of '{key}'."
+                )
+            if type(data[key]) not in cls.TYPES_ARGS:
+                raise ApiValidationFailedError(
+                    "Invalid type was detected. "
+                    f"Expected {apiclass.__name__}.{key} was a str."
+                )
+            setattr(instance, key, data[key])
+        return instance
+
+    @classmethod
     def build(
         cls,
         apiclass: t.Type[XWWWFormUrlEncodedData],
@@ -485,26 +517,17 @@ class XWWWFormUrlEncodedDataBuilder:
             New object built.
 
         Raises:
-            ValidationFailedError: Raised if type validation of
+            ApiValidationFailedError: Raised if type validation of
                 raw data failes.
         """
-        instance = apiclass.__new__(apiclass)
-        annotations = t.get_type_hints(apiclass)
-        data = parse_qs(data)
-
-        for key_def in annotations.keys():
-            if key_def not in data:
-                raise ValidationFailedError(
-                    f"Raw data has no key of '{key_def}'."
+        parsing = {}
+        for key, val in parse_qs(data).items():
+            if len(val) > 1:
+                raise ApiValidationFailedError(
+                    f"Duplicated keys '{key}' were detected."
                 )
-            if len(data[key_def]) > 1:
-                raise ValidationFailedError(
-                    f"Duplicated keys '{key_def}' were detected."
-                )
-
-            setattr(instance, key_def, data[key_def][0])
-
-        return instance
+            parsing[key] = val[0]
+        return cls.build_dict(apiclass, **parsing)
 
 
 class XWWWFormUrlEncodedData(ApiData):
@@ -541,17 +564,34 @@ class XWWWFormUrlEncodedData(ApiData):
     def __init_subclass__(cls) -> None:
         XWWWFormUrlEncodedDataBuilder.has_valid_annotations(cls)
 
-    def __init__(self, raw: bytes, content_type: ContentType) -> None:
+    def __init__(self, **data: str) -> None:
         """
         Args:
             raw: Raw data to be validated.
             content_type: Values of `Content-Type` header.
         """
+        mapped = XWWWFormUrlEncodedDataBuilder.build_dict(self.__class__, **data)
+        self.__dict__.update(mapped.__dict__)
+
+    @classmethod
+    def __validate__(
+        cls,
+        raw: bytes,
+        content_type: ContentType,
+    ) -> XWWWFormUrlEncodedData:
+        """
+        Args:
+            raw: Raw data to be validated.
+            content_type: Values of `Content-Type` header.
+
+        Returns:
+
+        """
         if content_type.charset is None:
             content_type.charset = "UTF-8"
 
-        if not self.verify_content_type(content_type):
-            raise ValidationFailedError(
+        if not cls.verify_content_type(content_type):
+            raise ApiValidationFailedError(
                 "Media type of 'Content-Type' header is not "
                 f"{MediaTypes.x_www_form_urlencoded}, "
                 f"but {content_type.media_type}."
@@ -560,13 +600,11 @@ class XWWWFormUrlEncodedData(ApiData):
         try:
             raw = raw.decode(encoding=content_type.charset)
         except UnicodeDecodeError:
-            raise ValidationFailedError(
+            raise ApiValidationFailedError(
                 "Decoding raw data failed. The encoding was expected "
                 f"{content_type.charset}, but not corresponded."
             )
-
-        instance = XWWWFormUrlEncodedDataBuilder.build(self.__class__, raw)
-        self.__dict__.update(instance.__dict__)
+        return XWWWFormUrlEncodedDataBuilder.build(cls, raw)
 
     @cached_property
     def dict(self) -> t.Dict[str, t.Any]:

@@ -172,11 +172,11 @@ class Response(t.Generic[ResponseData_t]):
         if datacls is None:
             if content_type_raw is None:
                 content_type = self._datacls.__content_type__
-            return self._datacls(self.body, content_type)
+            return self._datacls.__validate__(self.body, content_type)
         else:
             if content_type_raw is None:
                 content_type = datacls.__content_type__
-            return datacls(self.body, content_type)
+            return datacls.__validate__(self.body, content_type)
 
     def close(self) -> None:
         """Close the session.

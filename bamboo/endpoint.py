@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
+from bamboo.api import JsonApiData
 import codecs
 import inspect
 import io
@@ -366,7 +367,7 @@ class ASGIEndpointBase(EndpointBase):
         req_headers = scope.get("headers")
         self._req_headers = {}
         if req_headers:
-            req_headers = t.dict([
+            req_headers = dict([
                 map(codecs.decode, header) for header in req_headers
             ])
             self._req_headers.update(req_headers)
@@ -680,7 +681,7 @@ class HTTPMixIn(metaclass=ABCMeta):
 
     def send_json(
         self,
-        body: t.Dict[str, t.Any],
+        body: t.Union[t.Dict[str, t.Any], JsonApiData],
         status: HTTPStatus = HTTPStatus.OK,
         encoding: str = "UTF-8"
     ) -> None:
@@ -695,11 +696,11 @@ class HTTPMixIn(metaclass=ABCMeta):
             StatusCodeAlreadySetError: Raised if response status code
                 has already been set.
         """
+        if isinstance(body, JsonApiData):
+            body = body.dict
+
         body = json.dumps(body).encode(encoding=encoding)
-        content_type = ContentType(
-            media_type=MediaTypes.json,
-            charset=encoding
-        )
+        content_type = ContentType(MediaTypes.json, encoding)
         self.send_body(body, content_type=content_type, status=status)
 
     def send_file(

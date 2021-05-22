@@ -4,6 +4,7 @@ import json as js
 import typing as t
 from urllib.parse import parse_qs, urlparse
 
+from bamboo.api import JsonApiData
 from bamboo.base import HTTPMethods, MediaTypes
 from bamboo.util.convert import unparse_qs
 
@@ -28,7 +29,7 @@ def get_http_request_form(
     method: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData, None] = None,
     query: t.Dict[str, t.List[str]] = {}
 ) -> HTTPRequestForm:
     # method management
@@ -43,6 +44,8 @@ def get_http_request_form(
         if "Content-Type" not in headers:
             headers["Content-Type"] = MediaTypes.plain
     if json:
+        if isinstance(json, JsonApiData):
+            json = json.dict
         body = js.dumps(json)
         if "Content-Type" not in headers:
             headers["Content-Type"] = MediaTypes.json
