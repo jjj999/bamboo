@@ -217,29 +217,6 @@ class EndpointBase(metaclass=ABCMeta):
             return query
         return []
 
-    def get_unique_query(
-        self,
-        name: str,
-        err_not_unique: ErrInfo,
-        default: _get_query_t = None,
-    ) -> t.Union[str, _get_query_t]:
-        """Get the first value of query parameter with specified name.
-
-        Args:
-            name: Key name of the parameter.
-            err_not_unique: Error raised if multiple values of the name exist.
-            default: Default value if the parameter is empty.
-
-        Returns:
-            The first value of the query parameter. Specified error is raised
-            when the parameter is not a single. If the parameter is empty,
-            the `default` is returned.
-        """
-        values = self.get_queries(name)
-        if len(values) > 1:
-            raise err_not_unique
-        return values[0] if len(values) else default
-
     @cached_property
     @abstractmethod
     def content_type(self) -> t.Optional[ContentType]:
