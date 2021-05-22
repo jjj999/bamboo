@@ -264,7 +264,11 @@ class JsonApiDataBuilder:
                     f"Raw data has no key of '{key_def}'."
                 )
 
-            val = data.get(key_def)
+            if key_def in data:
+                val = data.get(key_def)
+            else:
+                val = getattr(apiclass, key_def)
+
             if not cls.validate_obj(val, type_def):
                 raise ApiValidationFailedError(
                     "Invalid type was detected in received json data. "
@@ -424,7 +428,11 @@ class JsonApiData(ApiData):
 
     @property
     def dict(self) -> t.Dict[str, t.Any]:
-        return self._dict
+        cls = self.__class__
+        return {
+            key: self._dict[key] if key in self._dict else getattr(cls, key)
+            for key in t.get_type_hints(cls).keys()
+        }
 
     @class_property
     def __content_type__(cls) -> ContentType:
