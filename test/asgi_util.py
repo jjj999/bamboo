@@ -1,16 +1,11 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from multiprocessing import Process
+import dataclasses
+import multiprocessing
 import os
 import signal
 import sys
 import time
-from typing import (
-    Any,
-    Callable,
-    List,
-    Tuple,
-)
+import typing as t
 
 from bamboo import (
     ASGIHTTPApp,
@@ -25,7 +20,7 @@ __all__ = [
 ]
 
 
-@dataclass
+@dataclasses.dataclass
 class ASGIHTTPServerForm:
 
     host: str
@@ -52,8 +47,8 @@ def serve_at(form: ASGIHTTPServerForm) -> None:
 class ASGIHTTPTestExecutor:
 
     def __init__(self, *forms: ASGIHTTPServerForm) -> None:
-        self._forms: List[ASGIHTTPServerForm] = []
-        self._children: List[Process] = []
+        self._forms: t.List[ASGIHTTPServerForm] = []
+        self._children: t.List[multiprocessing.Process] = []
 
         self.add_forms(*forms)
 
@@ -63,7 +58,7 @@ class ASGIHTTPTestExecutor:
 
     def start_serve(self, waiting: float = 0.1) -> ASGIHTTPTestExecutor:
         for form in self._forms:
-            child = Process(target=serve_at, args=(form,))
+            child = multiprocessing.Process(target=serve_at, args=(form,))
             child.start()
             self._children.append(child)
         time.sleep(waiting)
@@ -81,9 +76,9 @@ class ASGIHTTPTestExecutor:
 
     def exec(
         self,
-        func: Callable[[Tuple[Any, ...]], None],
-        args: Tuple[Any, ...] = (),
-        waiting: float = 0.05
+        func: t.Callable[[t.Tuple[t.Any, ...]], None],
+        args: t.Tuple[t.Any, ...] = (),
+        waiting: float = 0.05,
     ) -> None:
         with self.start_serve(waiting=waiting):
             func(*args)

@@ -1,13 +1,7 @@
 from collections import deque
-from io import BytesIO, IOBase
+import io
 import os
-from typing import (
-    Deque,
-    Iterable,
-    Iterator,
-    TypeVar,
-    Union,
-)
+import typing as t
 
 
 __all__ = []
@@ -17,7 +11,7 @@ class ResponseBodyIteratorBase:
     """Base class of iterator for buffering response body.
     """
 
-    def __iter__(self) -> Iterable[bytes]:
+    def __iter__(self) -> t.Iterable[bytes]:
         return self
 
     def __next__(self) -> bytes:
@@ -48,7 +42,7 @@ class BufferedBinaryIterator(ResponseBodyIteratorBase):
         """
         super().__init__()
 
-        self._data = BytesIO(data)
+        self._data = io.BytesIO(data)
         self._bufsize = bufsize
 
     def __next__(self) -> bytes:
@@ -61,7 +55,7 @@ class BufferedBinaryIterator(ResponseBodyIteratorBase):
         self._data.close()
 
 
-BinaryReadableStream_t = TypeVar("BinaryReadableStream_t")
+BinaryReadableStream_t = t.TypeVar("BinaryReadableStream_t")
 
 
 class BufferedStreamIterator(ResponseBodyIteratorBase):
@@ -85,7 +79,7 @@ class BufferedStreamIterator(ResponseBodyIteratorBase):
         """
         super().__init__()
 
-        if not (isinstance(stream, IOBase) and hasattr(stream, "read")):
+        if not (isinstance(stream, io.IOBase) and hasattr(stream, "read")):
             raise TypeError(
                 "'stream' must be IOBase and have the 'read' method."
             )
@@ -142,7 +136,7 @@ class BufferedIteratorWrapper(ResponseBodyIteratorBase):
     given iterator.
     """
 
-    def __init__(self, iter: Iterator[bytes], bufsize: int = 8192) -> None:
+    def __init__(self, iter: t.Iterator[bytes], bufsize: int = 8192) -> None:
         """
         Args:
             iter: Iterator wrapped.
@@ -152,7 +146,7 @@ class BufferedIteratorWrapper(ResponseBodyIteratorBase):
 
         self._iter = iter
         self._bufsize = bufsize
-        self._buffer = BytesIO()
+        self._buffer = io.BytesIO()
 
     @property
     def _is_buffer_filled(self) -> bool:
@@ -163,7 +157,7 @@ class BufferedIteratorWrapper(ResponseBodyIteratorBase):
         data = self._buffer.read(self._bufsize)
         other = self._buffer.read()
         self._buffer.close()
-        self._buffer = BytesIO(other)
+        self._buffer = io.BytesIO(other)
         return data
 
     def __next__(self) -> bytes:
@@ -207,7 +201,7 @@ class BufferedConcatIterator(ResponseBodyIteratorBase):
 
     def __init__(
         self,
-        *items: Union[bytes, Iterator[bytes]],
+        *items: t.Union[bytes, t.Iterator[bytes]],
         bufsize: int = 8192
     ) -> None:
         """
@@ -217,15 +211,15 @@ class BufferedConcatIterator(ResponseBodyIteratorBase):
         """
         super().__init__()
 
-        self._iters: Deque[Iterator[bytes]] = deque()
-        self._current: Iterator[bytes] = None
+        self._iters: t.Deque[t.Iterator[bytes]] = deque()
+        self._current: t.Iterator[bytes] = None
         self._bufsize = bufsize
-        self._buffer = BytesIO()
+        self._buffer = io.BytesIO()
 
         for item in items:
             self.append(item)
 
-    def append(self, item: Union[bytes, Iterator[bytes]]) -> None:
+    def append(self, item: t.Union[bytes, t.Iterator[bytes]]) -> None:
         """Add bytes or iterator yielding bytes inside.
 
         Args:
@@ -246,7 +240,7 @@ class BufferedConcatIterator(ResponseBodyIteratorBase):
 
     def _update_buffer(self) -> bytes:
         data = self._buffer.getvalue()
-        self._buffer = BytesIO()
+        self._buffer = io.BytesIO()
         return data
 
     def __next__(self) -> bytes:

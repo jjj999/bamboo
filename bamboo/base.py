@@ -1,9 +1,9 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
-from dataclasses import dataclass
-from enum import Enum
+import dataclasses
+import enum
 import re
-from typing import Iterable, Optional, Tuple
+import typing as t
 
 from bamboo.util.deco import class_property
 from bamboo.util.header import make_header
@@ -44,7 +44,7 @@ class _HTTPMethods:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
-    def __iter__(self) -> Iterable[str]:
+    def __iter__(self) -> t.Iterable[str]:
         return iter(self.__methods)
 
     def __contains__(self, item: str) -> bool:
@@ -102,7 +102,7 @@ class _MediaTypes:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
-    def __iter__(self) -> Iterable[str]:
+    def __iter__(self) -> t.Iterable[str]:
         return iter(self.__types)
 
     def __contains__(self, item: str) -> bool:
@@ -131,7 +131,7 @@ class _AuthSchemes:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
-    def __iter__(self) -> Iterable[str]:
+    def __iter__(self) -> t.Iterable[str]:
         return iter(self.__schemes)
 
     def __contains__(self, item: str) -> bool:
@@ -141,7 +141,7 @@ class _AuthSchemes:
 AuthSchemes = _AuthSchemes()
 
 
-@dataclass
+@dataclasses.dataclass
 class ContentType:
     """`dataclass` for describing value of `Content-Type` header.
 
@@ -150,10 +150,10 @@ class ContentType:
     """
 
     media_type: str
-    charset: Optional[str] = None
-    boundary: Optional[str] = None
+    charset: t.Optional[str] = None
+    boundary: t.Optional[str] = None
 
-    def to_header(self) -> Tuple[str, str]:
+    def to_header(self) -> t.Tuple[str, str]:
         """Format contents as a Content-Type header.
 
         Returns:
@@ -245,7 +245,7 @@ class _ASGIHTTPEvents:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
-    def __iter__(self) -> Iterable[str]:
+    def __iter__(self) -> t.Iterable[str]:
         return iter(self._events)
 
     def __contains__(self, item: str) -> bool:
@@ -278,7 +278,7 @@ class _ASGIWebSocketEvents:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
-    def __iter__(self) -> Iterable[str]:
+    def __iter__(self) -> t.Iterable[str]:
         return iter(self._events)
 
     def __contains__(self, item: str) -> bool:
@@ -289,7 +289,7 @@ ASGIHTTPEvents = _ASGIHTTPEvents()
 ASGIWebSocketEvents = _ASGIWebSocketEvents()
 
 
-class HTTPStatus(int, Enum):
+class HTTPStatus(int, enum.Enum):
     """Enum which describes HTTP status.
 
     Each class variables of the class have four main attributes:
@@ -314,7 +314,7 @@ class HTTPStatus(int, Enum):
         return obj
 
     @classmethod
-    def get_status(cls, code: int) -> Optional[HTTPStatus]:
+    def get_status(cls, code: int) -> t.Optional[HTTPStatus]:
         for stat in cls:
             if stat.value == code:
                 return stat

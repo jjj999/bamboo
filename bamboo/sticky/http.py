@@ -1,14 +1,7 @@
 from abc import ABCMeta, abstractmethod
-from dataclasses import dataclass
+import dataclasses
 import inspect
-from typing import (
-    Any,
-    Dict,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-)
+import typing as t
 
 from bamboo.api import ApiData, ValidationFailedError
 from bamboo.base import AuthSchemes
@@ -48,7 +41,7 @@ class ConfigBase(metaclass=ABCMeta):
     ATTR: str
 
     @abstractmethod
-    def get(self) -> Any:
+    def get(self) -> t.Any:
         pass
 
     @abstractmethod
@@ -65,18 +58,18 @@ class HTTPErrorConfig(ConfigBase):
             setattr(callback, self.ATTR, set())
 
         self._callback = callback
-        self._registered: Set[ErrInfo] = getattr(callback, self.ATTR)
+        self._registered: t.Set[ErrInfo] = getattr(callback, self.ATTR)
 
-    def get(self) -> Tuple[Type[ErrInfo], ...]:
+    def get(self) -> t.Tuple[t.Type[ErrInfo], ...]:
         return tuple(self._registered)
 
-    def set(self, *errors: Type[ErrInfo]) -> Callback_t:
+    def set(self, *errors: t.Type[ErrInfo]) -> Callback_t:
         for err in errors:
             self._registered.add(err)
         return self._callback
 
 
-def may_occur(*errors: Type[ErrInfo]) -> CallbackDecorator_t:
+def may_occur(*errors: t.Type[ErrInfo]) -> CallbackDecorator_t:
     """Register error classes to callback on `Endpoint`.
 
     Args:
@@ -115,7 +108,7 @@ def may_occur(*errors: Type[ErrInfo]) -> CallbackDecorator_t:
     return wrapper
 
 
-@dataclass(eq=True, frozen=True)
+@dataclasses.dataclass(eq=True, frozen=True)
 class DataFormatInfo:
     """`dataclass` with information of data format at callbacks on `Endpoint`.
 
@@ -126,8 +119,8 @@ class DataFormatInfo:
         err_validate (ErrInfo): Error information sent
             when validation failes.
     """
-    input: Optional[Type[ApiData]] = None
-    output: Optional[Type[ApiData]] = None
+    input: t.Optional[t.Type[ApiData]] = None
+    output: t.Optional[t.Type[ApiData]] = None
     is_validate: bool = True
     err_validate: ErrInfo = DEFUALT_INCORRECT_DATA_FORMAT_ERROR
     err_noheader: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR
@@ -142,7 +135,7 @@ class DataFormatConfig(ConfigBase):
 
         self._callback = callback
 
-    def get(self) -> Optional[DataFormatInfo]:
+    def get(self) -> t.Optional[DataFormatInfo]:
         return getattr(self._callback, self.ATTR, None)
 
     def set(self, dataformat: DataFormatInfo) -> Callback_t:
@@ -234,8 +227,8 @@ class DataFormatConfig(ConfigBase):
 
 
 def data_format(
-    input: Optional[Type[ApiData]] = None,
-    output: Optional[Type[ApiData]] = None,
+    input: t.Optional[t.Type[ApiData]] = None,
+    output: t.Optional[t.Type[ApiData]] = None,
     is_validate: bool = True,
     err_validate: ErrInfo = DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
     err_noheader: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR,
@@ -291,7 +284,7 @@ def data_format(
     return wrapper
 
 
-@dataclass(eq=True, frozen=True)
+@dataclasses.dataclass(eq=True, frozen=True)
 class RequiredHeaderInfo:
     """`dataclass` with information of header which should be included in
     response headers.
@@ -316,9 +309,9 @@ class RequiredHeaderConfig(ConfigBase):
             setattr(callback, self.ATTR, set())
 
         self._callback = callback
-        self._registered: Set[RequiredHeaderInfo] = getattr(callback, self.ATTR)
+        self._registered: t.Set[RequiredHeaderInfo] = getattr(callback, self.ATTR)
 
-    def get(self) -> Tuple[RequiredHeaderInfo]:
+    def get(self) -> t.Tuple[RequiredHeaderInfo]:
         return tuple(self._registered)
 
     def set(self, info: RequiredHeaderInfo) -> Callback_t:
@@ -417,14 +410,14 @@ def has_header_of(
     return wrapper
 
 
-@dataclass(eq=True, frozen=True)
+@dataclasses.dataclass(eq=True, frozen=True)
 class ClientInfo:
 
     ip: str
-    port: Optional[int] = None
+    port: t.Optional[int] = None
 
 
-_RestrictedClient_t = Dict[str, Set[Optional[int]]]
+_RestrictedClient_t = t.Dict[str, t.Set[t.Optional[int]]]
 
 
 class RestrictedClientsConfig(ConfigBase):
@@ -564,7 +557,7 @@ class AuthSchemeConfig(ConfigBase):
 
         self._callback = callback
 
-    def get(self) -> Optional[str]:
+    def get(self) -> t.Optional[str]:
         return getattr(self._callback, self.ATTR, None)
 
     def set(self, scheme: str, err: ErrInfo) -> Callback_t:
@@ -594,7 +587,7 @@ class AuthSchemeConfig(ConfigBase):
         return func(self._callback, err)
 
     @staticmethod
-    def _validate_auth_header(value: str, scheme: str) -> Optional[str]:
+    def _validate_auth_header(value: str, scheme: str) -> t.Optional[str]:
         value = value.split(" ")
         if len(value) != 2:
             return None
@@ -771,12 +764,12 @@ def bearer_auth(
     return wrapper
 
 
-@dataclass(eq=True, frozen=True)
+@dataclasses.dataclass(eq=True, frozen=True)
 class RequiredQueryInfo:
 
     query: str
-    err_empty: Optional[ErrInfo] = None
-    err_not_unique: Optional[ErrInfo] = None
+    err_empty: t.Optional[ErrInfo] = None
+    err_not_unique: t.Optional[ErrInfo] = None
     add_arg: bool = True
 
 
@@ -791,9 +784,9 @@ class RequiredQueryConfig(ConfigBase):
             setattr(callback, self.ATTR, set())
 
         self._callback = callback
-        self._registered: Set[RequiredQueryConfig] = getattr(callback, self.ATTR)
+        self._registered: t.Set[RequiredQueryConfig] = getattr(callback, self.ATTR)
 
-    def get(self) -> Tuple[RequiredHeaderInfo]:
+    def get(self) -> t.Tuple[RequiredHeaderInfo]:
         return tuple(self._registered)
 
     def set(self, info: RequiredQueryInfo) -> Callback_t:
@@ -882,8 +875,8 @@ class RequiredQueryConfig(ConfigBase):
 
 def has_query_of(
     query: str,
-    err_empty: Optional[ErrInfo] = None,
-    err_not_unique: Optional[ErrInfo] = None,
+    err_empty: t.Optional[ErrInfo] = None,
+    err_not_unique: t.Optional[ErrInfo] = None,
     add_arg: bool = True,
 ) -> CallbackDecorator_t:
     """Set callback up to receive given query parameter from clients.

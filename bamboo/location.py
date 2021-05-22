@@ -1,9 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import (
-    Optional,
-    Tuple,
-    Union,
-)
+import typing as t
 
 
 __all__ = []
@@ -32,9 +28,9 @@ class FlexibleLocation(metaclass=ABCMeta):
         return self.__class__.__name__
 
 
-Location_t = Union[str, FlexibleLocation]
+Location_t = t.Union[str, FlexibleLocation]
 StaticLocation_t = str
-Uri_t = Tuple[Location_t, ...]
+Uri_t = t.Tuple[Location_t, ...]
 
 
 def is_flexible_uri(uri: Uri_t) -> bool:
@@ -110,7 +106,7 @@ class AnyStringLocation(FlexibleLocation):
     """Flexible location representing string with no rules.
     """
 
-    def __init__(self, max: Optional[int] = None) -> None:
+    def __init__(self, max: t.Optional[int] = None) -> None:
         """
         Note:
             If the argument `max` is `None`, then any length of string

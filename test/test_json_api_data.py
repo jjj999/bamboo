@@ -1,5 +1,5 @@
 import json
-from typing import List, Optional
+import typing as t
 import unittest
 
 from bamboo import (
@@ -28,7 +28,7 @@ data_inner = json.dumps({
 
 class TestListData(JsonApiData):
 
-    accounts: List[TestInnerData]
+    accounts: t.List[TestInnerData]
     datetime: str
 
 
@@ -61,7 +61,7 @@ data_nested = json.dumps({
 class TestUnionData(JsonApiData):
 
     name: str
-    age: Optional[int] = None
+    age: t.Optional[int] = None
 
 
 data_union = json.dumps({

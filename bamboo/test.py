@@ -1,17 +1,11 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from multiprocessing import Process
+import dataclasses
+import multiprocessing
 import signal
 import sys
 import time
-from typing import (
-    Any,
-    Callable,
-    List,
-    Optional,
-    Tuple,
-)
-from wsgiref import simple_server
+import typing as t
+import wsgiref.simple_server
 
 from bamboo.app import WSGIApp
 from bamboo.util.string import ColorCode, insert_colorcode
@@ -20,7 +14,7 @@ from bamboo.util.string import ColorCode, insert_colorcode
 __all__ = []
 
 
-@dataclass
+@dataclasses.dataclass
 class WSGIServerForm:
     """Dataclass to register a server form.
 
@@ -45,7 +39,7 @@ def serve_at(form: WSGIServerForm) -> None:
     Args:
         form: Dataclass describing information of the server application.
     """
-    server = simple_server.make_server(form.host, form.port, form.app)
+    server = wsgiref.simple_server.make_server(form.host, form.port, form.app)
     f_log = open(form.path_log, "wt")
     sys.stdout = f_log
     sys.stderr = f_log
@@ -76,8 +70,8 @@ class WSGITestExecutor:
             *forms: Dataclass describing information of
                 the server application.
         """
-        self._forms: List[WSGIServerForm] = []
-        self._children: List[Process] = []
+        self._forms: t.List[WSGIServerForm] = []
+        self._children: t.List[multiprocessing.Process] = []
 
         self.add_forms(*forms)
 
@@ -113,7 +107,7 @@ class WSGITestExecutor:
             ```
         """
         for form in self._forms:
-            child = Process(target=serve_at, args=(form,))
+            child = multiprocessing.Process(target=serve_at, args=(form,))
             child.start()
             self._children.append(child)
         time.sleep(waiting)
@@ -136,8 +130,8 @@ class WSGITestExecutor:
 
     def exec(
         self,
-        func: Callable[[Tuple[Any, ...]], None],
-        args: Tuple[Any, ...] = (),
+        func: t.Callable[[t.Tuple[t.Any, ...]], None],
+        args: t.Tuple[t.Any, ...] = (),
         waiting: float = 0.1,
     ) -> None:
         """Executes a simple client-server test.
@@ -168,8 +162,7 @@ class WSGITestExecutor:
             host: Hostname of the server.
             port: Port of the server.
         """
-        server = simple_server.make_server(host, port, app)
-
+        server = wsgiref.simple_server.make_server(host, port, app)
         try:
             print(f"Hosting on {host}:{port} ...")
             print(insert_colorcode(
@@ -177,7 +170,6 @@ class WSGITestExecutor:
                 "Do not use it in your production deployment.",
                 ColorCode.RED
             ))
-
             server.serve_forever()
         except KeyboardInterrupt:
             server.server_close()

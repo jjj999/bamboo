@@ -1,15 +1,7 @@
-
 from __future__ import annotations
-
-from http.client import HTTPSConnection
-from ssl import SSLContext
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-)
+import http.client
+import ssl
+import typing as t
 
 from bamboo.api import BinaryApiData
 from bamboo.base import HTTPMethods
@@ -34,16 +26,16 @@ __all__ = [
 def request(
     uri: str,
     method: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     form = get_http_request_form(
         Schemes.HTTPS,
@@ -54,7 +46,7 @@ def request(
         json=json,
         query=query
     )
-    conn = HTTPSConnection(
+    conn = http.client.HTTPSConnection(
         form.host,
         form.port,
         key_file=key_file,
@@ -70,16 +62,16 @@ def request(
 
 def get(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     """Request with the GET method on HTTPS.
 
@@ -123,16 +115,16 @@ def get(
 
 def post(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     """Request with the POST method on HTTPS.
 
@@ -176,16 +168,16 @@ def post(
 
 def put(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     """Request with the PUT method on HTTPS.
 
@@ -229,16 +221,16 @@ def put(
 
 def delete(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     """Request with the DELETE method on HTTPS.
 
@@ -282,16 +274,16 @@ def delete(
 
 def head(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     """Request with the HEAD method on HTTPS.
 
@@ -335,16 +327,16 @@ def head(
 
 def options(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     """Request with the OPTIONS method on HTTPS.
 
@@ -388,16 +380,16 @@ def options(
 
 def patch(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     """Request with the PATCH method on HTTPS.
 
@@ -441,16 +433,16 @@ def patch(
 
 def trace(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     """Request with the TRACE method on HTTPS.
 
@@ -494,16 +486,16 @@ def trace(
 
 def connect(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData,
-    key_file: Optional[str] = None,
-    cert_file: Optional[str] = None,
-    context: Optional[SSLContext] = None
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
+    key_file: t.Optional[str] = None,
+    cert_file: t.Optional[str] = None,
+    context: t.Optional[ssl.SSLContext] = None,
 ) -> Response[ResponseData_t]:
     """Request with the CONNECT method on HTTPS.
 

@@ -1,9 +1,5 @@
 import random
-from typing import (
-    Any,
-    Dict,
-    List,
-)
+import typing as t
 import unittest
 
 from bamboo import (
@@ -39,11 +35,11 @@ class UserJsonApi(JsonApiData):
 
 class TestJsonApi(JsonApiData):
 
-    users: List[UserJsonApi]
+    users: t.List[UserJsonApi]
     total: int
 
 
-def make_user_api_data() -> Dict[str, Any]:
+def make_user_api_data() -> t.Dict[str, t.Any]:
     user_id = rand_string(10)
     name = rand_string(10)
     email = rand_string(20)
@@ -56,7 +52,7 @@ def make_user_api_data() -> Dict[str, Any]:
     }
 
 
-def make_test_api_data() -> Dict[str, Any]:
+def make_test_api_data() -> t.Dict[str, t.Any]:
     total = random.randint(0, 100)
     users = [make_user_api_data() for _ in range(total)]
     return {

@@ -1,10 +1,5 @@
-
 import base64
-from typing import (
-    Dict,
-    List,
-    Union,
-)
+import typing as t
 
 
 __all__ = [
@@ -15,7 +10,7 @@ __all__ = [
 ]
 
 
-def encode_binary(data: Union[bytes, bytearray]) -> str:
+def encode_binary(data: t.Union[bytes, bytearray]) -> str:
     return base64.b64encode(data).decode()
 
 
@@ -27,7 +22,7 @@ def decode2binary(data: str) -> bytes:
     return base64.b64decode(data.encode())
 
 
-def unparse_qs(query: Dict[str, List[str]]) -> str:
+def unparse_qs(query: t.Dict[str, t.List[str]]) -> str:
     params = []
     for key, vals in query.items():
         repr_vals = ",".join(vals)

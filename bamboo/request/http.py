@@ -1,14 +1,6 @@
-
 from __future__ import annotations
-
-from http import client
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Type,
-)
+import http.client
+import typing as t
 
 from bamboo.api import BinaryApiData
 from bamboo.base import HTTPMethods
@@ -33,13 +25,13 @@ __all__ = [
 def request(
     uri: str,
     method: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     form = get_http_request_form(
         Schemes.HTTP,
@@ -50,7 +42,7 @@ def request(
         json=json,
         query=query
     )
-    conn = client.HTTPConnection(
+    conn = http.client.HTTPConnection(
         form.host,
         port=form.port,
         timeout=timeout,
@@ -63,13 +55,13 @@ def request(
 
 def get(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     """Request with the GET method on HTTP.
 
@@ -101,13 +93,13 @@ def get(
 
 def post(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     """Request with the POST method on HTTP.
 
@@ -139,13 +131,13 @@ def post(
 
 def put(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     """Request with the PUT method on HTTP.
 
@@ -177,13 +169,13 @@ def put(
 
 def delete(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     """Request with the DELETE method on HTTP.
 
@@ -215,13 +207,13 @@ def delete(
 
 def head(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     """Request with the HEAD method on HTTP.
 
@@ -253,13 +245,13 @@ def head(
 
 def options(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     """Request with the OPTIONS method on HTTP.
 
@@ -291,13 +283,13 @@ def options(
 
 def patch(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     """Request with the PATCH method on HTTP.
 
@@ -329,13 +321,13 @@ def patch(
 
 def trace(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     """Request with the TRACE method on HTTP.
 
@@ -367,13 +359,13 @@ def trace(
 
 def connect(
     uri: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {},
-    timeout: Optional[float] = None,
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {},
+    timeout: t.Optional[float] = None,
     blocksize: int = 8192,
-    datacls: Type[ResponseData_t] = BinaryApiData
+    datacls: t.Type[ResponseData_t] = BinaryApiData,
 ) -> Response[ResponseData_t]:
     """Request with the CONNECT method on HTTP.
 

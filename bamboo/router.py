@@ -1,12 +1,4 @@
-from typing import (
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar, Union,
-)
+import typing as t
 
 from bamboo.location import (
     FlexibleLocation,
@@ -20,8 +12,8 @@ __all__ = []
 
 
 HTTPMethod_t = str
-Endpoint_t = TypeVar("Endpoint_t")
-Uri2Endpoints_t = Dict[Uri_t, Type[Endpoint_t]]
+Endpoint_t = t.TypeVar("Endpoint_t")
+Uri2Endpoints_t = t.Dict[Uri_t, t.Type[Endpoint_t]]
 
 
 class DuplicatedUriRegisteredError(Exception):
@@ -29,20 +21,20 @@ class DuplicatedUriRegisteredError(Exception):
     pass
 
 
-class Router(Generic[Endpoint_t]):
+class Router(t.Generic[Endpoint_t]):
     """Operator of routing request to `Endpoint` by URI.
     """
 
     def __init__(self) -> None:
         self._raw_uri2endpoint: Uri2Endpoints_t = {}
         self.uri2endpoint: Uri2Endpoints_t = {}
-        self.uris_flexible: List[Uri_t] = []
+        self.uris_flexible: t.List[Uri_t] = []
 
     def register(
         self,
         uri: Uri_t,
-        endpoint: Type[Endpoint_t],
-        version: Union[str, Tuple[str, ...]] = ()
+        endpoint: t.Type[Endpoint_t],
+        version: t.Union[str, t.Tuple[str, ...]] = ()
     ) -> None:
         """Register combination of URI and `Endpoint`.
 
@@ -81,7 +73,7 @@ class Router(Generic[Endpoint_t]):
     def validate(
         self,
         uri: str
-    ) -> Tuple[Tuple[str, ...], Optional[Type[Endpoint_t]]]:
+    ) -> t.Tuple[t.Tuple[str, ...], t.Optional[t.Type[Endpoint_t]]]:
         """Validate specified `uri` and retrieved `Endpoint`.
 
         Note:
@@ -136,7 +128,7 @@ class Router(Generic[Endpoint_t]):
         # Could not find it
         return ((), None)
 
-    def search_uris(self, endpoint: Type[Endpoint_t]) -> List[Uri_t]:
+    def search_uris(self, endpoint: t.Type[Endpoint_t]) -> t.List[Uri_t]:
         """Search URI patterns of specified `endpoint`.
 
         Args:

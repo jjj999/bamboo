@@ -1,9 +1,8 @@
-
-from collections import deque
-from enum import Enum
+import collections
+import enum
 import random
 import string
-from typing import List, Optional
+import typing as t
 
 
 __all__ = [
@@ -68,7 +67,7 @@ class CircularChar:
 
 class SerialString:
 
-    def __init__(self, length: int, begin: Optional[str] = None) -> None:
+    def __init__(self, length: int, begin: t.Optional[str] = None) -> None:
         if length < 1:
             raise ValueError("'length' must be bigger than 0.")
 
@@ -89,10 +88,10 @@ class SerialString:
     def current(self) -> str:
         return "".join([c.current for c in self._string])
 
-    def next(self, up: bool = True) -> Optional[str]:
-        result = deque()
+    def next(self, up: bool = True) -> t.Optional[str]:
+        result = collections.deque()
 
-        def challenge(string: List[CircularChar], is_carry_up: bool) -> None:
+        def challenge(string: t.List[CircularChar], is_carry_up: bool) -> None:
             next_up = False
             if is_carry_up:
                 char = string[-1].next(up=up)
@@ -124,7 +123,7 @@ class SerialString:
 
 class CircularString:
 
-    def __init__(self, length: int, begin: Optional[str] = None) -> None:
+    def __init__(self, length: int, begin: t.Optional[str] = None) -> None:
         if length < 1:
             raise ValueError("'length' must be bigger than 0.")
 
@@ -143,9 +142,9 @@ class CircularString:
         return "".join([c.current for c in self._string])
 
     def next(self, up: bool = True) -> str:
-        result = deque()
+        result = collections.deque()
 
-        def challenge(string: List[CircularChar], is_carry_up: bool) -> None:
+        def challenge(string: t.List[CircularChar], is_carry_up: bool) -> None:
             next_up = False
             if is_carry_up:
                 char = string[-1].next(up=up)
@@ -155,7 +154,6 @@ class CircularString:
                 char = string[-1].current
 
             result.appendleft(char)
-
             if len(string) == 1:
                 return
 
@@ -165,10 +163,10 @@ class CircularString:
         return "".join(result)
 
     def back(self, down: bool = True) -> str:
-        result = deque()
+        result = collections.deque()
 
         def challenge(
-            string: List[CircularChar],
+            string: t.List[CircularChar],
             is_carry_down: bool
         ) -> None:
             next_down = False
@@ -197,7 +195,7 @@ def rand_string(size: int) -> str:
     return "".join(random.choices(_ASCII_LETTERS_DIGITS, k=size))
 
 
-class ColorCode(Enum):
+class ColorCode(enum.Enum):
 
     BLACK       = "\033[30m"
     RED         = "\033[31m"

@@ -1,11 +1,5 @@
 import json
-from typing import (
-    Iterable,
-    List,
-    Optional,
-    Tuple,
-    Union,
-)
+import typing as t
 
 from bamboo.base import (
     AuthSchemes,
@@ -37,7 +31,7 @@ class ErrInfo(Exception, ContentTypeHolder):
         """
         return DEFAULT_CONTENT_TYPE_PLAIN
 
-    def get_headers(self) -> List[Tuple[str, str]]:
+    def get_headers(self) -> t.List[t.Tuple[str, str]]:
         """Publishes additional headers for error response.
 
         Returns:
@@ -45,7 +39,7 @@ class ErrInfo(Exception, ContentTypeHolder):
         """
         return []
 
-    def get_body(self) -> Union[bytes, Iterable[bytes]]:
+    def get_body(self) -> t.Union[bytes, t.Iterable[bytes]]:
         """Publishes response body for error response.
 
         Returns
@@ -55,10 +49,10 @@ class ErrInfo(Exception, ContentTypeHolder):
 
     def get_all_form(
         self,
-    ) -> Tuple[
+    ) -> t.Tuple[
         HTTPStatus,
-        List[Tuple[str, str]],
-        Union[bytes, Iterable[bytes]]
+        t.List[t.Tuple[str, str]],
+        t.Union[bytes, t.Iterable[bytes]]
     ]:
         """Get status code, headers and body of repsponse of the error.
 
@@ -130,7 +124,7 @@ class DefaultAuthHeaderNotFoundErrInfo(ErrInfo):
     def scheme(self) -> str:
         return self._scheme
 
-    def get_headers(self) -> List[Tuple[str, str]]:
+    def get_headers(self) -> t.List[t.Tuple[str, str]]:
         value = get_default_auth_realm(self._scheme)
         return [(_WWW_AUTH_HEADER, value)]
 
@@ -163,9 +157,9 @@ class ApiErrInfo(ErrInfo):
         encoding (str): Encoding to encode response body.
     """
     code: str
-    dev_message: Optional[str] = None
-    user_message: Optional[str] = None
-    info: Optional[str] = None
+    dev_message: t.Optional[str] = None
+    user_message: t.Optional[str] = None
+    info: t.Optional[str] = None
     encoding: str = "UTF-8"
 
     @class_property
@@ -175,7 +169,7 @@ class ApiErrInfo(ErrInfo):
         """
         return ContentType(MediaTypes.json, charset=cls.encoding)
 
-    def get_body(self) -> Optional[bytes]:
+    def get_body(self) -> t.Optional[bytes]:
         """Publishes response body for error response.
 
         Returns

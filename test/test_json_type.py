@@ -1,4 +1,4 @@
-from typing import List
+import typing as t
 import unittest
 
 from bamboo.api import (
@@ -16,7 +16,7 @@ class TestInnerApi(JsonApiData):
 
 class TestOuterApi(JsonApiData):
 
-    accounts: List[TestInnerApi]
+    accounts: t.List[TestInnerApi]
 
 
 class TestJsonable(unittest.TestCase):
@@ -37,10 +37,10 @@ class TestJsonable(unittest.TestCase):
         JsonApiDataBuilder.check_annotations(type(None))
 
     def test_list(self):
-        JsonApiDataBuilder.check_annotations(List[int])
+        JsonApiDataBuilder.check_annotations(t.List[int])
 
         with self.assertRaises(InvalidAnnotationError) as err:
-            JsonApiDataBuilder.check_annotations(List)
+            JsonApiDataBuilder.check_annotations(t.List)
         self.assertIsInstance(err.exception, InvalidAnnotationError)
 
     def test_jsonapi(self):

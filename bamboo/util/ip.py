@@ -1,4 +1,3 @@
-
 __all__ = [
     "is_valid_ipv4",
 ]

@@ -1,16 +1,6 @@
-
 from __future__ import annotations
-
-from http.client import (
-    HTTPConnection,
-    HTTPMessage,
-    HTTPResponse,
-)
-from typing import (
-    Generic,
-    Optional,
-    Type,
-)
+import http.client
+import typing as t
 
 from bamboo.api import BinaryApiData
 from bamboo.base import ContentType
@@ -28,7 +18,7 @@ class ResponseBodyAlreadyReadError(Exception):
     pass
 
 
-class Response(Generic[ResponseData_t]):
+class Response(t.Generic[ResponseData_t]):
     """Response returned by request functions of `http` or `https` modules.
 
     Examples:
@@ -50,9 +40,9 @@ class Response(Generic[ResponseData_t]):
 
     def __init__(
         self,
-        conn: HTTPConnection,
-        res: HTTPResponse,
-        datacls: Type[ResponseData_t] = BinaryApiData
+        conn: http.client.HTTPConnection,
+        res: http.client.HTTPResponse,
+        datacls: t.Type[ResponseData_t] = BinaryApiData,
     ) -> None:
         """
         Args:
@@ -66,12 +56,12 @@ class Response(Generic[ResponseData_t]):
         self._is_read = False
 
     @property
-    def headers(self) -> HTTPMessage:
+    def headers(self) -> http.client.HTTPMessage:
         """All response headers.
         """
         return self._res.msg
 
-    def get_header(self, name: str) -> Optional[str]:
+    def get_header(self, name: str) -> t.Optional[str]:
         """Retrive header value from response headers.
 
         Args:
@@ -122,7 +112,7 @@ class Response(Generic[ResponseData_t]):
         return self._res.fileno()
 
     @property
-    def content_length(self) -> Optional[int]:
+    def content_length(self) -> t.Optional[int]:
         """Content length of the response if existing, None otherwise.
         """
         length = self.get_header("Content-Length")
@@ -130,7 +120,7 @@ class Response(Generic[ResponseData_t]):
             return int(length)
         return None
 
-    def read(self, amt: Optional[int] = None) -> bytes:
+    def read(self, amt: t.Optional[int] = None) -> bytes:
         """Reads and returns the response body.
 
         Args:
@@ -165,7 +155,7 @@ class Response(Generic[ResponseData_t]):
 
     def attach(
         self,
-        datacls: Optional[Type[ResponseData_t]] = None
+        datacls: t.Optional[t.Type[ResponseData_t]] = None,
     ) -> ResponseData_t:
         """Generate new object of specified ApiData from response body.
 

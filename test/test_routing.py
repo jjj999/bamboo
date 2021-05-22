@@ -1,6 +1,6 @@
 import random
 import string
-from typing import List
+import typing as t
 import unittest
 
 from bamboo import (
@@ -26,7 +26,7 @@ def rand_string(k: int) -> str:
     return "".join(random.choices(string.ascii_letters + string.digits, k=k))
 
 
-def rand_strings(num: int) -> List[str]:
+def rand_strings(num: int) -> t.List[str]:
     return [rand_string(random.randint(10, 20)) for _ in range(num)]
 
 

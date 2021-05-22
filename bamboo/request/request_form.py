@@ -1,14 +1,7 @@
-
 from __future__ import annotations
-
-from dataclasses import dataclass
-from json import dumps
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-)
+import dataclasses
+import json as js
+import typing as t
 from urllib.parse import parse_qs, urlparse
 
 from bamboo.base import HTTPMethods, MediaTypes
@@ -18,25 +11,25 @@ from bamboo.util.convert import unparse_qs
 __all__ = []
 
 
-@dataclass
+@dataclasses.dataclass
 class HTTPRequestForm:
 
     host: str
-    port: Optional[int]
+    port: t.Optional[int]
     uri: str
     method: str
-    headers: Dict[str, str]
-    body: Optional[bytes]
+    headers: t.Dict[str, str]
+    body: t.Optional[bytes]
 
 
 def get_http_request_form(
     scheme: str,
     uri: str,
     method: str,
-    headers: Dict[str, str] = {},
-    body: Optional[bytes] = None,
-    json: Optional[Dict[str, Any]] = None,
-    query: Dict[str, List[str]] = {}
+    headers: t.Dict[str, str] = {},
+    body: t.Optional[bytes] = None,
+    json: t.Optional[t.Dict[str, t.Any]] = None,
+    query: t.Dict[str, t.List[str]] = {}
 ) -> HTTPRequestForm:
     # method management
     method = method.upper()
@@ -50,7 +43,7 @@ def get_http_request_form(
         if "Content-Type" not in headers:
             headers["Content-Type"] = MediaTypes.plain
     if json:
-        body = dumps(json)
+        body = js.dumps(json)
         if "Content-Type" not in headers:
             headers["Content-Type"] = MediaTypes.json
 

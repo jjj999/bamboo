@@ -1,7 +1,7 @@
-from typing import Tuple
+import typing as t
 
 
-def make_header(name: str, value: str, **params: str) -> Tuple[str, str]:
+def make_header(name: str, value: str, **params: str) -> t.Tuple[str, str]:
     """Make pair of header field and its value with other directives.
 
     Args:

@@ -3,18 +3,7 @@ from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
 import codecs
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Generic,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-)
+import typing as t
 
 from bamboo.base import ASGIHTTPEvents, HTTPStatus
 from bamboo.endpoint import (
@@ -41,7 +30,7 @@ __all__ = []
 
 
 ATTR_VERSION = _get_bamboo_attr("version")
-Version_t = Tuple[int]
+Version_t = t.Tuple[int]
 
 
 class VersionConfig:
@@ -50,7 +39,7 @@ class VersionConfig:
     This class can be used to get and set version of `Endpoint` safely.
     """
 
-    def __init__(self, endpoint: Type[EndpointBase]) -> None:
+    def __init__(self, endpoint: t.Type[EndpointBase]) -> None:
         """
         Args:
             endpoint: `Endpoint` whose version is to be manipulated
@@ -60,8 +49,7 @@ class VersionConfig:
     def set(
         self,
         app: AppBase,
-        version: Union[int, Tuple[int], None] = None,
-        force: bool = False
+        version: t.Union[int, t.Tuple[int], None] = None,
     ) -> None:
         """Set version of `Endpoint`.
 
@@ -87,7 +75,7 @@ class VersionConfig:
 
         registered[app] = version
 
-    def get(self, app: AppBase) -> Optional[Version_t]:
+    def get(self, app: AppBase) -> t.Optional[Version_t]:
         """Retrieve version belonging to specified `app`.
 
         Args:
@@ -101,7 +89,7 @@ class VersionConfig:
             return registered.get(app)
         return None
 
-    def get_all(self) -> List[Tuple[AppBase, Version_t]]:
+    def get_all(self) -> t.List[t.Tuple[AppBase, Version_t]]:
         """Retrieve versions belonging to all `AppBase` objects.
 
         Returns:
@@ -114,7 +102,7 @@ class VersionConfig:
 
 
 ATTR_PARCEL = _get_bamboo_attr("parcel")
-Parcel_t = Tuple[Any, ...]
+Parcel_t = t.Tuple[t.Any, ...]
 
 
 class ParcelConfig:
@@ -123,7 +111,7 @@ class ParcelConfig:
     This class can be used to get and set parcel of `Endpoint` safely.
     """
 
-    def __init__(self, endpoint: Type[EndpointBase]) -> None:
+    def __init__(self, endpoint: t.Type[EndpointBase]) -> None:
         """
         Args:
             endpoint : `Endpoint` whose parcel is to be manipulated.
@@ -157,7 +145,7 @@ class ParcelConfig:
             return registered.get(app)
         return ()
 
-    def get_all(self) -> List[Tuple[AppBase, Parcel_t]]:
+    def get_all(self) -> t.List[t.Tuple[AppBase, Parcel_t]]:
         """Retrieve parcels belonging to all `AppBase` objects.
 
         Returns:
@@ -169,7 +157,7 @@ class ParcelConfig:
         return []
 
 
-class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
+class AppBase(t.Generic[Endpoint_t], metaclass=ABCMeta):
     """Base class of all application in Bamboo.
 
     Bamboo has two core concepts called application and endpoint, and
@@ -201,10 +189,10 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
         self._error_404 = error_404
 
     @abstractmethod
-    def __call__(self, *args: Any, **kwds: Any) -> Any:
+    def __call__(self, *args: t.Any, **kwds: t.Any) -> t.Any:
         pass
 
-    def search_uris(self, endpoint: Type[Endpoint_t]) -> List[Uri_t]:
+    def search_uris(self, endpoint: t.Type[Endpoint_t]) -> t.List[Uri_t]:
         """Retrieve all URI patterns of `Endpoint`.
 
         Note:
@@ -219,7 +207,10 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
         """
         return self._router.search_uris(endpoint)
 
-    def validate(self, uri: str) -> Tuple[Tuple[str, ...], Optional[Type[Endpoint_t]]]:
+    def validate(
+        self,
+        uri: str,
+    ) -> t.Tuple[t.Tuple[str, ...], t.Optional[t.Type[Endpoint_t]]]:
         """Validate specified `uri` and retrieve corresponding `Endpoint` class.
 
         Note:
@@ -238,8 +229,8 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
     def route(
         self,
         *locs: Location_t,
-        version: Union[int, Tuple[int], None] = None
-    ) -> Callable[[Type[Endpoint_t]], Type[Endpoint_t]]:
+        version: t.Union[int, t.Tuple[int], None] = None
+    ) -> t.Callable[[t.Type[Endpoint_t]], t.Type[Endpoint_t]]:
         """Register combination of URI and `Endpoint` for routing.
 
         Args:
@@ -261,7 +252,9 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
                     # Do something...
             ```
         """
-        def register_endpoint(endpoint: Type[Endpoint_t]) -> Type[Endpoint_t]:
+        def register_endpoint(
+            endpoint: t.Type[Endpoint_t],
+        ) -> t.Type[Endpoint_t]:
             if not issubclass(endpoint, self.__avalidable_endpoints):
                 raise TypeError(
                     f"{endpoint.__name__} is not avalidable in "
@@ -282,7 +275,7 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
             return endpoint
         return register_endpoint
 
-    def set_parcel(self, endpoint: Type[Endpoint_t], *parcel: Any) -> None:
+    def set_parcel(self, endpoint: t.Type[Endpoint_t], *parcel: t.Any) -> None:
         """Set parcel to an endpoint.
 
         This method enables to give objects to `Endpoint` objects
@@ -310,7 +303,7 @@ class AppBase(Generic[Endpoint_t], metaclass=ABCMeta):
     def graft(
         self,
         *apps: AppBase,
-        onto: Tuple[StaticLocation_t, ...] = ()
+        onto: t.Tuple[StaticLocation_t, ...] = ()
     ) -> None:
         """Graft other applications as branches of the application's tree.
 
@@ -350,9 +343,9 @@ class WSGIApp(AppBase):
 
     def __call__(
         self,
-        environ: Dict[str, Any],
-        start_response: Callable
-    ) -> List[bytes]:
+        environ: t.Dict[str, t.Any],
+        start_response: t.Callable
+    ) -> t.List[bytes]:
         method = environ.get("REQUEST_METHOD").upper()
         path = environ.get("PATH_INFO")
 
@@ -390,7 +383,7 @@ class WSGIApp(AppBase):
         start_response(status.wsgi, headers)
         return body
 
-    def send_404(self, start_response: Callable) -> BufferedConcatIterator:
+    def send_404(self, start_response: t.Callable) -> BufferedConcatIterator:
         """Send `404` error code, i.e. `Resource Not Found` error.
 
         Args:
@@ -404,26 +397,26 @@ class WSGIApp(AppBase):
         start_response(status.wsgi, headers)
         return res_body
 
-    def search_uris(self, endpoint: Type[WSGIEndpoint]) -> List[Uri_t]:
+    def search_uris(self, endpoint: t.Type[WSGIEndpoint]) -> t.List[Uri_t]:
         return super().search_uris(endpoint)
 
     def validate(
         self,
         uri: str
-    ) -> Tuple[Tuple[str, ...], Optional[Type[WSGIEndpoint]]]:
+    ) -> t.Tuple[t.Tuple[str, ...], t.Optional[t.Type[WSGIEndpoint]]]:
         return super().validate(uri)
 
     def route(
         self,
         *locs: Location_t,
-        version: Union[int, Tuple[int], None] = None
-    ) -> Callable[[Type[WSGIEndpoint]], Type[WSGIEndpoint]]:
+        version: t.Union[int, t.Tuple[int], None] = None
+    ) -> t.Callable[[t.Type[WSGIEndpoint]], t.Type[WSGIEndpoint]]:
         return super().route(*locs, version=version)
 
     def set_parcel(
         self,
-        endpoint: Type[WSGIEndpoint],
-        *parcel: Any
+        endpoint: t.Type[WSGIEndpoint],
+        *parcel: t.Any
     ) -> None:
         return super().set_parcel(endpoint, *parcel)
 
@@ -447,9 +440,9 @@ class ASGIHTTPApp(AppBase):
 
     async def __call__(
         self,
-        scope: Dict[str, Any],
-        receive: Callable[[], Awaitable[Dict[str, Any]]],
-        send: Callable[[Dict[str, Any]], Awaitable[None]]
+        scope: t.Dict[str, t.Any],
+        receive: t.Callable[[], t.Awaitable[t.Dict[str, t.Any]]],
+        send: t.Callable[[t.Dict[str, t.Any]], t.Awaitable[None]]
     ) -> None:
         method = scope.get("method")
         path = scope.get("path")
@@ -495,9 +488,9 @@ class ASGIHTTPApp(AppBase):
 
     @staticmethod
     async def send_start(
-        send: Callable[[Dict[str, Any]], Awaitable[None]],
+        send: t.Callable[[t.Dict[str, t.Any]], t.Awaitable[None]],
         status: HTTPStatus,
-        headers: List[Tuple[bytes, bytes]]
+        headers: t.List[t.Tuple[bytes, bytes]]
     ) -> None:
         """Start repsonse by sending response status and headers.
 
@@ -514,7 +507,7 @@ class ASGIHTTPApp(AppBase):
 
     @staticmethod
     async def send_body(
-        send: Callable[[Dict[str, Any], Awaitable[None]]],
+        send: t.Callable[[t.Dict[str, t.Any], t.Awaitable[None]]],
         body: BufferedConcatIterator
     ) -> None:
         """Send response body.
@@ -533,7 +526,7 @@ class ASGIHTTPApp(AppBase):
 
     async def send_404(
         self,
-        send: Callable[[Dict[str, Any]], Awaitable[None]]
+        send: t.Callable[[t.Dict[str, t.Any]], t.Awaitable[None]]
     ) -> None:
         """Send `404` error code, i.e. `Resource Not Found` error.
 
@@ -549,26 +542,26 @@ class ASGIHTTPApp(AppBase):
 
     def search_uris(
         self,
-        endpoint: Type[ASGIHTTPEndpoint]
-    ) -> List[Uri_t]:
+        endpoint: t.Type[ASGIHTTPEndpoint]
+    ) -> t.List[Uri_t]:
         return super().search_uris(endpoint)
 
     def validate(
         self,
         uri: str
-    ) -> Tuple[Tuple[str, ...], Optional[Type[ASGIHTTPEndpoint]]]:
+    ) -> t.Tuple[t.Tuple[str, ...], t.Optional[t.Type[ASGIHTTPEndpoint]]]:
         return super().validate(uri)
 
     def route(
         self,
         *locs: Location_t,
-        version: Union[int, Tuple[int], None] = None
-    ) -> Callable[[Type[ASGIHTTPEndpoint]], Type[ASGIHTTPEndpoint]]:
+        version: t.Union[int, t.Tuple[int], None] = None
+    ) -> t.Callable[[t.Type[ASGIHTTPEndpoint]], t.Type[ASGIHTTPEndpoint]]:
         return super().route(*locs, version=version)
 
     def set_parcel(
         self,
-        endpoint: Type[ASGIHTTPEndpoint],
-        *parcel: Any
+        endpoint: t.Type[ASGIHTTPEndpoint],
+        *parcel: t.Any
     ) -> None:
         return super().set_parcel(endpoint, *parcel)

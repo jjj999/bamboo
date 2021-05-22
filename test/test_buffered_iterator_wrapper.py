@@ -1,11 +1,11 @@
 from os import getrandom
-from typing import Generator
+import typing as t
 import unittest
 
 from bamboo import BufferedIteratorWrapper
 
 
-def test_generator() -> Generator[bytes, None, None]:
+def test_generator() -> t.Generator[bytes, None, None]:
     for i in range(10**2, 10**3):
         yield getrandom(i)
 

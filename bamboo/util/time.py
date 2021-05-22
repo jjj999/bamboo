@@ -1,7 +1,6 @@
-
-from datetime import datetime
+import datetime
 from email.utils import formatdate, parsedate_to_datetime
-from typing import Optional
+import typing as t
 
 
 __all__ = [
@@ -12,7 +11,7 @@ __all__ = [
 ]
 
 
-def get_datetime_rfc822(timeval: Optional[float] = None) -> str:
+def get_datetime_rfc822(timeval: t.Optional[float] = None) -> str:
     return formatdate(timeval=timeval, usegmt=True)
 
 
@@ -20,7 +19,7 @@ def unix_to_rfc822(unixtime: float) -> str:
     return get_datetime_rfc822(unixtime)
 
 
-def rfc822_to_datetime(rfc822: str) -> datetime:
+def rfc822_to_datetime(rfc822: str) -> datetime.datetime:
     return parsedate_to_datetime(rfc822)
 
 

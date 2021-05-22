@@ -2,22 +2,10 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 import codecs
 import inspect
-from io import BytesIO
+import io
 import json
 import os
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Tuple,
-    TYPE_CHECKING,
-    TypeVar,
-    Union,
-)
+import typing as t
 from urllib.parse import parse_qs
 
 from bamboo.base import (
@@ -38,17 +26,17 @@ from bamboo.util.deco import (
 from bamboo.util.header import make_header
 
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from bamboo.app import (
         AppBase,
         WSGIApp,
         ASGIHTTPApp,
     )
 
-    App_t = TypeVar("App_t", bound=AppBase)
+    App_t = t.TypeVar("App_t", bound=AppBase)
 
 
-_get_query_t = TypeVar("_get_query_t")
+_get_query_t = t.TypeVar("_get_query_t")
 
 
 __all__ = []
@@ -69,8 +57,8 @@ class EndpointBase(metaclass=ABCMeta):
     def __init__(
         self,
         app: App_t,
-        flexible_locs: Tuple[str, ...],
-        *parcel: Any
+        flexible_locs: t.Tuple[str, ...],
+        *parcel: t.Any
     ) -> None:
         """
         Note:
@@ -132,7 +120,7 @@ class EndpointBase(metaclass=ABCMeta):
         return self._app
 
     @property
-    def flexible_locs(self) -> Tuple[str, ...]:
+    def flexible_locs(self) -> t.Tuple[str, ...]:
         """Flexible locations extracted from requested URI.
         """
         return self._flexible_locs
@@ -152,7 +140,7 @@ class EndpointBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_client_addr(self) -> Tuple[Optional[str], Optional[int]]:
+    def get_client_addr(self) -> t.Tuple[t.Optional[str], t.Optional[int]]:
         """Retrieve client address, pair of its IP address and port.
 
         Note:
@@ -166,7 +154,7 @@ class EndpointBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_server_addr(self) -> Tuple[Optional[str], Optional[int]]:
+    def get_server_addr(self) -> t.Tuple[t.Optional[str], t.Optional[int]]:
         """Retrive server address, pair of its IP address and port.
 
         Note:
@@ -180,7 +168,7 @@ class EndpointBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_host_addr(self) -> Tuple[Optional[str], Optional[int]]:
+    def get_host_addr(self) -> t.Tuple[t.Optional[str], t.Optional[int]]:
         """Retrive host name and port from requested headers.
 
         Returns:
@@ -189,7 +177,7 @@ class EndpointBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def get_header(self, name: str) -> Optional[str]:
+    def get_header(self, name: str) -> t.Optional[str]:
         """Retrive header value from requested headers.
 
         Args:
@@ -209,12 +197,12 @@ class EndpointBase(metaclass=ABCMeta):
 
     @cached_property
     @abstractmethod
-    def queries(self) -> Dict[str, List[str]]:
+    def queries(self) -> t.Dict[str, t.List[str]]:
         """Query parameters specified to requested URI.
         """
         pass
 
-    def get_queries(self, name: str) -> List[str]:
+    def get_queries(self, name: str) -> t.List[str]:
         """Get values of query parameter.
 
         Args:
@@ -234,7 +222,7 @@ class EndpointBase(metaclass=ABCMeta):
         name: str,
         err_not_unique: ErrInfo,
         default: _get_query_t = None,
-    ) -> Union[str, _get_query_t]:
+    ) -> t.Union[str, _get_query_t]:
         """Get the first value of query parameter with specified name.
 
         Args:
@@ -254,7 +242,7 @@ class EndpointBase(metaclass=ABCMeta):
 
     @cached_property
     @abstractmethod
-    def content_type(self) -> Optional[ContentType]:
+    def content_type(self) -> t.Optional[ContentType]:
         """Content type of request body.
 
         Returns:
@@ -277,9 +265,9 @@ class WSGIEndpointBase(EndpointBase):
     def __init__(
         self,
         app: WSGIApp,
-        environ: Dict[str, Any],
-        flexible_locs: Tuple[str, ...],
-        *parcel: Any
+        environ: t.Dict[str, t.Any],
+        flexible_locs: t.Tuple[str, ...],
+        *parcel: t.Any
     ) -> None:
         """
         Args:
@@ -291,7 +279,7 @@ class WSGIEndpointBase(EndpointBase):
         super().__init__(app, flexible_locs, *parcel)
 
     @property
-    def environ(self) -> Dict[str, Any]:
+    def environ(self) -> t.Dict[str, t.Any]:
         """environ variable received from WSGI server.
         """
         return self._environ
@@ -318,21 +306,21 @@ class WSGIEndpointBase(EndpointBase):
     def scheme(self) -> str:
         return self._environ.get("wsgi.url_scheme")
 
-    def get_client_addr(self) -> Tuple[Optional[str], Optional[int]]:
+    def get_client_addr(self) -> t.Tuple[t.Optional[str], t.Optional[int]]:
         client = self._environ.get("REMOTE_ADDR")
         port = self._environ.get("REMOTE_PORT")
         if port:
             port = int(port)
         return (client, port)
 
-    def get_server_addr(self) -> Tuple[Optional[str], Optional[int]]:
+    def get_server_addr(self) -> t.Tuple[t.Optional[str], t.Optional[int]]:
         server = self._environ.get("SERVER_NAME")
         port = self._environ.get("SERVER_PORT")
         if port:
             port = int(port)
         return (server, port)
 
-    def get_host_addr(self) -> Tuple[Optional[str], Optional[int]]:
+    def get_host_addr(self) -> t.Tuple[t.Optional[str], t.Optional[int]]:
         http_host = self._environ.get("HTTP_HOST")
         if http_host:
             http_host = http_host.split(":")
@@ -344,7 +332,7 @@ class WSGIEndpointBase(EndpointBase):
                 return (host, port)
         return (None, None)
 
-    def get_header(self, name: str) -> Optional[str]:
+    def get_header(self, name: str) -> t.Optional[str]:
         name = name.upper()
         if name == "CONTENT-TYPE":
             return self.content_type
@@ -359,11 +347,11 @@ class WSGIEndpointBase(EndpointBase):
         return self._environ.get("PATH_INFO")
 
     @cached_property
-    def queries(self) -> Dict[str, List[str]]:
+    def queries(self) -> t.Dict[str, t.List[str]]:
         return parse_qs(self._environ.get("QUERY_STRING"))
 
     @cached_property
-    def content_type(self) -> Optional[ContentType]:
+    def content_type(self) -> t.Optional[ContentType]:
         raw = self._environ.get("CONTENT_TYPE")
         if raw:
             return ContentType.parse(raw)
@@ -384,9 +372,9 @@ class ASGIEndpointBase(EndpointBase):
     def __init__(
         self,
         app: App_t,
-        scope: Dict[str, Any],
-        flexible_locs: Tuple[str, ...],
-        *parcel: Any
+        scope: t.Dict[str, t.Any],
+        flexible_locs: t.Tuple[str, ...],
+        *parcel: t.Any
     ) -> None:
         """
         Args:
@@ -401,7 +389,7 @@ class ASGIEndpointBase(EndpointBase):
         req_headers = scope.get("headers")
         self._req_headers = {}
         if req_headers:
-            req_headers = dict([
+            req_headers = t.dict([
                 map(codecs.decode, header) for header in req_headers
             ])
             self._req_headers.update(req_headers)
@@ -409,7 +397,7 @@ class ASGIEndpointBase(EndpointBase):
         super().__init__(app, flexible_locs, *parcel)
 
     @property
-    def scope(self) -> Dict[str, Any]:
+    def scope(self) -> t.Dict[str, t.Any]:
         """scope variable received from ASGI server.
         """
         return self._scope
@@ -452,19 +440,19 @@ class ASGIEndpointBase(EndpointBase):
     def scheme(self) -> str:
         return self._scope.get("scheme")
 
-    def get_client_addr(self) -> Tuple[Optional[str], Optional[str]]:
+    def get_client_addr(self) -> t.Tuple[t.Optional[str], t.Optional[str]]:
         client = self._scope.get("client")
         if client:
             return tuple(client)
         return (None, None)
 
-    def get_server_addr(self) -> Tuple[Optional[str], Optional[str]]:
+    def get_server_addr(self) -> t.Tuple[t.Optional[str], t.Optional[str]]:
         server = self._scope.get("server")
         if server:
             return tuple(server)
         return (None, None)
 
-    def get_host_addr(self) -> Tuple[Optional[str], Optional[int]]:
+    def get_host_addr(self) -> t.Tuple[t.Optional[str], t.Optional[int]]:
         http_host = self.get_header("host")
         if http_host:
             http_host = http_host.split(":")
@@ -476,12 +464,12 @@ class ASGIEndpointBase(EndpointBase):
                 return (host, port)
         return (None, None)
 
-    def get_header(self, name: str) -> Optional[str]:
+    def get_header(self, name: str) -> t.Optional[str]:
         name = name.lower()
         return self._req_headers.get(name)
 
     @property
-    def headers(self) -> Dict[str, str]:
+    def headers(self) -> t.Dict[str, str]:
         """Request headers.
         """
         return self._req_headers
@@ -491,19 +479,16 @@ class ASGIEndpointBase(EndpointBase):
         return self._scope.get("path")
 
     @cached_property
-    def queries(self) -> Dict[str, List[str]]:
+    def queries(self) -> t.Dict[str, t.List[str]]:
         return parse_qs(self._scope.get("query_string").decode())
 
     @cached_property
-    def content_type(self) -> Optional[ContentType]:
+    def content_type(self) -> t.Optional[ContentType]:
         raw = self.get_header("Content-Type")
         if raw:
             return ContentType.parse(raw)
         return None
 
-# ----------------------------------------------------------------------------
-
-# HTTP  ----------------------------------------------------------------------
 
 class StatusCodeAlreadySetError(Exception):
     """Raised if response status code has already been set."""
@@ -531,7 +516,7 @@ class HTTPMixIn(metaclass=ABCMeta):
     def _get_pre_response_method(
         cls,
         method: str
-    ) -> Optional[Callable[[EndpointBase], None]]:
+    ) -> t.Optional[t.Callable[[EndpointBase], None]]:
         """Retrieve pre-response method corresponding with given HTTP method.
 
         Args:
@@ -549,7 +534,7 @@ class HTTPMixIn(metaclass=ABCMeta):
     def _get_response_method(
         cls,
         method: str
-    ) -> Optional[Callable[[EndpointBase], None]]:
+    ) -> t.Optional[t.Callable[[EndpointBase], None]]:
         """Retrieve response methods with given HTTP method.
 
         Args:
@@ -573,13 +558,13 @@ class HTTPMixIn(metaclass=ABCMeta):
             )
 
     def __init__(self) -> None:
-        self._res_status: Optional[HTTPStatus] = None
-        self._res_headers: List[Tuple[str, str]] = []
+        self._res_status: t.Optional[HTTPStatus] = None
+        self._res_headers: t.List[t.Tuple[str, str]] = []
         self._res_body = BufferedConcatIterator(bufsize=self.bufsize)
 
     @property
     @abstractmethod
-    def content_length(self) -> Optional[int]:
+    def content_length(self) -> t.Optional[int]:
         """Content length of request body if existing.
         """
         pass
@@ -606,7 +591,7 @@ class HTTPMixIn(metaclass=ABCMeta):
         """
         self._res_headers.append(make_header(name, value, **params))
 
-    def add_headers(self, *headers: Tuple[str, str]) -> None:
+    def add_headers(self, *headers: t.Tuple[str, str]) -> None:
         """Add response headers at once.
 
         Note:
@@ -670,9 +655,9 @@ class HTTPMixIn(metaclass=ABCMeta):
 
     def send_body(
         self,
-        body: Union[bytes, Iterable[bytes]],
-        *others: Union[bytes, Iterable[bytes]],
-        content_type: Optional[ContentType] = DEFAULT_CONTENT_TYPE_PLAIN,
+        body: t.Union[bytes, t.Iterable[bytes]],
+        *others: t.Union[bytes, t.Iterable[bytes]],
+        content_type: t.Optional[ContentType] = DEFAULT_CONTENT_TYPE_PLAIN,
         status: HTTPStatus = HTTPStatus.OK
     ) -> None:
         """Set given binary to the response body.
@@ -718,7 +703,7 @@ class HTTPMixIn(metaclass=ABCMeta):
 
     def send_json(
         self,
-        body: Dict[str, Any],
+        body: t.Dict[str, t.Any],
         status: HTTPStatus = HTTPStatus.OK,
         encoding: str = "UTF-8"
     ) -> None:
@@ -743,7 +728,7 @@ class HTTPMixIn(metaclass=ABCMeta):
     def send_file(
         self,
         path: str,
-        fname: Optional[str] = None,
+        fname: t.Optional[str] = None,
         content_type: str = DEFAULT_CONTENT_TYPE_PLAIN,
         status: HTTPStatus = HTTPStatus.OK
     ) -> None:
@@ -768,7 +753,7 @@ class HTTPMixIn(metaclass=ABCMeta):
             )
 
     @abstractmethod
-    def _attach_err_headers(self, headers: List[Tuple[str, str]]) -> None:
+    def _attach_err_headers(self, headers: t.List[t.Tuple[str, str]]) -> None:
         """Update response headers for error response.
 
         Args:
@@ -805,9 +790,9 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
     def __init__(
         self,
         app: WSGIApp,
-        environ: Dict[str, Any],
-        flexible_locs: Tuple[str, ...],
-        *parcel: Any
+        environ: t.Dict[str, t.Any],
+        flexible_locs: t.Tuple[str, ...],
+        *parcel: t.Any
     ) -> None:
         """
         Args:
@@ -840,7 +825,7 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
         return self._recv_body_secure()
 
     @property
-    def content_length(self) -> Optional[int]:
+    def content_length(self) -> t.Optional[int]:
         length = self._environ.get("CONTENT_LENGTH")
         if length:
             return int(length)
@@ -850,7 +835,7 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
     def method(self) -> str:
         return self._environ.get("REQUEST_METHOD")
 
-    def _attach_err_headers(self, headers: List[Tuple[str, str]]) -> None:
+    def _attach_err_headers(self, headers: t.List[t.Tuple[str, str]]) -> None:
         self._res_headers = headers
 
 
@@ -895,9 +880,9 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
     def __init__(
         self,
         app: ASGIHTTPApp,
-        scope: Dict[str, Any],
-        receive: Callable[[], Awaitable[Dict[str, Any]]],
-        flexible_locs: Tuple[str, ...],
+        scope: t.Dict[str, t.Any],
+        receive: t.Callable[[], t.Awaitable[t.Dict[str, t.Any]]],
+        flexible_locs: t.Tuple[str, ...],
         *parcel
     ) -> None:
         """
@@ -910,7 +895,7 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
         ASGIEndpointBase.__init__(self, app, scope, flexible_locs, *parcel)
         HTTPMixIn.__init__(self)
 
-        self._res_headers: List[Tuple[bytes, bytes]] = []
+        self._res_headers: t.List[t.Tuple[bytes, bytes]] = []
         self._receive = receive
         self._req_body = b""
         self._is_disconnected = False
@@ -919,7 +904,7 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
     async def body(self) -> bytes:
         """Request body received from client.
         """
-        buffer = BytesIO()
+        buffer = io.BytesIO()
         more_body = True
 
         while more_body:
@@ -945,7 +930,7 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
         return self._is_disconnected
 
     @property
-    def content_length(self) -> Optional[int]:
+    def content_length(self) -> t.Optional[int]:
         length = self.get_header("Content-Length")
         if length:
             return int(length)
@@ -966,9 +951,7 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
         )
         self._res_headers.append(header)
 
-    def _attach_err_headers(self, headers: List[Tuple[str, str]]) -> None:
+    def _attach_err_headers(self, headers: t.List[t.Tuple[str, str]]) -> None:
         self._res_headers = [
-            tuple(map(codecs.encode, header)) for header in headers
+            t.tuple(map(codecs.encode, header)) for header in headers
         ]
-
-# ----------------------------------------------------------------------------
