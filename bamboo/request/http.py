@@ -2,7 +2,7 @@ from __future__ import annotations
 import http.client
 import typing as t
 
-from bamboo.api import BinaryApiData
+from bamboo.api import BinaryApiData, JsonApiData
 from bamboo.base import HTTPMethods
 from bamboo.request import ResponseData_t, Schemes
 from bamboo.request.request_form import get_http_request_form
@@ -27,7 +27,7 @@ def request(
     method: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
@@ -57,7 +57,7 @@ def get(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
@@ -95,7 +95,7 @@ def post(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
@@ -133,7 +133,7 @@ def put(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
@@ -171,7 +171,7 @@ def delete(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
@@ -209,7 +209,7 @@ def head(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
@@ -247,7 +247,7 @@ def options(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
@@ -285,7 +285,7 @@ def patch(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
@@ -323,7 +323,7 @@ def trace(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
@@ -361,7 +361,7 @@ def connect(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
-    json: t.Optional[t.Dict[str, t.Any]] = None,
+    json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
     query: t.Dict[str, t.List[str]] = {},
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
