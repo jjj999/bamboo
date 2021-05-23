@@ -814,10 +814,10 @@ class RequiredQueryConfig(ConfigBase):
                 else:
                     val = None
             elif len_val == 1:
+                val = val[0]
+            else:
                 if info.err_not_unique:
                     raise info.err_not_unique
-                else:
-                    val = val[0]
 
             if info.add_arg:
                 callback(self, val, *args)
@@ -851,10 +851,10 @@ class RequiredQueryConfig(ConfigBase):
                 else:
                     val = None
             elif len_val == 1:
+                val = val[0]
+            else:
                 if info.err_not_unique:
                     raise info.err_not_unique
-                else:
-                    val = val[0]
 
             if info.add_arg:
                 await callback(self, val, *args)
