@@ -280,7 +280,7 @@ class JsonApiDataBuilder:
             origin = get_origin(type_def)
             if origin is None:
                 if issubclass(type_def, JsonApiData):
-                    setattr(instance, key_def, cls.build(type_def, val))
+                    setattr(instance, key_def, type_def(**val))
                 else:
                     setattr(instance, key_def, val)
             else:
@@ -297,7 +297,7 @@ class JsonApiDataBuilder:
                             cls._build_list(possible, val)
                         )
                     elif issubclass(possible, JsonApiData):
-                        setattr(instance, key_def, cls.build(type_def, val))
+                        setattr(instance, key_def, type_def(**val))
                     else:
                         raise ApiValidationFailedError(
                             f"{possible.__name__} is not acceptable as a type"
@@ -336,7 +336,7 @@ class JsonApiDataBuilder:
         if inner_type in cls.TYPES_ARGS_SET:
             return val
         elif issubclass(inner_type, JsonApiData):
-            return [cls.build(inner_type, item) for item in val]
+            return [inner_type(**item) for item in val]
         elif get_origin(inner_type) == list:
             return [cls._build_list(inner_type, item) for item in val]
         else:
