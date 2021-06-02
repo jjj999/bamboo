@@ -37,9 +37,6 @@ if t.TYPE_CHECKING:
     App_t = t.TypeVar("App_t", bound=AppBase)
 
 
-_get_query_t = t.TypeVar("_get_query_t")
-
-
 __all__ = []
 
 
@@ -870,13 +867,13 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
             flexible_locs: Flexible locations requested.
             *parcel: Parcel sent via application object.
         """
-        ASGIEndpointBase.__init__(self, app, scope, flexible_locs, *parcel)
-        HTTPMixIn.__init__(self)
-
         self._res_headers: t.List[t.Tuple[bytes, bytes]] = []
         self._receive = receive
         self._req_body = b""
         self._is_disconnected = False
+
+        ASGIEndpointBase.__init__(self, app, scope, flexible_locs, *parcel)
+        HTTPMixIn.__init__(self)
 
     @awaitable_cached_property
     async def body(self) -> bytes:
