@@ -292,9 +292,10 @@ class RequiredHeaderInfo:
     Attributes:
         header: Name of header.
         err: Error information sent when the header is not included.
+        add_arg: Whether the header is given as a callback's argument.
     """
     header: str
-    err: ErrInfo
+    err: t.Optional[ErrInfo]
     add_arg: bool
 
 
@@ -327,13 +328,12 @@ class RequiredHeaderConfig(ConfigBase):
     @staticmethod
     def decorate_wsgi(
         callback: Callback_WSGI_t,
-        info: RequiredHeaderInfo
+        info: RequiredHeaderInfo,
     ) -> Callback_WSGI_t:
 
-        @may_occur(info.err.__class__)
         def _callback(self: WSGIEndpoint, *args) -> None:
             val = self.get_header(info.header)
-            if val is None:
+            if val is None and info.err:
                 raise info.err
 
             if info.add_arg:
@@ -341,19 +341,20 @@ class RequiredHeaderConfig(ConfigBase):
             else:
                 callback(self, *args)
 
+        if info.err:
+            _callback = may_occur(info.err.__class__)(_callback)
         _callback.__dict__ = callback.__dict__
         return _callback
 
     @staticmethod
     def decorate_asgi(
         callback: Callback_ASGI_t,
-        info: RequiredHeaderInfo
+        info: RequiredHeaderInfo,
     ) -> Callback_ASGI_t:
 
-        @may_occur(info.err.__class__)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             val = self.get_header(info.header)
-            if val is None:
+            if val is None and info.err:
                 raise info.err
 
             if info.add_arg:
@@ -361,13 +362,15 @@ class RequiredHeaderConfig(ConfigBase):
             else:
                 await callback(self, *args)
 
+        if info.err:
+            _callback = may_occur(info.err.__class__)(_callback)
         _callback.__dict__ = callback.__dict__
         return _callback
 
 
 def has_header_of(
     header: str,
-    err: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR,
+    err: t.Optional[ErrInfo] = None,
     add_arg: bool = True,
 ) -> CallbackDecorator_t:
     """Set callback up to receive given header from clients.
@@ -378,6 +381,7 @@ def has_header_of(
     Args:
         header: Name of header.
         err: Error information sent when specified `header` is not found.
+        add_arg: Whether the header is given as a callback's argument.
 
     Returns:
         Decorator to make callback to be set up to receive the header.
