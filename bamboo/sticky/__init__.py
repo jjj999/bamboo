@@ -16,3 +16,8 @@ CallbackDecorator_t = t.Callable[[Callback_t], Callback_t]
 
 def _get_bamboo_attr(attr: str) -> str:
     return f"__bamboo_{attr}__"
+
+
+class DuplicatedInfoError(Exception):
+    """Raised if same type of infomation is duplicated."""
+    pass

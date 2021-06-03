@@ -97,6 +97,11 @@ class DefaultNotApplicableIpErrInfo(ErrInfo):
     http_status = HTTPStatus.FORBIDDEN
 
 
+class DefualtCORSErrInfo(ErrInfo):
+
+    http_status = HTTPStatus.FORBIDDEN
+
+
 _WWW_AUTH_HEADER = "WWW-Authentication"
 
 
@@ -134,10 +139,9 @@ DEFUALT_INCORRECT_DATA_FORMAT_ERROR = DefaultDataFormatErrInfo()
 DEFAULT_HEADER_NOT_FOUND_ERROR = DefaultHeaderNotFoundErrInfo()
 DEFAULT_QUERY_PARAM_NOT_FOUND_ERROR = DefaultQueryParamNotFoundErrInfo()
 DEFAULT_NOT_APPLICABLE_IP_ERROR = DefaultNotApplicableIpErrInfo()
-DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR =\
-    DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.basic)
-DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR = \
-    DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.bearer)
+DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR = DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.basic)
+DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR = DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.bearer)
+DEFAULT_CORS_ERROR = DefualtCORSErrInfo()
 
 # ----------------------------------------------------------------------------
 

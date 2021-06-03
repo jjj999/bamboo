@@ -1,34 +1,47 @@
 from abc import ABCMeta, abstractmethod
 import dataclasses
 import inspect
+import re
 import typing as t
 
-from bamboo.api import ApiData, ApiValidationFailedError
-from bamboo.base import AuthSchemes
-from bamboo.endpoint import ASGIHTTPEndpoint, WSGIEndpoint
-from bamboo.error import (
-    DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR,
-    DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR,
-    DEFAULT_HEADER_NOT_FOUND_ERROR,
-    DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
-    DEFAULT_NOT_APPLICABLE_IP_ERROR,
-    ErrInfo,
-)
-from bamboo.sticky import (
+from . import (
     Callback_ASGI_t,
     Callback_WSGI_t,
     Callback_t,
     CallbackDecorator_t,
+    DuplicatedInfoError,
     _get_bamboo_attr,
 )
-from bamboo.util.convert import decode2binary
-from bamboo.util.ip import is_valid_ipv4
+from ..api import ApiData, ApiValidationFailedError
+from ..base import AuthSchemes, HTTPStatus
+from ..endpoint import (
+    ASGIEndpointBase,
+    ASGIHTTPEndpoint,
+    HTTPMixIn,
+    WSGIEndpoint,
+    WSGIEndpointBase,
+)
+from ..error import (
+    DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR,
+    DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR,
+    DEFAULT_HEADER_NOT_FOUND_ERROR,
+    DEFAULT_CORS_ERROR,
+    DEFUALT_INCORRECT_DATA_FORMAT_ERROR,
+    DEFAULT_NOT_APPLICABLE_IP_ERROR,
+    ErrInfo,
+)
+from ..util.convert import decode2binary
+from ..util.ip import is_valid_ipv4
 
 
 __all__ = [
+    "add_preflight",
+    "allow_simple_access_control",
     "basic_auth",
     "bearer_auth",
     "data_format",
+    "get_asgi_preflight",
+    "get_wsgi_preflight",
     "has_header_of",
     "has_query_of",
     "may_occur",
@@ -36,7 +49,7 @@ __all__ = [
 ]
 
 
-class ConfigBase(metaclass=ABCMeta):
+class CallbackConfigBase(metaclass=ABCMeta):
 
     ATTR: str
 
@@ -49,7 +62,21 @@ class ConfigBase(metaclass=ABCMeta):
         pass
 
 
-class HTTPErrorConfig(ConfigBase):
+class HTTPEndpointConfigBase(metaclass=ABCMeta):
+
+    ATTR: str
+
+
+    @abstractmethod
+    def get(self) -> t.Any:
+        pass
+
+    @abstractmethod
+    def set(self, *args, **kwargs) -> HTTPMixIn:
+        pass
+
+
+class HTTPErrorConfig(CallbackConfigBase):
 
     ATTR = _get_bamboo_attr("errors")
 
@@ -126,7 +153,7 @@ class DataFormatInfo:
     err_noheader: ErrInfo = DEFAULT_HEADER_NOT_FOUND_ERROR
 
 
-class DataFormatConfig(ConfigBase):
+class DataFormatConfig(CallbackConfigBase):
 
     ATTR = _get_bamboo_attr("data_format")
 
@@ -299,7 +326,7 @@ class RequiredHeaderInfo:
     add_arg: bool
 
 
-class RequiredHeaderConfig(ConfigBase):
+class RequiredHeaderConfig(CallbackConfigBase):
 
     ATTR = _get_bamboo_attr("required_headers")
 
@@ -424,7 +451,7 @@ class ClientInfo:
 _RestrictedClient_t = t.Dict[str, t.Set[t.Optional[int]]]
 
 
-class RestrictedClientsConfig(ConfigBase):
+class RestrictedClientsConfig(CallbackConfigBase):
 
     ATTR = _get_bamboo_attr("restricted_clients")
 
@@ -551,7 +578,7 @@ class MultipleAuthSchemeError(Exception):
     pass
 
 
-class AuthSchemeConfig(ConfigBase):
+class AuthSchemeConfig(CallbackConfigBase):
 
     ATTR = _get_bamboo_attr("auth_scheme")
     HEADER_AUTHORIZATION = "Authorization"
@@ -777,7 +804,7 @@ class RequiredQueryInfo:
     add_arg: bool = True
 
 
-class RequiredQueryConfig(ConfigBase):
+class RequiredQueryConfig(CallbackConfigBase):
 
     ATTR = _get_bamboo_attr("required_queries")
 
@@ -889,6 +916,356 @@ def has_query_of(
 
     def wrapper(callback: Callback_t) -> Callback_t:
         config = RequiredQueryConfig(callback)
+        return config.set(info)
+
+    return wrapper
+
+
+@dataclasses.dataclass(eq=True, frozen=True)
+class SimpleAccessControlInfo:
+
+    origins: t.Set[str] = set()
+    err_not_allowed: ErrInfo = DEFAULT_CORS_ERROR
+    add_arg: bool = True
+
+
+class SimpleAccessControlConfig(CallbackConfigBase):
+
+    ATTR = _get_bamboo_attr("simple_access_control")
+
+    def __init__(self, callback: Callback_t) -> None:
+        super().__init__()
+
+        self._callback = callback
+
+    def get(self) -> t.Optional[SimpleAccessControlInfo]:
+        return getattr(self._callback, self.ATTR, None)
+
+    def set(self, info: SimpleAccessControlInfo) -> Callback_t:
+        if hasattr(self._callback, self.ATTR):
+            raise DuplicatedInfoError(
+                "Decorating of multiple times is forbidden."
+            )
+        setattr(self._callback, self.ATTR, info)
+
+        if inspect.iscoroutinefunction(self._callback):
+            func = self.decorate_asgi
+        else:
+            func = self.decorate_wsgi
+        return func(self._callback, info)
+
+    @staticmethod
+    def decorate_wsgi(
+        callback: Callback_WSGI_t,
+        info: SimpleAccessControlInfo,
+    ) -> Callback_WSGI_t:
+
+        def _callback(self: WSGIEndpoint, *args) -> None:
+            origin = self.get_header("Origin")
+            if origin:
+                if not len(info.origins):
+                    self.add_header("Access-Control-Allow-Origin", "*")
+                elif origin in info.origins:
+                    self.add_header("Access-Control-Allow-Origin", origin)
+                else:
+                    raise info.err_not_allowed
+
+            if info.add_arg:
+                callback(self, origin, *args)
+            else:
+                callback(self, *args)
+
+        if info.err_not_allowed:
+            _callback = may_occur(info.err_not_allowed.__class__)(_callback)
+        _callback.__dict__.update(callback.__dict__)
+        return _callback
+
+    @staticmethod
+    def decorate_asgi(
+        callback: Callback_ASGI_t,
+        info: SimpleAccessControlInfo,
+    ) -> Callback_ASGI_t:
+
+        async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
+            origin = self.get_header("Origin")
+            if origin:
+                if not len(info.origins):
+                    self.add_header("Access-Control-Allow-Origin", "*")
+                elif origin in info.origins:
+                    self.add_header("Access-Control-Allow-Origin", origin)
+                else:
+                    raise info.err_not_allowed
+
+            if info.add_arg:
+                await callback(self, origin, *args)
+            else:
+                await callback(self, *args)
+
+        if info.err_not_allowed:
+            _callback = may_occur(info.err_not_allowed.__class__)(_callback)
+        _callback.__dict__.update(callback.__dict__)
+        return _callback
+
+
+def allow_simple_access_control(
+    *origins: str,
+    err_not_allowed: ErrInfo = DEFAULT_CORS_ERROR,
+    add_arg: bool = True,
+) -> CallbackDecorator_t:
+    info = SimpleAccessControlInfo(set(origins), err_not_allowed, add_arg)
+
+    def wrapper(callback: Callback_t) -> Callback_t:
+        config = SimpleAccessControlConfig(callback)
+        return config.set(info)
+
+    return wrapper
+
+
+_CORS_SAFELISTED_REQUEST_HEADERS = {
+    "Accept",
+    "Accept-Language",
+    "Content-Language",
+    "Content-Type",
+}
+
+
+def _handle_cors_preflight(
+    allow_methods: t.Union[str, t.Iterable[str]],
+    allow_origins: t.Iterable[str] = (),
+    allow_headers: t.Iterable[str] = (),
+    expose_headers: t.Iterable[str] = (),
+    max_age: t.Optional[int] = None,
+    allow_credentials: bool = False,
+    err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR,
+    err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR,
+) -> t.Callable[
+    [
+        t.Union[ASGIEndpointBase, WSGIEndpoint],
+        t.Optional[str],
+        t.Optional[str],
+        t.Optional[str],
+    ],
+    None
+]:
+    if isinstance(allow_methods, str):
+        allow_methods = {allow_methods}
+    allow_origins = set(allow_origins)
+    allow_headers = set(allow_headers)
+    allow_headers.update(_CORS_SAFELISTED_REQUEST_HEADERS)
+    expose_headers = ", ".join(expose_headers)
+    if max_age:
+        max_age = str(max_age)
+
+    def handle(
+        self: t.Union[ASGIHTTPEndpoint, WSGIEndpoint],
+        origin: t.Optional[str],
+        req_method: t.Optional[str],
+        req_headers: t.Optional[str],
+    ) -> None:
+        if origin is None and req_method is None:
+            self.send_only_status(HTTPStatus.BAD_REQUEST)
+
+        # Allow Origin
+        if not len(allow_origins):
+            self.add_header("Access-Control-Allow-Origin", "*")
+        else:
+            if origin in allow_origins:
+                self.add_header("Access-Control-Allow-Origin", origin)
+                self.add_header("Vary", "Origin")
+            else:
+                raise err_not_allowed_origin
+
+        # Allow Methods
+        if req_method is None:
+            raise err_not_allowed_method
+        if req_method in allow_methods:
+            methods = ", ".join(allow_methods)
+            self.add_header("Access-Control-Allow-Methods", methods)
+        else:
+            raise err_not_allowed_method
+
+        # Allow Headers
+        if req_headers:
+            accepted_headers = ", ".join([
+                header for header in re.split(",|, ", req_headers)
+                if header in allow_headers
+            ])
+            if accepted_headers:
+                self.add_header("Access-Control-Allow-Headers", accepted_headers)
+
+        # Expose Headers
+        if expose_headers:
+            self.add_header("Access-Control-Expose-Headers", expose_headers)
+
+        # Max Age
+        if max_age:
+            self.add_header("Access-Control-Max-Age", max_age)
+
+        # Allow Credentials
+        if allow_credentials:
+            self.add_header("Access-Control-Allow-Credentials", "true")
+
+        self.send_only_status(HTTPStatus.NO_CONTENT)
+
+    return handle
+
+
+def get_wsgi_preflight(
+    allow_methods: t.Union[str, t.Iterable[str]],
+    allow_origins: t.Iterable[str] = (),
+    allow_headers: t.Iterable[str] = (),
+    expose_headers: t.Iterable[str] = (),
+    max_age: t.Optional[int] = None,
+    allow_credentials: bool = False,
+    err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR,
+    err_not_allowed_header: ErrInfo = DEFAULT_CORS_ERROR,
+    err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR,
+) -> Callback_WSGI_t:
+    callback = _handle_cors_preflight(
+        allow_methods,
+        allow_origins=allow_origins,
+        allow_headers=allow_headers,
+        expose_headers=expose_headers,
+        max_age=max_age,
+        allow_credentials=allow_credentials,
+        err_not_allowed_origin=err_not_allowed_origin,
+        err_not_allowed_header=err_not_allowed_header,
+        err_not_allowed_method=err_not_allowed_method,
+    )
+
+    @has_header_of("Access-Control-Request-Headers")
+    @has_header_of("Access-Control-Request-Method")
+    @has_header_of("Origin")
+    def do_OPTIONS(
+        self: WSGIEndpoint,
+        origin: t.Optional[str],
+        req_method: t.Optional[str],
+        req_headers: t.Optional[str],
+    ) -> None:
+        callback(self, origin, req_method, req_headers)
+
+    return do_OPTIONS
+
+
+def get_asgi_preflight(
+    allow_methods: t.Union[str, t.Iterable[str]],
+    allow_origins: t.Iterable[str] = (),
+    allow_headers: t.Iterable[str] = (),
+    expose_headers: t.Iterable[str] = (),
+    max_age: t.Optional[int] = None,
+    allow_credentials: bool = False,
+    err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR,
+    err_not_allowed_header: ErrInfo = DEFAULT_CORS_ERROR,
+    err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR,
+) -> Callback_ASGI_t:
+    callback = _handle_cors_preflight(
+        allow_methods,
+        allow_origins=allow_origins,
+        allow_headers=allow_headers,
+        expose_headers=expose_headers,
+        max_age=max_age,
+        allow_credentials=allow_credentials,
+        err_not_allowed_origin=err_not_allowed_origin,
+        err_not_allowed_header=err_not_allowed_header,
+        err_not_allowed_method=err_not_allowed_method,
+    )
+
+    @has_header_of("Access-Control-Request-Headers")
+    @has_header_of("Access-Control-Request-Method")
+    @has_header_of("Origin")
+    async def do_OPTIONS(
+        self: t.Type[ASGIHTTPEndpoint],
+        origin: t.Optional[str],
+        req_method: t.Optional[str],
+        req_headers: t.Optional[str],
+    ) -> None:
+        callback(self, origin, req_method, req_headers)
+
+    return do_OPTIONS
+
+
+@dataclasses.dataclass(eq=True, frozen=True)
+class PreFlightInfo:
+
+    allow_methods: t.Set[str]
+    allow_origins: t.Set[str] = set()
+    allow_headers: t.Set[str] = set()
+    expose_headers: t.Set[str] = set()
+    max_age: t.Optional[int] = None
+    allow_credentials: bool = False
+    err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR
+    err_not_allowed_header: ErrInfo = DEFAULT_CORS_ERROR
+    err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR
+
+
+class PreFlightConfig(HTTPEndpointConfigBase):
+
+    ATTR = _get_bamboo_attr("preflight")
+
+    def __init__(self, endpoint: t.Type[HTTPMixIn]) -> None:
+        super().__init__()
+
+        self._endpoint = endpoint
+
+    def get(self) -> t.Optional[PreFlightInfo]:
+        return getattr(self._endpoint, self.ATTR, None)
+
+    def set(self, info: PreFlightInfo) -> t.Type[HTTPMixIn]:
+        if hasattr(self._endpoint, self.ATTR):
+            raise DuplicatedInfoError(
+                "Decorating of multiple times is forbidden."
+            )
+        setattr(self._endpoint, self.ATTR, info)
+        args = (
+            info.allow_methods,
+            info.allow_origins,
+            info.allow_headers,
+            info.expose_headers,
+            info.max_age,
+            info.allow_credentials,
+            info.err_not_allowed_origin,
+            info.err_not_allowed_header,
+            info.err_not_allowed_method,
+        )
+
+        if issubclass(self._endpoint, WSGIEndpointBase):
+            req_method = get_wsgi_preflight(*args)
+        elif issubclass(self._endpoint, ASGIEndpointBase):
+            req_method = get_asgi_preflight(*args)
+        else:
+            raise ValueError(
+                f"Class {self._endpoint.__name__} is not avalidable."
+            )
+
+        setattr(self._endpoint, "do_OPTIONS", req_method)
+        return self._endpoint
+
+
+def add_preflight(
+    allow_methods: t.Iterable[str],
+    allow_origins: t.Iterable[str] = (),
+    allow_headers: t.Iterable[str] = (),
+    expose_headers: t.Iterable[str] = (),
+    max_age: t.Optional[int] = None,
+    allow_credentials: bool = False,
+    err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR,
+    err_not_allowed_header: ErrInfo = DEFAULT_CORS_ERROR,
+    err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR,
+) -> t.Callable[[HTTPMixIn], HTTPMixIn]:
+    info = PreFlightInfo(
+        set(allow_methods),
+        origins=set(allow_origins),
+        allow_headers=set(allow_headers),
+        expose_headers=set(expose_headers),
+        max_age=max_age,
+        allow_credentials=allow_credentials,
+        err_not_allowed_origin=err_not_allowed_origin,
+        err_not_allowed_header=err_not_allowed_header,
+        err_not_allowed_method=err_not_allowed_method,
+    )
+
+    def wrapper(endpoint: HTTPMixIn) -> HTTPMixIn:
+        config = PreFlightConfig(endpoint)
         return config.set(info)
 
     return wrapper
