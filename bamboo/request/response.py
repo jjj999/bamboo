@@ -2,10 +2,10 @@ from __future__ import annotations
 import http.client
 import typing as t
 
-from bamboo.api import BinaryApiData
-from bamboo.base import ContentType
-from bamboo.request import ResponseData_t
-from bamboo.util.deco import cached_property
+from ..api import BinaryApiData
+from ..base import ContentType
+from ..request import ResponseData_t
+from ..util.deco import cached_property
 
 
 __all__ = []

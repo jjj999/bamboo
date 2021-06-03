@@ -5,8 +5,8 @@ import enum
 import re
 import typing as t
 
-from bamboo.util.deco import class_property
-from bamboo.util.header import make_header
+from .util.deco import class_property
+from .util.header import make_header
 
 
 __all__ = []

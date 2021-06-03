@@ -7,8 +7,8 @@ import time
 import typing as t
 import wsgiref.simple_server
 
-from bamboo.app import WSGIApp
-from bamboo.util.string import ColorCode, insert_colorcode
+from .app import WSGIApp
+from .util.string import ColorCode, insert_colorcode
 
 
 __all__ = []

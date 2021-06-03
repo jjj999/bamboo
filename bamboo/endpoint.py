@@ -1,6 +1,5 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
-from bamboo.api import JsonApiData
 import codecs
 import inspect
 import io
@@ -9,7 +8,8 @@ import os
 import typing as t
 from urllib.parse import parse_qs
 
-from bamboo.base import (
+from .api import JsonApiData
+from .base import (
     ASGIHTTPEvents,
     ContentType,
     DEFAULT_CONTENT_TYPE_PLAIN,
@@ -17,18 +17,17 @@ from bamboo.base import (
     HTTPStatus,
     MediaTypes,
 )
-from bamboo.error import ErrInfo
-from bamboo.io import BufferedConcatIterator, BufferedFileIterator
-from bamboo.util.deco import (
+from .io import BufferedConcatIterator, BufferedFileIterator
+from .util.deco import (
     awaitable_property,
     awaitable_cached_property,
     cached_property,
 )
-from bamboo.util.header import make_header
+from .util.header import make_header
 
 
 if t.TYPE_CHECKING:
-    from bamboo.app import (
+    from .app import (
         AppBase,
         WSGIApp,
         ASGIHTTPApp,

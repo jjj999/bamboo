@@ -1,6 +1,6 @@
 import typing as t
 
-from bamboo.location import (
+from .location import (
     FlexibleLocation,
     Uri_t,
     is_flexible_uri,

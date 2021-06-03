@@ -4,9 +4,9 @@ import json as js
 import typing as t
 from urllib.parse import parse_qs, urlparse
 
-from bamboo.api import JsonApiData
-from bamboo.base import HTTPMethods, MediaTypes
-from bamboo.util.convert import unparse_qs
+from ..api import JsonApiData
+from ..base import HTTPMethods, MediaTypes
+from ..util.convert import unparse_qs
 
 
 __all__ = []

@@ -1,7 +1,7 @@
 __version__ = "0.7.16"
 
 
-from bamboo.api import (
+from .api import (
     ApiData,
     BinaryApiData,
     InvalidAnnotationError,
@@ -11,14 +11,14 @@ from bamboo.api import (
     XWWWFormUrlEncodedDataBuilder,
     XWWWFormUrlEncodedData,
 )
-from bamboo.app import (
+from .app import (
     AppBase,
     ASGIHTTPApp,
     ParcelConfig,
     VersionConfig,
     WSGIApp,
 )
-from bamboo.base import (
+from .base import (
     ASGIHTTPEvents,
     ASGIWebSocketEvents,
     AuthSchemes,
@@ -30,7 +30,7 @@ from bamboo.base import (
     HTTPStatus,
     MediaTypes,
 )
-from bamboo.endpoint import (
+from .endpoint import (
     ASGIEndpointBase,
     ASGIHTTPEndpoint,
     EndpointBase,
@@ -39,7 +39,7 @@ from bamboo.endpoint import (
     WSGIEndpoint,
     WSGIEndpointBase,
 )
-from bamboo.error import (
+from .error import (
     ApiErrInfo,
     DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR,
     DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR,
@@ -52,7 +52,7 @@ from bamboo.error import (
     get_auth_realm,
     get_default_auth_realm,
 )
-from bamboo.io import (
+from .io import (
     BufferedBinaryIterator,
     BufferedConcatIterator,
     BufferedFileIterator,
@@ -60,18 +60,18 @@ from bamboo.io import (
     BufferedStreamIterator,
     ResponseBodyIteratorBase,
 )
-from bamboo.location import (
+from .location import (
     AnyStringLocation,
     AsciiDigitLocation,
     FlexibleLocation,
     is_duplicated_uri,
     is_flexible_uri,
 )
-from bamboo.router import (
+from .router import (
     DuplicatedUriRegisteredError,
     Router
 )
-from bamboo.test import (
+from .test import (
     WSGIServerForm,
     WSGITestExecutor
 )

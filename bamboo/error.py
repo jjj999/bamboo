@@ -1,15 +1,15 @@
 import json
 import typing as t
 
-from bamboo.base import (
+from .base import (
     AuthSchemes,
     ContentType,
     ContentTypeHolder,
     DEFAULT_CONTENT_TYPE_PLAIN,
     HTTPStatus, MediaTypes,
 )
-from bamboo.io import BufferedConcatIterator
-from bamboo.util.deco import class_property
+from .io import BufferedConcatIterator
+from .util.deco import class_property
 
 
 __all__ = []

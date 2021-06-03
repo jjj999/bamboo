@@ -2,11 +2,11 @@ from __future__ import annotations
 import http.client
 import typing as t
 
-from bamboo.api import BinaryApiData, JsonApiData
-from bamboo.base import HTTPMethods
-from bamboo.request import ResponseData_t, Schemes
-from bamboo.request.request_form import get_http_request_form
-from bamboo.request.response import Response
+from ..api import BinaryApiData, JsonApiData
+from ..base import HTTPMethods
+from ..request import ResponseData_t, Schemes
+from ..request.request_form import get_http_request_form
+from ..request.response import Response
 
 
 __all__ = [

@@ -5,25 +5,25 @@ from abc import ABCMeta, abstractmethod
 import codecs
 import typing as t
 
-from bamboo.base import ASGIHTTPEvents, HTTPStatus
-from bamboo.endpoint import (
+from .base import ASGIHTTPEvents, HTTPStatus
+from .endpoint import (
     ASGIHTTPEndpoint,
     EndpointBase,
     WSGIEndpoint,
 )
-from bamboo.error import DEFAULT_NOT_FOUND_ERROR, ErrInfo
-from bamboo.io import BufferedConcatIterator
-from bamboo.location import (
+from .error import DEFAULT_NOT_FOUND_ERROR, ErrInfo
+from .io import BufferedConcatIterator
+from .location import (
     Location_t,
     StaticLocation_t,
     Uri_t,
 )
-from bamboo.router import (
+from .router import (
     Endpoint_t,
     Router,
     Uri2Endpoints_t,
 )
-from bamboo.sticky import _get_bamboo_attr
+from .sticky import _get_bamboo_attr
 
 
 __all__ = []
