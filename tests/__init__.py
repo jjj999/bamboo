@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 
 NAME_IMAGE = "elephant.jpg"
@@ -6,7 +7,8 @@ NAME_BIGDATA_1KB = "bigdata_1kb"
 NAME_BIGDATA_1MB = "bigdata_1mb"
 NAME_BIGDATA_1GB = "bigdata_1gb"
 
-DIR_RES = "test/res"
+DIR_TESTS = str(Path(__file__).parent)
+DIR_RES = os.path.join(DIR_TESTS, "res")
 PATH_IMAGE = os.path.join(DIR_RES, NAME_IMAGE)
 PATH_BIGDATA_1KB = os.path.join(DIR_RES, NAME_BIGDATA_1KB)
 PATH_BIGDATA_1MB = os.path.join(DIR_RES, NAME_BIGDATA_1MB)

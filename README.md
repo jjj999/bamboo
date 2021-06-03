@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.python.org/pypi/bamboo-core/)
 
 ## Installling
+
 * Python: >= 3.7
 
 ```
@@ -32,15 +33,19 @@ if __name__ == "__main__":
 上記スクリプトを実行後，ブラウザで http://localhost:8000/hello にアクセスするとレスポンスを確認できます．
 
 ## API documentation
+
 API ドキュメントは[こちら](https://jjj999.github.io/bamboo/api/bamboo/pkg/)．
 
 ## Examples
 
-### [upsidedown](example/upsidedown/)
+### [upsidedown](examples/upsidedown)
+
 リクエストされた文字列を逆順に反転させて返すアプリケーションです．
 
-### [image_traffic](example/image_traffic/)
+### [image_traffic](examples/image_traffic)
+
 アクセスに対して静的な画像を返すアプリケーションです．
 
-### [tweets](example/tweets/)
+### [tweets](examples/tweets)
+
 CLI ベースの簡易的な Twitter のような投稿アプリです．認証機能は実装されていません．
