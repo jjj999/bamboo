@@ -46,6 +46,7 @@ __all__ = [
     "has_query_of",
     "may_occur",
     "restricts_client",
+    "set_cache_control",
 ]
 
 
@@ -1266,6 +1267,159 @@ def add_preflight(
 
     def wrapper(endpoint: HTTPMixIn) -> HTTPMixIn:
         config = PreFlightConfig(endpoint)
+        return config.set(info)
+
+    return wrapper
+
+
+@dataclasses.dataclass(eq=True, frozen=True)
+class CacheControlInfo:
+
+    public: bool = False
+    private: bool = False
+    no_cache: bool = False
+    no_store: bool = False
+    max_age: t.Optional[int] = None
+    s_maxage: t.Optional[int] = None
+    max_stale: t.Optional[int] = None
+    min_fresh: t.Optional[int] = None
+    stale_while_revalidate: t.Optional[int] = None
+    stale_if_error: t.Optional[int] = None
+    must_revalidate: bool = False
+    proxy_revalidate: bool = False
+    immutable: bool = False
+    no_transform: bool = False
+    only_if_cached: bool = False
+
+
+def _get_cache_control_value(info: CacheControlInfo) -> str:
+    vals = []
+
+    if info.public:
+        vals.append("public")
+    if info.private:
+        vals.append("private")
+    if info.no_cache:
+        vals.append("no-cache")
+    if info.no_store:
+        vals.append("no-store")
+    if info.max_age is not None:
+        vals.append(f"max-age={info.max_age}")
+    if info.s_maxage is not None:
+        vals.append(f"s-maxage={info.s_maxage}")
+    if info.max_stale is not None:
+        vals.append(f"max-stale={info.max_stale}")
+    if info.min_fresh is not None:
+        vals.append(f"min-fresh={info.min_fresh}")
+    if info.stale_while_revalidate is not None:
+        vals.append(f"stale-while-revalidate={info.stale_while_revalidate}")
+    if info.stale_if_error is not None:
+        vals.append(f"stale-if-error={info.stale_if_error}")
+    if info.must_revalidate:
+        vals.append("must-revalidate")
+    if info.proxy_revalidate:
+        vals.append("proxy-revalidate")
+    if info.immutable:
+        vals.append("immutable")
+    if info.no_transform:
+        vals.append("no-transform")
+    if info.only_if_cached:
+        vals.append("only-if-cached")
+
+    return ", ".join(vals)
+
+
+class CacheControlConfig(CallbackConfigBase):
+
+    ATTR = _get_bamboo_attr("cache_control")
+
+    def __init__(self, callback: Callback_t) -> None:
+        super().__init__()
+
+        self._callback = callback
+
+    def get(self) -> t.Optional[CacheControlInfo]:
+        return getattr(self._callback, self.ATTR, None)
+
+    def set(self, info: CacheControlInfo) -> Callback_t:
+        if hasattr(self._callback, self.ATTR):
+            raise DuplicatedInfoError(
+                "Decorating of multiple times is forbidden."
+            )
+        setattr(self._callback, self.ATTR, info)
+
+        if inspect.iscoroutinefunction(self._callback):
+            func = self.decorate_asgi
+        else:
+            func = self.decorate_wsgi
+        return func(self._callback, info)
+
+    @staticmethod
+    def decorate_wsgi(
+        callback: Callback_WSGI_t,
+        info: CacheControlInfo,
+    ) -> Callback_WSGI_t:
+        val = _get_cache_control_value(info)
+
+        def _callback(self: WSGIEndpoint, *args) -> None:
+            self.add_header("Cache-Control", val)
+            callback(self, *args)
+
+        _callback.__dict__.update(callback.__dict__)
+        return _callback
+
+    @staticmethod
+    def decorate_asgi(
+        callback: Callback_ASGI_t,
+        info: CacheControlInfo,
+    ) -> Callback_ASGI_t:
+        val = _get_cache_control_value(info)
+
+        async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
+            self.add_header("Cache-Control", val)
+            callback(self, *args)
+
+        _callback.__dict__.update(callback.__dict__)
+        return _callback
+
+
+def set_cache_control(
+    public: bool = False,
+    private: bool = False,
+    no_cache: bool = False,
+    no_store: bool = False,
+    max_age: t.Optional[int] = None,
+    s_maxage: t.Optional[int] = None,
+    max_stale: t.Optional[int] = None,
+    min_fresh: t.Optional[int] = None,
+    stale_while_revalidate: t.Optional[int] = None,
+    stale_if_error: t.Optional[int] = None,
+    must_revalidate: bool = False,
+    proxy_revalidate: bool = False,
+    immutable: bool = False,
+    no_transform: bool = False,
+    only_if_cached: bool = False,
+) -> CallbackDecorator_t:
+    info = CacheControlInfo(
+        public=public,
+        private=private,
+        no_cache=no_cache,
+        no_store=no_store,
+        max_age=max_age,
+        s_maxage=s_maxage,
+        max_stale=max_stale,
+        min_fresh=min_fresh,
+        stale_while_revalidate=stale_while_revalidate,
+        stale_if_error=stale_if_error,
+        must_revalidate=must_revalidate,
+        proxy_revalidate=proxy_revalidate,
+        immutable=immutable,
+        no_transform=no_transform,
+        only_if_cached=only_if_cached,
+    )
+
+    def wrapper(callback: Callback_t) -> Callback_t:
+        config = CacheControlConfig(callback)
         return config.set(info)
 
     return wrapper
