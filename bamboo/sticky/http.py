@@ -47,6 +47,7 @@ __all__ = [
     "may_occur",
     "restricts_client",
     "set_cache_control",
+    "set_cookie",
 ]
 
 
@@ -925,7 +926,7 @@ def has_query_of(
 @dataclasses.dataclass(eq=True, frozen=True)
 class SimpleAccessControlInfo:
 
-    origins: t.Set[str] = set()
+    origins: t.Tuple[str] = ()
     err_not_allowed: ErrInfo = DEFAULT_CORS_ERROR
     add_arg: bool = True
 
@@ -960,13 +961,14 @@ class SimpleAccessControlConfig(CallbackConfigBase):
         callback: Callback_WSGI_t,
         info: SimpleAccessControlInfo,
     ) -> Callback_WSGI_t:
+        origins = set(info.origins)
 
         def _callback(self: WSGIEndpoint, *args) -> None:
             origin = self.get_header("Origin")
             if origin:
-                if not len(info.origins):
+                if not len(origins):
                     self.add_header("Access-Control-Allow-Origin", "*")
-                elif origin in info.origins:
+                elif origin in origins:
                     self.add_header("Access-Control-Allow-Origin", origin)
                 else:
                     raise info.err_not_allowed
@@ -986,13 +988,14 @@ class SimpleAccessControlConfig(CallbackConfigBase):
         callback: Callback_ASGI_t,
         info: SimpleAccessControlInfo,
     ) -> Callback_ASGI_t:
+        origins = set(info.origins)
 
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             origin = self.get_header("Origin")
             if origin:
-                if not len(info.origins):
+                if not len(origins):
                     self.add_header("Access-Control-Allow-Origin", "*")
-                elif origin in info.origins:
+                elif origin in origins:
                     self.add_header("Access-Control-Allow-Origin", origin)
                 else:
                     raise info.err_not_allowed
@@ -1188,10 +1191,10 @@ def get_asgi_preflight(
 @dataclasses.dataclass(eq=True, frozen=True)
 class PreFlightInfo:
 
-    allow_methods: t.Set[str]
-    allow_origins: t.Set[str] = set()
-    allow_headers: t.Set[str] = set()
-    expose_headers: t.Set[str] = set()
+    allow_methods: t.Tuple[str]
+    allow_origins: t.Tuple[str] = ()
+    allow_headers: t.Tuple[str] = ()
+    expose_headers: t.Tuple[str] = ()
     max_age: t.Optional[int] = None
     allow_credentials: bool = False
     err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR
@@ -1254,10 +1257,10 @@ def add_preflight(
     err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR,
 ) -> t.Callable[[HTTPMixIn], HTTPMixIn]:
     info = PreFlightInfo(
-        set(allow_methods),
-        origins=set(allow_origins),
-        allow_headers=set(allow_headers),
-        expose_headers=set(expose_headers),
+        tuple(allow_methods),
+        origins=tuple(allow_origins),
+        allow_headers=tuple(allow_headers),
+        expose_headers=tuple(expose_headers),
         max_age=max_age,
         allow_credentials=allow_credentials,
         err_not_allowed_origin=err_not_allowed_origin,
@@ -1377,7 +1380,7 @@ class CacheControlConfig(CallbackConfigBase):
 
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             self.add_header("Cache-Control", val)
-            callback(self, *args)
+            await callback(self, *args)
 
         _callback.__dict__.update(callback.__dict__)
         return _callback
@@ -1420,6 +1423,166 @@ def set_cache_control(
 
     def wrapper(callback: Callback_t) -> Callback_t:
         config = CacheControlConfig(callback)
+        return config.set(info)
+
+    return wrapper
+
+
+SetCookieValue_t = t.Callable[
+    [t.Union[ASGIHTTPEndpoint, WSGIEndpoint], str],
+    None
+]
+
+
+def _handle_cookie(
+    cookie_name: str,
+    expires: t.Optional[str] = None,
+    max_age: t.Optional[int] = None,
+    domain: t.Optional[str] = None,
+    path: t.Optional[str] = None,
+    secure: bool = True,
+    http_only: bool = True,
+    samesite: t.Optional[str] = None,
+) -> SetCookieValue_t:
+    directives = []
+    if expires is not None:
+        directives.append(f"Expires={expires}")
+    if max_age is not None:
+        directives.append(f"Max-Age={max_age}")
+    if domain is not None:
+        directives.append(f"Domain={domain}")
+    if path is not None:
+        directives.append(f"Path={path}")
+    if secure:
+        directives.append("Secure")
+    if http_only:
+        directives.append("HttpOnly")
+    if samesite is not None:
+        directives.append(f"SameSite={samesite}")
+
+    directives = "; ".join(directives)
+    form = "{name}={value}; {others}"
+
+    def set_cookie_value(
+        self: t.Union[ASGIHTTPEndpoint, WSGIEndpoint],
+        value: str,
+    ) -> None:
+        header_val = form.format(
+            name=cookie_name,
+            value=value,
+            others=directives,
+        )
+        self.add_header("Set-Cookie", header_val)
+
+    return set_cookie_value
+
+
+@dataclasses.dataclass(eq=True, frozen=True)
+class CookieInfo:
+
+    cookie_name: str
+    expires: t.Optional[str] = None
+    max_age: t.Optional[int] = None
+    domain: t.Optional[str] = None
+    path: t.Optional[str] = None
+    secure: bool = True
+    http_only: bool = True
+    samesite: t.Optional[str] = None
+
+
+class CookieConfig(CallbackConfigBase):
+
+    ATTR = _get_bamboo_attr("cookie")
+
+    def __init__(self, callback: Callback_t) -> None:
+        super().__init__()
+
+        self._callback = callback
+
+    def get(self) -> t.Optional[CookieInfo]:
+        return getattr(self._callback, self.ATTR, None)
+
+    def set(self, info: CookieInfo) -> Callback_t:
+        if hasattr(self._callback, self.ATTR):
+            raise DuplicatedInfoError(
+                "Decorating of multiple times is forbidden."
+            )
+        setattr(self._callback, self.ATTR, info)
+
+        if inspect.iscoroutinefunction(self._callback):
+            func = self.decorate_asgi
+        else:
+            func = self.decorate_wsgi
+        return func(self._callback, info)
+
+    def decorate_wsgi(
+        self,
+        callback: Callback_WSGI_t,
+        info: CookieInfo,
+    ) -> Callback_WSGI_t:
+        set_cookie_callback = _handle_cookie(
+            info.cookie_name,
+            expires=info.expires,
+            max_age=info.max_age,
+            domain=info.domain,
+            path=info.path,
+            secure=info.secure,
+            http_only=info.http_only,
+            samesite=info.samesite,
+        )
+
+        def _callback(self: WSGIEndpoint, *args) -> None:
+            callback(self, set_cookie_callback, *args)
+
+        _callback.__dict__.update(callback.__dict__)
+        return _callback
+
+    def decorate_asgi(
+        self,
+        callback: Callback_ASGI_t,
+        info: CookieInfo,
+    ) -> Callback_WSGI_t:
+        set_cookie_callback = _handle_cookie(
+            info.cookie_name,
+            expires=info.expires,
+            max_age=info.max_age,
+            domain=info.domain,
+            path=info.path,
+            secure=info.secure,
+            http_only=info.http_only,
+            samesite=info.samesite,
+        )
+
+        async def _callback(self: ASGIEndpointBase, *args) -> None:
+            await callback(self, set_cookie_callback, *args)
+
+        _callback.__dict__.update(callback.__dict__)
+        return _callback
+
+
+def set_cookie(
+    cookie_name: str,
+    expires: t.Optional[str] = None,
+    max_age: t.Optional[int] = None,
+    domain: t.Optional[str] = None,
+    path: t.Optional[str] = None,
+    secure: bool = True,
+    http_only: bool = True,
+    samesite: t.Optional[str] = None,
+) -> CallbackDecorator_t:
+    info = CookieInfo(
+        cookie_name,
+        expires=expires,
+        max_age=max_age,
+        domain=domain,
+        path=path,
+        secure=secure,
+        http_only=http_only,
+        samesite=samesite,
+    )
+
+    def wrapper(callback: Callback_t) -> Callback_t:
+        config = CookieConfig(callback)
         return config.set(info)
 
     return wrapper
