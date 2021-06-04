@@ -469,6 +469,47 @@ class StatusCodeAlreadySetError(Exception):
     pass
 
 
+_AVAILABLE_RES_METHODS = {
+    "CONNECT",
+    "DELETE",
+    "GET",
+    "HEAD",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+    "TRACE",
+}
+_PREFIX_RESPONSE = "do_"
+_PREFIX_PRE_RESPONSE = "pre_"
+
+
+def set_pre_response_method(
+    endpoint: t.Type[HTTPMixIn],
+    http_method: str,
+    callback: t.Callable[[HTTPMixIn], None],
+) -> None:
+    http_method = http_method.upper()
+    if http_method not in HTTPMethods:
+        raise ValueError(f"{http_method} is not available as a HTTP method.")
+
+    setattr(endpoint, _PREFIX_PRE_RESPONSE + http_method, callback)
+    endpoint._pre_methods[http_method] = callback
+
+
+def set_response_method(
+    endpoint: t.Type[HTTPMixIn],
+    http_method: str,
+    callback: t.Callable[[HTTPMixIn], None],
+) -> None:
+    http_method = http_method.upper()
+    if http_method not in HTTPMethods:
+        raise ValueError(f"{http_method} is not available as a HTTP method.")
+
+    setattr(endpoint, _PREFIX_RESPONSE + http_method, callback)
+    endpoint._res_methods[http_method] = callback
+
+
 class HTTPMixIn(metaclass=ABCMeta):
     """Mixin class for HTTP endpoints.
 
@@ -480,11 +521,36 @@ class HTTPMixIn(metaclass=ABCMeta):
         it, implementing its abstract methods, and call its `__init__()`
         method in the one of the subclass.
     """
-
-    __PREFIX_RESPONSE = "do_"
-    __PREFIX_PRE_RESPONSE = "pre_"
+    _pre_methods: t.Dict[str, t.Callable[[HTTPMixIn], None]]
+    _res_methods: t.Dict[str, t.Callable[[HTTPMixIn], None]]
 
     bufsize = 8192
+
+    def __init_subclass__(cls) -> None:
+        super().__init_subclass__()
+
+        cls._pre_methods = {}
+        cls._res_methods = {}
+
+        # Check if bufsize is positive
+        if not (cls.bufsize > 0 and isinstance(cls.bufsize, int)):
+            raise ValueError(
+                f"{cls.__name__}.bufsize must be positive integer"
+            )
+
+        # Check pre & response methods
+        for method in _AVAILABLE_RES_METHODS:
+            name_pre_method = _PREFIX_PRE_RESPONSE + method
+            name_res_method = _PREFIX_RESPONSE + method
+
+            if hasattr(cls, name_pre_method):
+                pre_method = getattr(cls, name_pre_method)
+                cls._pre_methods[method] = pre_method
+
+            if hasattr(cls, name_res_method):
+                res_method = getattr(cls, name_res_method)
+                cls._res_methods[method] = res_method
+
 
     @classmethod
     def _get_pre_response_method(
@@ -499,10 +565,7 @@ class HTTPMixIn(metaclass=ABCMeta):
         Returns:
             Pre-response method with given name.
         """
-        mname = cls.__PREFIX_PRE_RESPONSE + method
-        if hasattr(cls, mname):
-            return getattr(cls, mname)
-        return None
+        return cls._pre_methods.get(method, None)
 
     @classmethod
     def _get_response_method(
@@ -517,19 +580,7 @@ class HTTPMixIn(metaclass=ABCMeta):
         Returns:
             Callback with given name.
         """
-        mname = cls.__PREFIX_RESPONSE + method
-        if hasattr(cls, mname):
-            return getattr(cls, mname)
-        return None
-
-    def __init_subclass__(cls) -> None:
-        super().__init_subclass__()
-
-        # Check if bufsize is positive
-        if not (cls.bufsize > 0 and isinstance(cls.bufsize, int)):
-            raise ValueError(
-                f"{cls.__name__}.bufsize must be positive integer"
-            )
+        return cls._res_methods.get(method, None)
 
     def __init__(self) -> None:
         self._res_status: t.Optional[HTTPStatus] = None
