@@ -4,21 +4,23 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-peewee = "*"
-psycopg2-binary = "*"
 falcon = "*"
+fastapi = "*"
 flask = "*"
 gunicorn = "*"
-fastapi = "*"
-uvicorn = "*"
-mkdocs-material = "*"
-mkdocstrings = "*"
 hug = "*"
+mkdocstrings = "*"
+mkdocs-material = "*"
+peewee = "*"
+psycopg2-binary = "*"
+uvicorn = "*"
 
 [packages]
+bamboo-core = {editable = true, path = "."}
 
 [requires]
 python_version = "3.7"
 
 [scripts]
+js_test = "python js_tests/run_tests.py"
 test = "python -m unittest discover -v"
