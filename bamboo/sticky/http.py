@@ -19,7 +19,7 @@ from ..endpoint import (
     ASGIHTTPEndpoint,
     HTTPMixIn,
     WSGIEndpoint,
-    WSGIEndpointBase,
+    set_response_method,
 )
 from ..error import (
     DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR,
@@ -970,6 +970,7 @@ class SimpleAccessControlConfig(CallbackConfigBase):
                     self.add_header("Access-Control-Allow-Origin", "*")
                 elif origin in origins:
                     self.add_header("Access-Control-Allow-Origin", origin)
+                    self.add_header("Vary", "Origin")
                 else:
                     raise info.err_not_allowed
 
@@ -997,6 +998,7 @@ class SimpleAccessControlConfig(CallbackConfigBase):
                     self.add_header("Access-Control-Allow-Origin", "*")
                 elif origin in origins:
                     self.add_header("Access-Control-Allow-Origin", origin)
+                    self.add_header("Vary", "Origin")
                 else:
                     raise info.err_not_allowed
 
@@ -1025,11 +1027,14 @@ def allow_simple_access_control(
     return wrapper
 
 
+# NOTE
+#   Each values should be lowercases.
+
 _CORS_SAFELISTED_REQUEST_HEADERS = {
-    "Accept",
-    "Accept-Language",
-    "Content-Language",
-    "Content-Type",
+    "accept",
+    "accept-language",
+    "content-language",
+    "content-type",
 }
 
 
@@ -1054,7 +1059,7 @@ def _handle_cors_preflight(
     if isinstance(allow_methods, str):
         allow_methods = {allow_methods}
     allow_origins = set(allow_origins)
-    allow_headers = set(allow_headers)
+    allow_headers = set([header.lower() for header in allow_headers])
     allow_headers.update(_CORS_SAFELISTED_REQUEST_HEADERS)
     expose_headers = ", ".join(expose_headers)
     if max_age:
@@ -1122,7 +1127,6 @@ def get_wsgi_preflight(
     max_age: t.Optional[int] = None,
     allow_credentials: bool = False,
     err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR,
-    err_not_allowed_header: ErrInfo = DEFAULT_CORS_ERROR,
     err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR,
 ) -> Callback_WSGI_t:
     callback = _handle_cors_preflight(
@@ -1133,7 +1137,6 @@ def get_wsgi_preflight(
         max_age=max_age,
         allow_credentials=allow_credentials,
         err_not_allowed_origin=err_not_allowed_origin,
-        err_not_allowed_header=err_not_allowed_header,
         err_not_allowed_method=err_not_allowed_method,
     )
 
@@ -1159,7 +1162,6 @@ def get_asgi_preflight(
     max_age: t.Optional[int] = None,
     allow_credentials: bool = False,
     err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR,
-    err_not_allowed_header: ErrInfo = DEFAULT_CORS_ERROR,
     err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR,
 ) -> Callback_ASGI_t:
     callback = _handle_cors_preflight(
@@ -1170,7 +1172,6 @@ def get_asgi_preflight(
         max_age=max_age,
         allow_credentials=allow_credentials,
         err_not_allowed_origin=err_not_allowed_origin,
-        err_not_allowed_header=err_not_allowed_header,
         err_not_allowed_method=err_not_allowed_method,
     )
 
@@ -1198,8 +1199,8 @@ class PreFlightInfo:
     max_age: t.Optional[int] = None
     allow_credentials: bool = False
     err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR
-    err_not_allowed_header: ErrInfo = DEFAULT_CORS_ERROR
     err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR
+    add_arg: bool = True
 
 
 class PreFlightConfig(HTTPEndpointConfigBase):
@@ -1228,20 +1229,29 @@ class PreFlightConfig(HTTPEndpointConfigBase):
             info.max_age,
             info.allow_credentials,
             info.err_not_allowed_origin,
-            info.err_not_allowed_header,
             info.err_not_allowed_method,
         )
 
-        if issubclass(self._endpoint, WSGIEndpointBase):
-            req_method = get_wsgi_preflight(*args)
-        elif issubclass(self._endpoint, ASGIEndpointBase):
-            req_method = get_asgi_preflight(*args)
+        # Set other methods
+        for name, res_method in self._endpoint._res_methods.copy().items():
+            res_method = allow_simple_access_control(
+                *info.allow_origins,
+                err_not_allowed=info.err_not_allowed_origin,
+                add_arg=info.add_arg,
+            )(res_method)
+            set_response_method(self._endpoint, name, res_method)
+
+        # Set do_OPTIONS
+        if issubclass(self._endpoint, WSGIEndpoint):
+            res_method = get_wsgi_preflight(*args)
+        elif issubclass(self._endpoint, ASGIHTTPEndpoint):
+            res_method = get_asgi_preflight(*args)
         else:
             raise ValueError(
                 f"Class {self._endpoint.__name__} is not avalidable."
             )
+        set_response_method(self._endpoint, "OPTIONS", res_method)
 
-        setattr(self._endpoint, "do_OPTIONS", req_method)
         return self._endpoint
 
 
@@ -1253,19 +1263,19 @@ def add_preflight(
     max_age: t.Optional[int] = None,
     allow_credentials: bool = False,
     err_not_allowed_origin: ErrInfo = DEFAULT_CORS_ERROR,
-    err_not_allowed_header: ErrInfo = DEFAULT_CORS_ERROR,
     err_not_allowed_method: ErrInfo = DEFAULT_CORS_ERROR,
+    add_arg: bool = True,
 ) -> t.Callable[[HTTPMixIn], HTTPMixIn]:
     info = PreFlightInfo(
         tuple(allow_methods),
-        origins=tuple(allow_origins),
+        allow_origins=tuple(allow_origins),
         allow_headers=tuple(allow_headers),
         expose_headers=tuple(expose_headers),
         max_age=max_age,
         allow_credentials=allow_credentials,
         err_not_allowed_origin=err_not_allowed_origin,
-        err_not_allowed_header=err_not_allowed_header,
         err_not_allowed_method=err_not_allowed_method,
+        add_arg=add_arg,
     )
 
     def wrapper(endpoint: HTTPMixIn) -> HTTPMixIn:
