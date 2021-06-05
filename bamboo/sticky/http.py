@@ -35,6 +35,7 @@ from ..util.ip import is_valid_ipv4
 
 
 __all__ = [
+    "SetCookieValue_t",
     "add_preflight",
     "allow_simple_access_control",
     "basic_auth",
@@ -927,6 +928,7 @@ def has_query_of(
 class SimpleAccessControlInfo:
 
     origins: t.Tuple[str] = ()
+    allow_credentials: bool = False
     err_not_allowed: ErrInfo = DEFAULT_CORS_ERROR
     add_arg: bool = True
 
@@ -964,6 +966,7 @@ class SimpleAccessControlConfig(CallbackConfigBase):
         origins = set(info.origins)
 
         def _callback(self: WSGIEndpoint, *args) -> None:
+            # Origin
             origin = self.get_header("Origin")
             if origin:
                 if not len(origins):
@@ -973,6 +976,10 @@ class SimpleAccessControlConfig(CallbackConfigBase):
                     self.add_header("Vary", "Origin")
                 else:
                     raise info.err_not_allowed
+
+            # Credentials
+            if info.allow_credentials:
+                self.add_header("Access-Control-Allow-Credentials", "true")
 
             if info.add_arg:
                 callback(self, origin, *args)
@@ -992,6 +999,7 @@ class SimpleAccessControlConfig(CallbackConfigBase):
         origins = set(info.origins)
 
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
+            # Origin
             origin = self.get_header("Origin")
             if origin:
                 if not len(origins):
@@ -1001,6 +1009,10 @@ class SimpleAccessControlConfig(CallbackConfigBase):
                     self.add_header("Vary", "Origin")
                 else:
                     raise info.err_not_allowed
+
+            # Credentials
+            if info.allow_credentials:
+                self.add_header("Access-Control-Allow-Credentials", "true")
 
             if info.add_arg:
                 await callback(self, origin, *args)
@@ -1015,10 +1027,16 @@ class SimpleAccessControlConfig(CallbackConfigBase):
 
 def allow_simple_access_control(
     *origins: str,
+    allow_credentials: bool = False,
     err_not_allowed: ErrInfo = DEFAULT_CORS_ERROR,
     add_arg: bool = True,
 ) -> CallbackDecorator_t:
-    info = SimpleAccessControlInfo(set(origins), err_not_allowed, add_arg)
+    info = SimpleAccessControlInfo(
+        origins,
+        allow_credentials,
+        err_not_allowed,
+        add_arg,
+    )
 
     def wrapper(callback: Callback_t) -> Callback_t:
         config = SimpleAccessControlConfig(callback)

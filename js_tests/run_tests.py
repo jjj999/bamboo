@@ -15,11 +15,15 @@ from bamboo import (
     WSGITestExecutor,
 )
 from bamboo.sticky.http import (
+    SetCookieValue_t,
     add_preflight,
     allow_simple_access_control,
     data_format,
+    has_header_of,
     set_cookie,
 )
+from bamboo.util.deco import class_property
+from bamboo.util.string import rand_string
 
 
 HOST_WEB = "localhost"
@@ -33,9 +37,34 @@ app = WSGIApp()
 @app.route("cookie")
 class TestCookieEndpoint(WSGIEndpoint):
 
-    @set_cookie("bamboo")
-    def do_GET(self) -> None:
-        pass
+    _last_cookie: t.Optional[str] = None
+
+    @class_property
+    def last_cookie(cls) -> t.Optional[str]:
+        return cls._last_cookie
+
+    @last_cookie.setter
+    def last_cookie(cls, cookie: str) -> None:
+        cls._last_cookie = cookie
+
+    @allow_simple_access_control(
+        "http://localhost:8000",
+        allow_credentials=True,
+    )
+    def pre_GET(self, origin: str) -> None:
+        assert origin == "http://localhost:8000"
+
+    @set_cookie("bamboo", secure=False)
+    @has_header_of("Cookie")
+    def do_GET(
+        self,
+        cookie: t.Optional[str],
+        set_cookie_val: SetCookieValue_t,
+    ) -> None:
+        next_cookie = rand_string(2048)
+        set_cookie_val(self, next_cookie)
+        self.last_cookie = next_cookie
+        self.send_body(b"Hello, Client!")
 
 
 @app.route("cors", "simple-request")
@@ -56,8 +85,8 @@ class TestPreFlightRequest(JsonApiData):
 
 @app.route("cors", "preflight")
 @add_preflight(
-    allow_methods=("POST",),
-    allow_origins=("http://localhost:8000",)
+    allow_methods=["POST"],
+    allow_origins=["http://localhost:8000"],
 )
 class TestCORSPreFlightEndpoint(WSGIEndpoint):
 

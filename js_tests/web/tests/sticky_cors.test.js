@@ -10,8 +10,8 @@ QUnit.test("simple_request", (assert) => {
   .then((res) => {
     assert.true(res.ok);
   })
-  .catch((error) => {
-    throw error;
+  .catch((err) => {
+    throw err;
   })
   .finally(() => {
     done();
@@ -38,8 +38,8 @@ QUnit.test("preflight", (assert) => {
   .then((res) => {
     assert.true(res.ok);
   })
-  .catch((error) => {
-    throw error;
+  .catch((err) => {
+    throw err;
   })
   .finally(() => {
     done();
