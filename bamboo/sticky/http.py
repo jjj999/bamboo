@@ -1254,6 +1254,7 @@ class PreFlightConfig(HTTPEndpointConfigBase):
         for name, res_method in self._endpoint._res_methods.copy().items():
             res_method = allow_simple_access_control(
                 *info.allow_origins,
+                allow_credentials=info.allow_credentials,
                 err_not_allowed=info.err_not_allowed_origin,
                 add_arg=info.add_arg,
             )(res_method)
