@@ -69,28 +69,47 @@ class class_property(t.Generic[Object, ReturnGetter]):
 
     def __init__(
         self,
-        fget: t.Callable[[Object], ReturnGetter]
+        fget: t.Callable[[t.Type[Object]], ReturnGetter],
+        fset: t.Callable[[t.Type[Object], ReturnGetter], None] = None,
     ) -> None:
         self.__doc__ = getattr(fget, "__doc__")
         self._fget = fget
+        self._fset = fset
+        self._owner: t.Optional[t.Type[Object]] = None
 
     def __get__(
         self,
-        obj: t.Union[Object, None],
-        clazz: t.Optional[t.Type[Object]] = None
+        instance: t.Union[Object, None],
+        owner: t.Optional[t.Type[Object]] = None
     ) -> ReturnGetter:
-        if clazz is None:
-            clazz = type(obj)
-
         if self._fget is not None:
-            return self._fget(clazz)
+            return self._fget(self._owner)
         raise AttributeError("'getter' has not been set yet.")
+
+    def __set__(
+        self,
+        instance: Object,
+        value: ReturnGetter,
+    ) -> None:
+        if self._fset is None:
+            raise AttributeError("'setter' has not been set yet.")
+        self._fset(self._owner, value)
+
+    def __set_name__(self, owner: t.Type[Object], name: str) -> None:
+        self._owner = owner
 
     def getter(
         self,
-        fget: t.Callable[[Object], ReturnGetter]
+        fget: t.Callable[[t.Type[Object]], ReturnGetter]
     ) -> class_property:
         self._fget = fget
+        return self
+
+    def setter(
+        self,
+        fset: t.Callable[[t.Type[Object], ReturnGetter], None],
+    ) -> class_property:
+        self._fset = fset
         return self
 
 
