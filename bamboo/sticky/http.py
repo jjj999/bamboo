@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import dataclasses
+import functools
 import inspect
 import re
 import typing as t
@@ -192,6 +193,7 @@ class DataFormatConfig(CallbackConfigBase):
         dataformat: DataFormatInfo
     ) -> Callback_WSGI_t:
 
+        @functools.wraps(callback)
         @may_occur(dataformat.err_validate.__class__)
         @has_header_of("Content-Type", dataformat.err_noheader, add_arg=False)
         def _callback(self: WSGIEndpoint, *args) -> None:
@@ -200,10 +202,8 @@ class DataFormatConfig(CallbackConfigBase):
                 data = dataformat.input.__validate__(body, self.content_type)
             except ApiValidationFailedError:
                 raise dataformat.err_validate
-
             callback(self, data, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
     @staticmethod
@@ -212,11 +212,11 @@ class DataFormatConfig(CallbackConfigBase):
         dataformat: DataFormatInfo
     ) -> Callback_WSGI_t:
 
+        @functools.wraps(callback)
         def _callback(self: WSGIEndpoint, *args) -> None:
             setattr(self, "body", b"")
             callback(self, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
     @staticmethod
@@ -225,6 +225,7 @@ class DataFormatConfig(CallbackConfigBase):
         dataformat: DataFormatInfo
     ) -> Callback_ASGI_t:
 
+        @functools.wraps(callback)
         @may_occur(dataformat.err_validate.__class__)
         @has_header_of("Content-Type", dataformat.err_noheader, add_arg=False)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
@@ -233,10 +234,8 @@ class DataFormatConfig(CallbackConfigBase):
                 data = dataformat.input.__validate__(body, self.content_type)
             except ApiValidationFailedError:
                 raise dataformat.err_validate
-
             await callback(self, data, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
     @staticmethod
@@ -245,6 +244,7 @@ class DataFormatConfig(CallbackConfigBase):
         dataformat: DataFormatInfo
     ) -> Callback_ASGI_t:
 
+        @functools.wraps(callback)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             # NOTE
             #   Reference awaitable_cached_property
@@ -252,7 +252,6 @@ class DataFormatConfig(CallbackConfigBase):
             body_property._obj2val[self] = b""
             await callback(self, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
 
@@ -361,6 +360,7 @@ class RequiredHeaderConfig(CallbackConfigBase):
         info: RequiredHeaderInfo,
     ) -> Callback_WSGI_t:
 
+        @functools.wraps(callback)
         def _callback(self: WSGIEndpoint, *args) -> None:
             val = self.get_header(info.header)
             if val is None and info.err:
@@ -373,7 +373,6 @@ class RequiredHeaderConfig(CallbackConfigBase):
 
         if info.err:
             _callback = may_occur(info.err.__class__)(_callback)
-        _callback.__dict__ = callback.__dict__
         return _callback
 
     @staticmethod
@@ -382,6 +381,7 @@ class RequiredHeaderConfig(CallbackConfigBase):
         info: RequiredHeaderInfo,
     ) -> Callback_ASGI_t:
 
+        @functools.wraps(callback)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             val = self.get_header(info.header)
             if val is None and info.err:
@@ -394,7 +394,6 @@ class RequiredHeaderConfig(CallbackConfigBase):
 
         if info.err:
             _callback = may_occur(info.err.__class__)(_callback)
-        _callback.__dict__ = callback.__dict__
         return _callback
 
 
@@ -500,6 +499,7 @@ class RestrictedClientsConfig(CallbackConfigBase):
     ) -> Callback_WSGI_t:
         acceptables = getattr(callback, cls.ATTR, {})
 
+        @functools.wraps(callback)
         @may_occur(err.__class__)
         def _callback(self: WSGIEndpoint, *args) -> None:
             client = ClientInfo(*self.get_client_addr())
@@ -508,10 +508,8 @@ class RestrictedClientsConfig(CallbackConfigBase):
                 raise err
             if not(None in ports or client.port in ports):
                 raise err
-
             callback(self, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
     @classmethod
@@ -522,6 +520,7 @@ class RestrictedClientsConfig(CallbackConfigBase):
     ) -> Callback_ASGI_t:
         acceptables = getattr(callback, cls.ATTR, set())
 
+        @functools.wraps(callback)
         @may_occur(err.__class__)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             client = ClientInfo(*self.get_client_addr())
@@ -530,10 +529,8 @@ class RestrictedClientsConfig(CallbackConfigBase):
                 raise err
             if not(None in ports or client.port in ports):
                 raise err
-
             await callback(self, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
 
@@ -639,6 +636,7 @@ class AuthSchemeConfig(CallbackConfigBase):
         err: ErrInfo
     ) -> Callback_WSGI_t:
 
+        @functools.wraps(callback)
         @may_occur(err.__class__)
         @has_header_of(cls.HEADER_AUTHORIZATION, err, add_arg=False)
         def _callback(self: WSGIEndpoint, *args) -> None:
@@ -654,7 +652,6 @@ class AuthSchemeConfig(CallbackConfigBase):
             user_id, pw = credentials
             callback(self, user_id, pw, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
     @classmethod
@@ -664,6 +661,7 @@ class AuthSchemeConfig(CallbackConfigBase):
         err: ErrInfo
     ) -> Callback_ASGI_t:
 
+        @functools.wraps(callback)
         @may_occur(err.__class__)
         @has_header_of(cls.HEADER_AUTHORIZATION, err, add_arg=False)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
@@ -679,7 +677,6 @@ class AuthSchemeConfig(CallbackConfigBase):
             user_id, pw = credentials
             await callback(self, user_id, pw, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
     @classmethod
@@ -689,6 +686,7 @@ class AuthSchemeConfig(CallbackConfigBase):
         err: ErrInfo,
     ) -> Callback_WSGI_t:
 
+        @functools.wraps(callback)
         @may_occur(err.__class__)
         @has_header_of(cls.HEADER_AUTHORIZATION, err, add_arg=False)
         def _callback(self: WSGIEndpoint, *args) -> None:
@@ -696,10 +694,8 @@ class AuthSchemeConfig(CallbackConfigBase):
             token = cls._validate_auth_header(val, AuthSchemes.bearer)
             if token is None:
                 raise err
-
             callback(self, token, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
     @classmethod
@@ -709,6 +705,7 @@ class AuthSchemeConfig(CallbackConfigBase):
         err: ErrInfo,
     ) -> Callback_ASGI_t:
 
+        @functools.wraps(callback)
         @may_occur(err.__class__)
         @has_header_of(cls.HEADER_AUTHORIZATION, err, add_arg=False)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
@@ -716,10 +713,8 @@ class AuthSchemeConfig(CallbackConfigBase):
             token = cls._validate_auth_header(val, AuthSchemes.bearer)
             if token is None:
                 raise err
-
             await callback(self, token, *args)
 
-        _callback.__dict__ = callback.__dict__
         return _callback
 
 
@@ -838,6 +833,7 @@ class RequiredQueryConfig(CallbackConfigBase):
         info: RequiredQueryInfo,
     ) -> Callback_WSGI_t:
 
+        @functools.wraps(callback)
         def _callback(self: WSGIEndpoint, *args) -> None:
             val = self.get_queries(info.query)
             len_val = len(val)
@@ -866,7 +862,6 @@ class RequiredQueryConfig(CallbackConfigBase):
         if len(errs):
             _callback = may_occur(*errs)(_callback)
 
-        _callback.__dict__.update(callback.__dict__)
         return _callback
 
     @staticmethod
@@ -875,6 +870,7 @@ class RequiredQueryConfig(CallbackConfigBase):
         info: RequiredQueryInfo,
     ) -> Callback_ASGI_t:
 
+        @functools.wraps(callback)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             val = self.get_queries(info.query)
             len_val = len(val)
@@ -903,7 +899,6 @@ class RequiredQueryConfig(CallbackConfigBase):
         if len(errs):
             _callback = may_occur(*errs)(_callback)
 
-        _callback.__dict__.update(callback.__dict__)
         return _callback
 
 
@@ -965,6 +960,7 @@ class SimpleAccessControlConfig(CallbackConfigBase):
     ) -> Callback_WSGI_t:
         origins = set(info.origins)
 
+        @functools.wraps(callback)
         def _callback(self: WSGIEndpoint, *args) -> None:
             # Origin
             origin = self.get_header("Origin")
@@ -988,7 +984,6 @@ class SimpleAccessControlConfig(CallbackConfigBase):
 
         if info.err_not_allowed:
             _callback = may_occur(info.err_not_allowed.__class__)(_callback)
-        _callback.__dict__.update(callback.__dict__)
         return _callback
 
     @staticmethod
@@ -998,6 +993,7 @@ class SimpleAccessControlConfig(CallbackConfigBase):
     ) -> Callback_ASGI_t:
         origins = set(info.origins)
 
+        @functools.wraps(callback)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             # Origin
             origin = self.get_header("Origin")
@@ -1021,7 +1017,6 @@ class SimpleAccessControlConfig(CallbackConfigBase):
 
         if info.err_not_allowed:
             _callback = may_occur(info.err_not_allowed.__class__)(_callback)
-        _callback.__dict__.update(callback.__dict__)
         return _callback
 
 
@@ -1393,11 +1388,11 @@ class CacheControlConfig(CallbackConfigBase):
     ) -> Callback_WSGI_t:
         val = _get_cache_control_value(info)
 
+        @functools.wraps(callback)
         def _callback(self: WSGIEndpoint, *args) -> None:
             self.add_header("Cache-Control", val)
             callback(self, *args)
 
-        _callback.__dict__.update(callback.__dict__)
         return _callback
 
     @staticmethod
@@ -1407,11 +1402,11 @@ class CacheControlConfig(CallbackConfigBase):
     ) -> Callback_ASGI_t:
         val = _get_cache_control_value(info)
 
+        @functools.wraps(callback)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
             self.add_header("Cache-Control", val)
             await callback(self, *args)
 
-        _callback.__dict__.update(callback.__dict__)
         return _callback
 
 
@@ -1560,10 +1555,10 @@ class CookieConfig(CallbackConfigBase):
             samesite=info.samesite,
         )
 
+        @functools.wraps(callback)
         def _callback(self: WSGIEndpoint, *args) -> None:
             callback(self, set_cookie_callback, *args)
 
-        _callback.__dict__.update(callback.__dict__)
         return _callback
 
     def decorate_asgi(
@@ -1582,10 +1577,10 @@ class CookieConfig(CallbackConfigBase):
             samesite=info.samesite,
         )
 
+        @functools.wraps(callback)
         async def _callback(self: ASGIEndpointBase, *args) -> None:
             await callback(self, set_cookie_callback, *args)
 
-        _callback.__dict__.update(callback.__dict__)
         return _callback
 
 
