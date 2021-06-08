@@ -5,7 +5,7 @@ import typing as t
 from urllib.parse import parse_qs, urlparse
 
 from ..api import JsonApiData
-from ..base import HTTPMethods, MediaTypes
+from ..http import HTTPMethods, MediaTypes
 from ..util.convert import unparse_qs
 
 

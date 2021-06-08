@@ -14,7 +14,6 @@ from . import (
     _get_bamboo_attr,
 )
 from ..api import ApiData, ApiValidationFailedError
-from ..base import AuthSchemes, HTTPStatus
 from ..endpoint import (
     ASGIEndpointBase,
     ASGIHTTPEndpoint,
@@ -31,6 +30,7 @@ from ..error import (
     DEFAULT_NOT_APPLICABLE_IP_ERROR,
     ErrInfo,
 )
+from ..http import AuthSchemes, HTTPStatus
 from ..util.convert import decode2binary
 from ..util.ip import is_valid_ipv4
 

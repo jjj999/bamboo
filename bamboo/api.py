@@ -4,7 +4,7 @@ import json
 import typing as t
 from urllib.parse import parse_qs
 
-from .base import (
+from .http import (
     ContentType,
     ContentTypeHolder,
     DEFAULT_CONTENT_TYPE_JSON,

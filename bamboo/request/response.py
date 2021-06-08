@@ -3,7 +3,7 @@ import http.client
 import typing as t
 
 from ..api import BinaryApiData
-from ..base import ContentType
+from ..http import ContentType
 from ..request import ResponseData_t
 from ..util.deco import cached_property
 

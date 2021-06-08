@@ -3,7 +3,7 @@ import http.client
 import typing as t
 
 from ..api import BinaryApiData, JsonApiData
-from ..base import HTTPMethods
+from ..http import HTTPMethods
 from ..request import ResponseData_t, Schemes
 from ..request.request_form import get_http_request_form
 from ..request.response import Response

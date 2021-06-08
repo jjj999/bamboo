@@ -1,7 +1,7 @@
 import json
 import typing as t
 
-from .base import (
+from .http import (
     AuthSchemes,
     ContentType,
     ContentTypeHolder,
