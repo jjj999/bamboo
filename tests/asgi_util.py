@@ -8,28 +8,28 @@ import time
 import typing as t
 
 from bamboo import (
-    ASGIHTTPApp,
+    ASGIApp,
 )
 from bamboo.util.string import ColorCode, insert_colorcode
 import uvicorn
 
 
 __all__ = [
-    "ASGIHTTPServerForm",
-    "ASGIHTTPTestExecutor",
+    "ASGIServerForm",
+    "ASGITestExecutor",
 ]
 
 
 @dataclasses.dataclass
-class ASGIHTTPServerForm:
+class ASGIServerForm:
 
     host: str
     port: int
-    app: ASGIHTTPApp
+    app: ASGIApp
     path_log: str
 
 
-def serve_at(form: ASGIHTTPServerForm) -> None:
+def serve_at(form: ASGIServerForm) -> None:
     f_log = open(form.path_log, "wt")
     sys.stdout = f_log
     sys.stdin = f_log
@@ -44,19 +44,19 @@ def serve_at(form: ASGIHTTPServerForm) -> None:
     )
 
 
-class ASGIHTTPTestExecutor:
+class ASGITestExecutor:
 
-    def __init__(self, *forms: ASGIHTTPServerForm) -> None:
-        self._forms: t.List[ASGIHTTPServerForm] = []
+    def __init__(self, *forms: ASGIServerForm) -> None:
+        self._forms: t.List[ASGIServerForm] = []
         self._children: t.List[multiprocessing.Process] = []
 
         self.add_forms(*forms)
 
-    def add_forms(self, *forms: ASGIHTTPServerForm) -> None:
+    def add_forms(self, *forms: ASGIServerForm) -> None:
         for form in forms:
             self._forms.append(form)
 
-    def start_serve(self, waiting: float = 0.1) -> ASGIHTTPTestExecutor:
+    def start_serve(self, waiting: float = 0.1) -> ASGITestExecutor:
         for form in self._forms:
             child = multiprocessing.Process(target=serve_at, args=(form,))
             child.start()
@@ -86,13 +86,13 @@ class ASGIHTTPTestExecutor:
     @classmethod
     def debug(
         cls,
-        app: ASGIHTTPApp,
+        app: ASGIApp,
         path_log: str,
         host: str = "localhost",
         port: int = 8000,
         waiting: float = 0.05
     ) -> None:
-        form = ASGIHTTPServerForm(host, port, app, path_log)
+        form = ASGIServerForm(host, port, app, path_log)
         executor = cls(form)
 
         try:

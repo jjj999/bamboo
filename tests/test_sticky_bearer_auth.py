@@ -1,7 +1,7 @@
 import unittest
 
 from bamboo import (
-    ASGIHTTPApp,
+    ASGIApp,
     ASGIHTTPEndpoint,
     WSGIApp,
     WSGIEndpoint,
@@ -13,10 +13,10 @@ from bamboo.sticky.http import bearer_auth
 from bamboo.util.string import rand_string
 
 from . import get_log_name
-from .asgi_util import ASGIHTTPServerForm, ASGIHTTPTestExecutor
+from .asgi_util import ASGIServerForm, ASGITestExecutor
 
 
-app_asgi = ASGIHTTPApp()
+app_asgi = ASGIApp()
 app_wsgi = WSGIApp()
 PATH_ASGI_SERVER_LOG = get_log_name(__file__, "asgi")
 PATH_WSGI_SERVER_LOG = get_log_name(__file__, "wsgi")
@@ -43,9 +43,9 @@ class TestStickyRestrictsClient(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        form_asgi = ASGIHTTPServerForm("", 8000, app_asgi, PATH_ASGI_SERVER_LOG)
+        form_asgi = ASGIServerForm("", 8000, app_asgi, PATH_ASGI_SERVER_LOG)
         form_wsgi = WSGIServerForm("", 8001, app_wsgi, PATH_WSGI_SERVER_LOG)
-        cls.executor_asgi = ASGIHTTPTestExecutor(form_asgi).start_serve()
+        cls.executor_asgi = ASGITestExecutor(form_asgi).start_serve()
         cls.executor_wsgi = WSGITestExecutor(form_wsgi).start_serve()
         cls.uri_asgi = "http://localhost:8000"
         cls.uri_wsgi = "http://localhost:8001"

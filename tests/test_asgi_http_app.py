@@ -1,13 +1,13 @@
 import unittest
 
-from bamboo import ASGIHTTPApp, ASGIHTTPEndpoint
+from bamboo import ASGIApp, ASGIHTTPEndpoint
 from bamboo.request import http
 
 from . import get_log_name
-from .asgi_util import ASGIHTTPServerForm, ASGIHTTPTestExecutor
+from .asgi_util import ASGIServerForm, ASGITestExecutor
 
 
-app = ASGIHTTPApp()
+app = ASGIApp()
 PATH_SERVER_LOG = get_log_name(__file__)
 
 
@@ -37,8 +37,8 @@ class ASGIAppTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        form = ASGIHTTPServerForm("localhost", 8000, app, PATH_SERVER_LOG)
-        cls.executor = ASGIHTTPTestExecutor(form).start_serve()
+        form = ASGIServerForm("localhost", 8000, app, PATH_SERVER_LOG)
+        cls.executor = ASGITestExecutor(form).start_serve()
 
     @classmethod
     def tearDownClass(cls) -> None:

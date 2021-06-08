@@ -1,13 +1,28 @@
-
 from __future__ import annotations
-
 from abc import ABCMeta, abstractmethod
 import codecs
 import typing as t
 
-from .base import ASGIHTTPEvents, HTTPStatus
+from .asgi import (
+    ASGIHTTPEvents,
+    ASGIRecv_t,
+    ASGISend_t,
+    ASGIWebSocketEvents,
+    LifespanHandler_t,
+    default_lifespan_handler,
+    get_http_send_errinfo,
+    get_http_sendbody,
+    get_http_sendstart,
+    get_websock_accept,
+    get_websock_close,
+    get_websock_recvmsg,
+    get_websock_sendmsg,
+)
+from .http import HTTPStatus
 from .endpoint import (
+    ASGIEndpointBase,
     ASGIHTTPEndpoint,
+    ASGIWebSocketEndpoint,
     EndpointBase,
     WSGIEndpoint,
 )
@@ -421,7 +436,7 @@ class WSGIApp(AppBase):
         return super().set_parcel(endpoint, *parcel)
 
 
-class ASGIHTTPApp(AppBase):
+class ASGIApp(AppBase):
     """Application compliant with the ASGI.
 
     This class is a subclass of `AppBase` calss and implements the callbable
@@ -431,25 +446,53 @@ class ASGIHTTPApp(AppBase):
         This class can be used only for ASGI server. If you want to use
         any WSGI servers, consider using `WSGIApp`.
 
-        This class can also route only `ASGIHTTPEndpoint`s. If you want to
+        This class can also route only `ASGIEndpoint`s. If you want to
         another type of endpoint, consider implementation class of its
         corresponding application.
     """
 
-    __avalidable_endpoints = (ASGIHTTPEndpoint,)
+    __avalidable_endpoints = (ASGIHTTPEndpoint, ASGIWebSocketEndpoint)
+
+    def __init__(
+        self,
+        error_404: ErrInfo = DEFAULT_NOT_FOUND_ERROR,
+        lifespan_handler: LifespanHandler_t = default_lifespan_handler,
+    ) -> None:
+        super().__init__(error_404=error_404)
+
+        self._lifespan_handler = lifespan_handler
 
     async def __call__(
         self,
         scope: t.Dict[str, t.Any],
-        receive: t.Callable[[], t.Awaitable[t.Dict[str, t.Any]]],
+        recv: t.Callable[[], t.Awaitable[t.Dict[str, t.Any]]],
         send: t.Callable[[t.Dict[str, t.Any]], t.Awaitable[None]]
+    ) -> None:
+        typ = scope.get("type")
+        if typ == "http":
+            await self.handle_http(scope, recv, send)
+        elif typ == "websocket":
+            await self.handle_websocket(scope, recv, send)
+        elif typ == "lifespan":
+            await self.handle_lifespan(scope, recv, send)
+        else:
+            raise NotImplementedError
+
+    async def handle_http(
+        self,
+        scope: t.Dict[str, t.Any],
+        recv: ASGIRecv_t,
+        send: ASGISend_t,
     ) -> None:
         method = scope.get("method")
         path = scope.get("path")
+        sendstart = get_http_sendstart(send)
+        sendbody = get_http_sendbody(send)
+        send_errinfo = get_http_send_errinfo(send)
 
         flexible_locs, endpoint_class = self.validate(path)
         if endpoint_class is None:
-            await self.send_404(send)
+            await send_errinfo(self._error_404)
             return
 
         parcel_config = ParcelConfig(endpoint_class)
@@ -458,10 +501,10 @@ class ASGIHTTPApp(AppBase):
         pre_callback = endpoint_class._get_pre_response_method(method)
         callback = endpoint_class._get_response_method(method)
         if callback is None:
-            await self.send_404(send)
+            await send_errinfo(self._error_404)
             return
 
-        endpoint = endpoint_class(self, scope, receive, flexible_locs, *parcel)
+        endpoint = endpoint_class(self, scope, recv, flexible_locs, *parcel)
         # NOTE
         #   Subclasses of the ErrInfo must be raised in pre-response
         #   methods or response methods. Otherwise, the errors behave
@@ -471,10 +514,9 @@ class ASGIHTTPApp(AppBase):
                 await pre_callback(endpoint)
             await callback(endpoint)
         except ErrInfo as e:
-            status, headers, body = e.get_all_form()
-            headers = [
-                tuple(map(codecs.encode, header)) for header in headers
-            ]
+            await send_errinfo(e)
+            return
+
             # NOTE
             #   Other exceptions not inheriting the ErrInfo class
             #   are not to be catched here.
@@ -483,85 +525,68 @@ class ASGIHTTPApp(AppBase):
             headers = endpoint._res_headers
             body = endpoint._res_body
 
-        await self.send_start(send, status, headers)
-        await self.send_body(send, body)
+        await sendstart(status, headers)
+        await sendbody(body)
 
-    @staticmethod
-    async def send_start(
-        send: t.Callable[[t.Dict[str, t.Any]], t.Awaitable[None]],
-        status: HTTPStatus,
-        headers: t.List[t.Tuple[bytes, bytes]]
-    ) -> None:
-        """Start repsonse by sending response status and headers.
-
-        Args:
-            send: `send` awaitable given from the ASGI application.
-            status: Response status.
-            headers: Response headers.
-        """
-        await send({
-            "type": ASGIHTTPEvents.response_start,
-            "status": status.asgi,
-            "headers": headers
-        })
-
-    @staticmethod
-    async def send_body(
-        send: t.Callable[[t.Dict[str, t.Any], t.Awaitable[None]]],
-        body: BufferedConcatIterator
-    ) -> None:
-        """Send response body.
-
-        Args:
-            send: `send` awaitable given from the ASGI application.
-            body: Response body made in an `Endpoint` object.
-        """
-        for chunk in body:
-            await send({
-                "type": ASGIHTTPEvents.response_body,
-                "body": chunk,
-                "more_body": True
-            })
-        await send({"type": ASGIHTTPEvents.response_body})
-
-    async def send_404(
+    async def handle_websocket(
         self,
-        send: t.Callable[[t.Dict[str, t.Any]], t.Awaitable[None]]
+        scope: t.Dict[str, t.Any],
+        recv: ASGIRecv_t,
+        send: ASGISend_t,
     ) -> None:
-        """Send `404` error code, i.e. `Resource Not Found` error.
+        path = scope.get("path")
 
-        Args:
-            send: `send` awaitable given from the ASGI application.
-        """
-        status, headers, res_body = self._error_404.get_all_form()
-        headers = [
-            tuple(map(codecs.encode, header)) for header in headers
-        ]
-        await self.send_start(send, status, headers)
-        await self.send_body(send, BufferedConcatIterator(res_body))
+        flexible_locs, endpoint_class = self.validate(path)
+        if endpoint_class is None:
+            await self.send_404(send)
+            return
+
+        parcel_config = ParcelConfig(endpoint_class)
+        parcel = parcel_config.get(self)
+        endpoint = endpoint_class(self, scope, flexible_locs, *parcel)
+
+        # Establish connection
+        msg = await recv()
+        assert msg["type"] == ASGIWebSocketEvents.connect
+        accept = get_websock_accept(send)
+        await endpoint.do_ACCEPT(accept)
+
+        # Main communications
+        recvmsg = get_websock_recvmsg(recv)
+        sendmsg = get_websock_sendmsg(send)
+        close = get_websock_close(send)
+        await endpoint.do_COMMUNICATE(recvmsg, sendmsg, close)
+
+    async def handle_lifespan(
+        self,
+        scope: t.Dict[str, t.Any],
+        recv: ASGIRecv_t,
+        send: ASGISend_t,
+    ) -> None:
+        await self._lifespan_handler(scope, recv, send)
 
     def search_uris(
         self,
-        endpoint: t.Type[ASGIHTTPEndpoint]
+        endpoint: t.Type[ASGIHTTPEndpoint],
     ) -> t.List[Uri_t]:
         return super().search_uris(endpoint)
 
     def validate(
         self,
-        uri: str
-    ) -> t.Tuple[t.Tuple[str, ...], t.Optional[t.Type[ASGIHTTPEndpoint]]]:
+        uri: str,
+    ) -> t.Tuple[t.Tuple[str, ...], t.Optional[t.Type[ASGIEndpointBase]]]:
         return super().validate(uri)
 
     def route(
         self,
         *locs: Location_t,
-        version: t.Union[int, t.Tuple[int], None] = None
-    ) -> t.Callable[[t.Type[ASGIHTTPEndpoint]], t.Type[ASGIHTTPEndpoint]]:
+        version: t.Union[int, t.Tuple[int], None] = None,
+    ) -> t.Callable[[t.Type[ASGIEndpointBase]], t.Type[ASGIEndpointBase]]:
         return super().route(*locs, version=version)
 
     def set_parcel(
         self,
-        endpoint: t.Type[ASGIHTTPEndpoint],
-        *parcel: t.Any
+        endpoint: t.Type[ASGIEndpointBase],
+        *parcel: t.Any,
     ) -> None:
         return super().set_parcel(endpoint, *parcel)

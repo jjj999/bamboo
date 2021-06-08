@@ -9,8 +9,14 @@ import typing as t
 from urllib.parse import parse_qs
 
 from .api import JsonApiData
-from .base import (
+from .asgi import (
     ASGIHTTPEvents,
+    WebSocketAccept_t,
+    WebSocketClose_t,
+    WebSocketRecvMsg_t,
+    WebSocketSendMsg_t,
+)
+from .http import (
     ContentType,
     DEFAULT_CONTENT_TYPE_PLAIN,
     HTTPMethods,
@@ -363,10 +369,8 @@ class ASGIEndpointBase(EndpointBase):
         req_headers = scope.get("headers")
         self._req_headers = {}
         if req_headers:
-            req_headers = dict([
-                map(codecs.decode, header) for header in req_headers
-            ])
-            self._req_headers.update(req_headers)
+            req_headers = [map(codecs.decode, h) for h in req_headers]
+            self._req_headers.update(dict(req_headers))
 
         super().__init__(app, flexible_locs, *parcel)
 
@@ -777,15 +781,6 @@ class HTTPMixIn(metaclass=ABCMeta):
                 filename=fname
             )
 
-    @abstractmethod
-    def _attach_err_headers(self, headers: t.List[t.Tuple[str, str]]) -> None:
-        """Update response headers for error response.
-
-        Args:
-            headers: Response headers of the error response.
-        """
-        pass
-
 
 class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
     """HTTP endpoint class compliant with the WSGI.
@@ -860,9 +855,6 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
     def method(self) -> str:
         return self._environ.get("REQUEST_METHOD")
 
-    def _attach_err_headers(self, headers: t.List[t.Tuple[str, str]]) -> None:
-        self._res_headers = headers
-
 
 class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
     """HTTP endpoint class compliant with the ASGI.
@@ -917,9 +909,7 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
             flexible_locs: Flexible locations requested.
             *parcel: Parcel sent via application object.
         """
-        self._res_headers: t.List[t.Tuple[bytes, bytes]] = []
         self._receive = receive
-        self._req_body = b""
         self._is_disconnected = False
 
         ASGIEndpointBase.__init__(self, app, scope, flexible_locs, *parcel)
@@ -965,18 +955,23 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
     def method(self) -> str:
         return self._scope.get("method")
 
-    def add_header(
-        self,
-        name: str,
-        value: str,
-        **params: str
-    ) -> None:
-        header = tuple(
-            map(codecs.encode, make_header(name, value, **params))
-        )
-        self._res_headers.append(header)
 
-    def _attach_err_headers(self, headers: t.List[t.Tuple[str, str]]) -> None:
-        self._res_headers = [
-            t.tuple(map(codecs.encode, header)) for header in headers
-        ]
+class ASGIWebSocketEndpoint(ASGIEndpointBase):
+
+    @cached_property
+    def subprotocols(self) -> t.Tuple[str, ...]:
+        return tuple(self._scope.get("subprotocols"))
+
+    async def do_ACCEPT(
+        self,
+        accept: WebSocketAccept_t,
+    ) -> None:
+        raise NotImplementedError
+
+    async def do_COMMUNICATE(
+        self,
+        recvmsg: WebSocketRecvMsg_t,
+        sendmsg: WebSocketSendMsg_t,
+        close: WebSocketClose_t,
+    ) -> None:
+        raise NotImplementedError

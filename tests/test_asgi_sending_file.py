@@ -4,7 +4,7 @@ import unittest
 
 from bamboo import (
     BinaryApiData,
-    ASGIHTTPApp,
+    ASGIApp,
     ASGIHTTPEndpoint,
 )
 from bamboo.request import http
@@ -20,10 +20,10 @@ from . import (
     get_log_name,
     get_client_log_name
 )
-from .asgi_util import ASGIHTTPServerForm, ASGIHTTPTestExecutor
+from .asgi_util import ASGIServerForm, ASGITestExecutor
 
 
-app = ASGIHTTPApp()
+app = ASGIApp()
 PATH_SERVER_LOG = get_log_name(__file__)
 PATH_CLIENT_LOG = get_client_log_name(__file__)
 FILE_CLIENT_LOG = open(PATH_CLIENT_LOG, "wt")
@@ -57,8 +57,8 @@ class WSGISendingFileTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        form = ASGIHTTPServerForm("", 8000, app, PATH_SERVER_LOG)
-        cls.executor = ASGIHTTPTestExecutor(form).start_serve()
+        form = ASGIServerForm("", 8000, app, PATH_SERVER_LOG)
+        cls.executor = ASGITestExecutor(form).start_serve()
 
     @classmethod
     def tearDownClass(cls) -> None:
