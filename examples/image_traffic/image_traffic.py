@@ -1,4 +1,3 @@
-
 from bamboo import (
     AnyStringLocation,
     JsonApiData,
@@ -34,12 +33,10 @@ class MockServeImageEndpoint(WSGIEndpoint):
         with open(self.path_img, "rb") as f:
             img = f.read()
 
-        body = {
-            "image": encode_binary(img),
-            "datetime": get_datetime_rfc822()
-        }
-
-        self.send_json(body)
+        self.send_json(MockResponseData(
+            image=encode_binary(img),
+            datetime=get_datetime_rfc822(),
+        ))
 
 
 def request_image(uri: str, path_save: str) -> None:

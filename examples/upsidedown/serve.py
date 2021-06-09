@@ -1,4 +1,3 @@
-
 from bamboo import (
     JsonApiData,
     WSGIApp,
@@ -27,9 +26,7 @@ class UpsideDownEndpoint(WSGIEndpoint):
     @data_format(input=UpsideDownRequest, output=UpsideDownResponse)
     def do_GET(self, req_body: UpsideDownRequest) -> None:
         result = req_body.token[::-1]
-
-        body = {"result": result}
-        self.send_json(body)
+        self.send_json(UpsideDownResponse(result=result))
 
 
 if __name__ == "__main__":

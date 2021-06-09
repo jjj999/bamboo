@@ -1,8 +1,12 @@
-
 import sys
 
 from bamboo import JsonApiData
 from bamboo.request import http
+
+
+class UpsideDownRequest(JsonApiData):
+
+    token: str
 
 
 class UpsideDownResponse(JsonApiData):
@@ -11,9 +15,11 @@ class UpsideDownResponse(JsonApiData):
 
 
 def request(uri: str, token: str) -> None:
-    body = {"token": token}
-    with http.get(uri, json=body, datacls=UpsideDownResponse) as res:
-
+    with http.get(
+        uri,
+        json=UpsideDownRequest(token=token),
+        datacls=UpsideDownResponse,
+    ) as res:
         print("Headers")
         print("-------")
         for k, v in res.headers.items():

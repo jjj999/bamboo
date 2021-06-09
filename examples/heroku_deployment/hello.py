@@ -1,4 +1,3 @@
-
 from bamboo import (
     JsonApiData,
     WSGIApp,
@@ -20,5 +19,4 @@ class HelloEndpoint(WSGIEndpoint):
 
     @data_format(input=None, output=HelloData)
     def do_GET(self) -> None:
-        body = {"text": "Hello, World!"}
-        self.send_json(body)
+        self.send_json(HelloData(text="Hello, World!"))
