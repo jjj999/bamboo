@@ -1,10 +1,9 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
-import codecs
 import typing as t
 
 from .asgi import (
-    ASGIHTTPEvents,
+    ASGIProtocols,
     ASGIRecv_t,
     ASGISend_t,
     ASGIWebSocketEvents,
@@ -18,7 +17,6 @@ from .asgi import (
     get_websock_recvmsg,
     get_websock_sendmsg,
 )
-from .http import HTTPStatus
 from .endpoint import (
     ASGIEndpointBase,
     ASGIHTTPEndpoint,
@@ -339,6 +337,12 @@ class AppBase(t.Generic[Endpoint_t], metaclass=ABCMeta):
                 self._router.register(locs, endpoint, version=version)
 
 
+WSGIStartRespoint_t = t.Callable[
+    [str, t.Iterable[t.Tuple[str, str]]],
+    None
+]
+
+
 class WSGIApp(AppBase):
     """Application compliant with the WSGI.
 
@@ -359,7 +363,7 @@ class WSGIApp(AppBase):
     def __call__(
         self,
         environ: t.Dict[str, t.Any],
-        start_response: t.Callable
+        start_response: WSGIStartRespoint_t,
     ) -> t.List[bytes]:
         method = environ.get("REQUEST_METHOD").upper()
         path = environ.get("PATH_INFO")
@@ -398,7 +402,10 @@ class WSGIApp(AppBase):
         start_response(status.wsgi, headers)
         return body
 
-    def send_404(self, start_response: t.Callable) -> BufferedConcatIterator:
+    def send_404(
+        self,
+        start_response: WSGIStartRespoint_t,
+    ) -> BufferedConcatIterator:
         """Send `404` error code, i.e. `Resource Not Found` error.
 
         Args:
@@ -446,9 +453,9 @@ class ASGIApp(AppBase):
         This class can be used only for ASGI server. If you want to use
         any WSGI servers, consider using `WSGIApp`.
 
-        This class can also route only `ASGIEndpoint`s. If you want to
-        another type of endpoint, consider implementation class of its
-        corresponding application.
+        This class can also route only `ASGIHTTPEndpoint`s and
+        `ASGIWebSocketEndpoint`s. If you want to another type of endpoint,
+        consider implementation class of its corresponding application.
     """
 
     __avalidable_endpoints = (ASGIHTTPEndpoint, ASGIWebSocketEndpoint)
@@ -458,6 +465,12 @@ class ASGIApp(AppBase):
         error_404: ErrInfo = DEFAULT_NOT_FOUND_ERROR,
         lifespan_handler: LifespanHandler_t = default_lifespan_handler,
     ) -> None:
+        """
+        Args:
+            error_404: Error sending if a request to not registered URI or
+                HTTP method comes.
+            lifespan_handler: A callback with the type `LifespanHandler_t`.
+        """
         super().__init__(error_404=error_404)
 
         self._lifespan_handler = lifespan_handler
@@ -465,15 +478,22 @@ class ASGIApp(AppBase):
     async def __call__(
         self,
         scope: t.Dict[str, t.Any],
-        recv: t.Callable[[], t.Awaitable[t.Dict[str, t.Any]]],
-        send: t.Callable[[t.Dict[str, t.Any]], t.Awaitable[None]]
+        recv: ASGIRecv_t,
+        send: ASGISend_t,
     ) -> None:
+        """Handle requests compliant with the ASGI.
+
+        Args:
+            scope: Connection scope in the ASGI.
+            recv: Awaitable callable to receive new event data.
+            send: Awaitable callable to send new event data.
+        """
         typ = scope.get("type")
-        if typ == "http":
+        if typ == ASGIProtocols.http:
             await self.handle_http(scope, recv, send)
-        elif typ == "websocket":
+        elif typ == ASGIProtocols.websocket:
             await self.handle_websocket(scope, recv, send)
-        elif typ == "lifespan":
+        elif typ == ASGIProtocols.lifespan:
             await self.handle_lifespan(scope, recv, send)
         else:
             raise NotImplementedError
@@ -484,6 +504,17 @@ class ASGIApp(AppBase):
         recv: ASGIRecv_t,
         send: ASGISend_t,
     ) -> None:
+        """Handle requests with the HTTP protocol.
+
+        This method only handles requests with the HTTP and is used in
+        the `__call__()` method for the ASGI application. Therefore one
+        doesn't have to call this method if one just runs the application.
+
+        Args:
+            scope: Connection scope in the ASGI.
+            recv: Awaitable callable to receive new event data.
+            send: Awaitable callable to send new event data.
+        """
         method = scope.get("method")
         path = scope.get("path")
         sendstart = get_http_sendstart(send)
@@ -534,6 +565,17 @@ class ASGIApp(AppBase):
         recv: ASGIRecv_t,
         send: ASGISend_t,
     ) -> None:
+        """Handle requests with the WebSocket protocol.
+
+        This method only handles requests with the WebSocket and is used in
+        the `__call__()` method for the ASGI application. Therefore one
+        doesn't have to call this method if one just runs the application.
+
+        Args:
+            scope: Connection scope in the ASGI.
+            recv: Awaitable callable to receive new event data.
+            send: Awaitable callable to send new event data.
+        """
         path = scope.get("path")
 
         flexible_locs, endpoint_class = self.validate(path)
@@ -563,7 +605,33 @@ class ASGIApp(AppBase):
         recv: ASGIRecv_t,
         send: ASGISend_t,
     ) -> None:
+        """Handle requests with the Lifespan protocol.
+
+        This method only handles requests with the Lifespan and is used in
+        the `__call__()` method for the ASGI application. Therefore one
+        doesn't have to call this method if one just runs the application.
+
+        Args:
+            scope: Connection scope in the ASGI.
+            recv: Awaitable callable to receive new event data.
+            send: Awaitable callable to send new event data.
+        """
         await self._lifespan_handler(scope, recv, send)
+
+    def apply_lifespan_handler(
+        self,
+        lifespan_handler: LifespanHandler_t,
+    ) -> None:
+        """Apply a handler for the Lifespan protocol.
+
+        This method sets a callback with the type `LifespanHandler_t` to
+        handle requests with the Lifespan protocol. This method should be
+        called only if one intends to set one's custom callback.
+
+        Args:
+            lifespan_handler: A callback with the type `LifespanHandler_t`.
+        """
+        self._lifespan_handler = lifespan_handler
 
     def search_uris(
         self,

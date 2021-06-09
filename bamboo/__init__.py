@@ -24,12 +24,14 @@ from .asgi import (
     ASGIRecv_t,
     ASGISend_t,
     ASGIWebSocketEvents,
+    LifespanHandler_t,
     WebSocketAccept_t,
     WebSocketClose_t,
     WebSocketDisconnectedError,
     WebSocketError,
     WebSocketRecvMsg_t,
     WebSocketSendMsg_t,
+    default_lifespan_handler,
 )
 from .http import (
     AuthSchemes,
@@ -44,6 +46,7 @@ from .http import (
 from .endpoint import (
     ASGIEndpointBase,
     ASGIHTTPEndpoint,
+    ASGIWebSocketEndpoint,
     EndpointBase,
     HTTPMixIn,
     StatusCodeAlreadySetError,

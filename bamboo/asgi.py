@@ -7,8 +7,35 @@ from .http import HTTPStatus
 from .io import BufferedConcatIterator
 
 
+class _ASGIProtocols:
+    """Iterable for the ASGI protocols.
+    """
+
+    http        = "http"
+    websocket   = "websocket"
+    lifespan    = "lifespan"
+
+    _events = {
+        http,
+        websocket,
+        lifespan,
+    }
+    __instance = None
+
+    def __new__(cls) -> _ASGIProtocols:
+        if cls.__instance is None:
+            cls.__instance = super().__new__(cls)
+        return cls.__instance
+
+    def __iter__(self) -> t.Iterator[str]:
+        return iter(self._events)
+
+    def __contains__(self, item: str) -> bool:
+        return item in self._events
+
+
 class _ASGIHTTPEvents:
-    """Iterator for events of ASGI HTTP protocol.
+    """Iterable for events of the ASGI HTTP protocol.
     """
 
     request         = "http.request"
@@ -16,12 +43,12 @@ class _ASGIHTTPEvents:
     response_body   = "http.response.body"
     disconnect      = "http.disconnect"
 
-    _events = set((
+    _events = {
         request,
         response_start,
         response_body,
         disconnect,
-    ))
+    }
     __instance = None
 
     def __new__(cls) -> _ASGIHTTPEvents:
@@ -29,7 +56,7 @@ class _ASGIHTTPEvents:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
-    def __iter__(self) -> t.Iterable[str]:
+    def __iter__(self) -> t.Iterator[str]:
         return iter(self._events)
 
     def __contains__(self, item: str) -> bool:
@@ -37,7 +64,7 @@ class _ASGIHTTPEvents:
 
 
 class _ASGIWebSocketEvents:
-    """Iterator for events of ASGI WebSocket protocol.
+    """Iterable for events of the ASGI WebSocket protocol.
     """
 
     connect     = "websocket.connect"
@@ -47,14 +74,14 @@ class _ASGIWebSocketEvents:
     disconnect  = "websocket.disconnect"
     close       = "websocket.close"
 
-    _events = set((
+    _events = {
         connect,
         accept,
         receive,
         send,
         disconnect,
         close,
-    ))
+    }
     __instance = None
 
     def __new__(cls) -> _ASGIWebSocketEvents:
@@ -62,7 +89,7 @@ class _ASGIWebSocketEvents:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
-    def __iter__(self) -> t.Iterable[str]:
+    def __iter__(self) -> t.Iterator[str]:
         return iter(self._events)
 
     def __contains__(self, item: str) -> bool:
@@ -70,7 +97,7 @@ class _ASGIWebSocketEvents:
 
 
 class _ASGILifespanEvents:
-    """Iterator for events of ASGI Lifespan protocol.
+    """Iterable for events of the ASGI Lifespan protocol.
     """
 
     startup             = "lifespan.startup"
@@ -102,6 +129,7 @@ class _ASGILifespanEvents:
         return item in self._events
 
 
+ASGIProtocols = _ASGIProtocols()
 ASGIHTTPEvents = _ASGIHTTPEvents()
 ASGIWebSocketEvents = _ASGIWebSocketEvents()
 ASGILifespanEvenets = _ASGILifespanEvents()
