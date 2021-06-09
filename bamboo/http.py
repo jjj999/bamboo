@@ -51,9 +51,6 @@ class _HTTPMethods:
         return item in self.__methods
 
 
-HTTPMethods = _HTTPMethods()
-
-
 class _MediaTypes:
     """Iterator for media types of body on communication.
     """
@@ -109,9 +106,6 @@ class _MediaTypes:
         return item in self.__types
 
 
-MediaTypes = _MediaTypes()
-
-
 class _AuthSchemes:
     """Iterator for authentication schemes of the Authorization header.
     """
@@ -138,6 +132,8 @@ class _AuthSchemes:
         return item in self.__schemes
 
 
+HTTPMethods = _HTTPMethods()
+MediaTypes = _MediaTypes()
 AuthSchemes = _AuthSchemes()
 
 
@@ -221,38 +217,6 @@ class ContentTypeHolder(metaclass=ABCMeta):
 #   used if Content-Type of response is not specified.
 DEFAULT_CONTENT_TYPE_PLAIN = ContentType(MediaTypes.plain)
 DEFAULT_CONTENT_TYPE_JSON = ContentType(MediaTypes.json, "UTF-8")
-
-
-class _ASGIHTTPEvents:
-    """Iterator for events of ASGI HTTP protocol.
-    """
-
-    request = "http.request"
-    response_start = "http.response.start"
-    response_body = "http.response.body"
-    disconnect = "http.disconnect"
-
-    _events = set((
-        request,
-        response_start,
-        response_body,
-        disconnect,
-    ))
-    __instance = None
-
-    def __new__(cls) -> _ASGIHTTPEvents:
-        if cls.__instance is None:
-            cls.__instance = super().__new__(cls)
-        return cls.__instance
-
-    def __iter__(self) -> t.Iterable[str]:
-        return iter(self._events)
-
-    def __contains__(self, item: str) -> bool:
-        return item in self._events
-
-
-ASGIHTTPEvents = _ASGIHTTPEvents()
 
 
 class HTTPStatus(int, enum.Enum):
