@@ -14,6 +14,8 @@ mkdocs-material = "*"
 peewee = "*"
 psycopg2-binary = "*"
 uvicorn = "*"
+hypercorn = "*"
+websocket-client = "*"
 
 [packages]
 bamboo-core = {editable = true, path = "."}
