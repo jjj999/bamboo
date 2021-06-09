@@ -4,18 +4,18 @@ import unittest
 from bamboo import (
     AnyStringLocation,
     AsciiDigitLocation,
-    JsonApiData,
     WSGIApp,
     WSGIEndpoint,
     WSGIServerForm,
     WSGITestExecutor,
 )
+from bamboo.api import JsonApiData
 from bamboo.request import http
 from bamboo.sticky.http import data_format
 from bamboo.util.string import rand_string
 from bamboo.util.time import get_datetime_rfc822
 
-from . import get_log_name
+from .. import get_log_name
 
 
 app = WSGIApp()

@@ -3,8 +3,8 @@ import unittest
 from bamboo import ASGIApp, ASGIHTTPEndpoint
 from bamboo.request import http
 
-from . import get_log_name
-from .asgi_util import ASGIServerForm, ASGITestExecutor
+from .. import get_log_name
+from ..asgi_util import ASGIServerForm, ASGITestExecutor
 
 
 app = ASGIApp()

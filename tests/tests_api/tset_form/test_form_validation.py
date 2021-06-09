@@ -1,23 +1,17 @@
 import unittest
 
-from bamboo import (
-    ContentType,
-    MediaTypes,
-    XWWWFormUrlEncodedData,
-    ApiValidationFailedError,
-)
+from bamboo import ContentType, MediaTypes
+from bamboo.api import ApiValidationFailedError, FormApiData
 
 
-ideal_content_type = ContentType(MediaTypes.x_www_form_urlencoded, "utf-8")
-
-
-class TestData(XWWWFormUrlEncodedData):
+class TestData(FormApiData):
 
     name: str
     age: str
     email: str
 
 
+ideal_content_type = ContentType(MediaTypes.x_www_form_urlencoded, "utf-8")
 data_raw = b"name=hogehoge&email=hoge@hoge.com&age=18"
 data_key_not_included = b"name=hogehoge&age=20"
 data_duplicated_key = b"name=hogehoge&name=hogest&age=20&email=hoge@hoge.com"

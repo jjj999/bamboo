@@ -2,12 +2,8 @@ import json
 import typing as t
 import unittest
 
-from bamboo import (
-    ContentType,
-    JsonApiData,
-    MediaTypes,
-    ApiValidationFailedError,
-)
+from bamboo import ContentType, MediaTypes
+from bamboo.api import ApiValidationFailedError, JsonApiData
 
 
 json_content_type = ContentType(MediaTypes.json, "utf-8")
@@ -21,17 +17,27 @@ class TestInnerData(JsonApiData):
     email: str
 
 
-data_inner = json.dumps({
-    "age": 18, "email": "hoge@hoge.com", "name": "hogehoge"
-}).encode()
-
-
 class TestListData(JsonApiData):
 
     accounts: t.List[TestInnerData]
     datetime: str
 
 
+class TestNestedData(JsonApiData):
+
+    account: TestInnerData
+    datetime: str
+
+
+class TestUnionData(JsonApiData):
+
+    name: str
+    age: t.Optional[int] = None
+
+
+data_inner = json.dumps({
+    "age": 18, "email": "hoge@hoge.com", "name": "hogehoge"
+}).encode()
 data_list = json.dumps({
     "accounts": [
         {"name": "hogehoge", "age": 18, "email": "hoge@hoge.com"},
@@ -44,26 +50,10 @@ data_list = json.dumps({
     ],
     "datetime": "2000.01.01-00:00:00"
 }).encode()
-
-
-class TestNestedData(JsonApiData):
-
-    account: TestInnerData
-    datetime: str
-
-
 data_nested = json.dumps({
     "account": {"name": "hogehoge", "age": 18, "email": "hoge@hoge.com"},
     "datetime": "2000.01.01-00:00:00"
 }).encode()
-
-
-class TestUnionData(JsonApiData):
-
-    name: str
-    age: t.Optional[int] = None
-
-
 data_union = json.dumps({
     "name": "hogehoge", "age": None,
 }).encode()
@@ -81,7 +71,7 @@ data_default_value = json.dumps({
 }).encode()
 
 
-class TestJsonApiData(unittest.TestCase):
+class TestJsonValidation(unittest.TestCase):
 
     def test_inner_data(self):
         data = TestInnerData.__validate__(data_inner, json_content_type)

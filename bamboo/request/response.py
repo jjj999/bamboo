@@ -2,7 +2,7 @@ from __future__ import annotations
 import http.client
 import typing as t
 
-from ..api import BinaryApiData
+from ..api.base import BinaryApiData
 from ..http import ContentType
 from ..request import ResponseData_t
 from ..util.deco import cached_property

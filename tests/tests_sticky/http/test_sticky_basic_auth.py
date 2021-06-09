@@ -13,8 +13,8 @@ from bamboo.sticky.http import basic_auth
 from bamboo.util.convert import encode_base64_string
 from bamboo.util.string import rand_string
 
-from . import get_log_name
-from .asgi_util import ASGIServerForm, ASGITestExecutor
+from ... import get_log_name
+from ...asgi_util import ASGIServerForm, ASGITestExecutor
 
 
 app_asgi = ASGIApp()

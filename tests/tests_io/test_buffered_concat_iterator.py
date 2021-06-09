@@ -4,7 +4,7 @@ import unittest
 
 from bamboo import BufferedConcatIterator, BufferedFileIterator
 
-from . import PATH_IMAGE
+from .. import PATH_IMAGE
 
 
 def test_generator() -> t.Generator[bytes, None, None]:

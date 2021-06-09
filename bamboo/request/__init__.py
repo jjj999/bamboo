@@ -1,7 +1,7 @@
 from __future__ import annotations
 import typing as t
 
-from ..api import ApiData
+from ..api.base import ApiData
 
 
 __all__ = [

@@ -8,7 +8,7 @@ from bamboo import (
 )
 from bamboo.request import http
 
-from . import get_log_name
+from .. import get_log_name
 
 
 PATH_SERVER_LOG = get_log_name(__file__)

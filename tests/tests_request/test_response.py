@@ -4,18 +4,18 @@ import unittest
 
 from bamboo import (
     ContentType,
-    JsonApiData,
     MediaTypes,
     WSGIApp,
     WSGIEndpoint,
     WSGIServerForm,
     WSGITestExecutor,
 )
+from bamboo.api import JsonApiData
 from bamboo.request import Response
 from bamboo.sticky.http import data_format
 from bamboo.util.time import get_datetime_rfc822
 
-from . import PATH_IMAGE, get_log_name
+from .. import PATH_IMAGE, get_log_name
 
 
 app = WSGIApp()

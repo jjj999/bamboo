@@ -12,8 +12,8 @@ from bamboo.request import http
 from bamboo.sticky.http import has_header_of
 from bamboo.util.string import rand_string
 
-from . import get_log_name
-from .asgi_util import ASGIServerForm, ASGITestExecutor
+from ... import get_log_name
+from ...asgi_util import ASGIServerForm, ASGITestExecutor
 
 
 app_asgi = ASGIApp()

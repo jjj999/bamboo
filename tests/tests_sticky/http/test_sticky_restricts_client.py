@@ -11,8 +11,8 @@ from bamboo import (
 from bamboo.request import http
 from bamboo.sticky.http import ClientInfo, restricts_client
 
-from . import get_log_name
-from .asgi_util import ASGIServerForm, ASGITestExecutor
+from ... import get_log_name
+from ...asgi_util import ASGIServerForm, ASGITestExecutor
 
 
 app_asgi = ASGIApp()

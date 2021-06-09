@@ -3,19 +3,16 @@ import time
 import unittest
 
 from bamboo import (
-    BinaryApiData,
     WSGIApp,
     WSGIEndpoint,
     WSGIServerForm,
     WSGITestExecutor,
 )
+from bamboo.api import BinaryApiData
 from bamboo.request import http
 from bamboo.sticky.http import data_format
 
-from . import (
-    NAME_BIGDATA_1GB,
-    NAME_BIGDATA_1KB,
-    NAME_BIGDATA_1MB,
+from .. import (
     PATH_BIGDATA_1GB,
     PATH_BIGDATA_1KB,
     PATH_BIGDATA_1MB,

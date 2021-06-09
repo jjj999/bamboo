@@ -5,18 +5,18 @@ import unittest
 from bamboo import (
     ASGIApp,
     ASGIHTTPEndpoint,
-    JsonApiData,
     WSGIApp,
     WSGIEndpoint,
     WSGIServerForm,
     WSGITestExecutor,
 )
+from bamboo.api import JsonApiData
 from bamboo.request import http
 from bamboo.sticky.http import data_format
 from bamboo.util.string import rand_string
 
-from . import get_log_name
-from .asgi_util import ASGIServerForm, ASGITestExecutor
+from ... import get_log_name
+from ...asgi_util import ASGIServerForm, ASGITestExecutor
 
 
 app_asgi = ASGIApp()

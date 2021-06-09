@@ -8,7 +8,7 @@ import os
 import typing as t
 from urllib.parse import parse_qs
 
-from .api import JsonApiData
+from .api.json import JsonApiData
 from .asgi import (
     ASGIHTTPEvents,
     WebSocketAccept_t,

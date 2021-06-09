@@ -4,7 +4,7 @@ import json as js
 import typing as t
 from urllib.parse import parse_qs, urlparse
 
-from ..api import JsonApiData
+from ..api.json import JsonApiData
 from ..http import HTTPMethods, MediaTypes
 from ..util.convert import unparse_qs
 

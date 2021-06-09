@@ -1,6 +1,6 @@
 import typing as t
 
-from bamboo.endpoint import ASGIHTTPEndpoint, WSGIEndpoint
+from ..endpoint import ASGIHTTPEndpoint, WSGIEndpoint
 
 
 __all__ = []

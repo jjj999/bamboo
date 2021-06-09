@@ -3,14 +3,14 @@ import time
 import unittest
 
 from bamboo import (
-    BinaryApiData,
     ASGIApp,
     ASGIHTTPEndpoint,
 )
+from bamboo.api import BinaryApiData
 from bamboo.request import http
 from bamboo.sticky.http import data_format
 
-from . import (
+from .. import (
     NAME_BIGDATA_1GB,
     NAME_BIGDATA_1KB,
     NAME_BIGDATA_1MB,
@@ -20,7 +20,7 @@ from . import (
     get_log_name,
     get_client_log_name
 )
-from .asgi_util import ASGIServerForm, ASGITestExecutor
+from ..asgi_util import ASGIServerForm, ASGITestExecutor
 
 
 app = ASGIApp()

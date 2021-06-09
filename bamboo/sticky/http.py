@@ -13,7 +13,7 @@ from . import (
     DuplicatedInfoError,
     _get_bamboo_attr,
 )
-from ..api import ApiData, ApiValidationFailedError
+from ..api.base import ApiData, ApiValidationFailedError
 from ..endpoint import (
     ASGIEndpointBase,
     ASGIHTTPEndpoint,

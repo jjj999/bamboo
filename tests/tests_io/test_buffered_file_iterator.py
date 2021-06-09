@@ -3,7 +3,7 @@ import unittest
 
 from bamboo import BufferedFileIterator
 
-from . import PATH_IMAGE
+from .. import PATH_IMAGE
 
 
 class BufferedFileIteratorTest(unittest.TestCase):
