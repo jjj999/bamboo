@@ -1,19 +1,25 @@
-[![Bamboo](res/bamboo.png)](https://jjj999.github.io/bamboo/)
+# Bamboo
+
+[![Bamboo](docs/res/bamboo.png)](https://jjj999.github.io/bamboo/)
 [![PyPI version](https://badge.fury.io/py/bamboo-core.svg)](http://badge.fury.io/py/bamboo-core)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.python.org/pypi/bamboo-core/)
 
-# Bamboo
+## Supported Interfaces
 
-## Installing
+- WSGI
+- ASGI v3.0 (HTTP, WebSocket and Lifespan)
 
-- Python >= 3.7
+## Installling
+
+* Python: >= 3.7
 
 ```
-python -m pip install bamboo-core
+$ python -m pip install bamboo-core
 ```
 
-## Usage
-詳細は[チュートリアル](tutorials/concept)を参照してください．以下は簡単な実装例です．
+## [Usage](https://jjj999.github.io/bamboo/tutorials/concept/)
+
+以下は簡単な実装例です．
 
 ```python
 from bamboo import WSGIApp, WSGIEndpoint, WSGITestExecutor
@@ -33,4 +39,19 @@ if __name__ == "__main__":
 上記スクリプトを実行後，ブラウザで http://localhost:8000/hello にアクセスするとレスポンスを確認できます．
 
 ## API documentation
-API ドキュメントは[こちら](api/bamboo/pkg/)．
+
+API ドキュメントは[こちら](https://jjj999.github.io/bamboo/api/bamboo/pkg/)．
+
+## Examples
+
+### [upsidedown](https://github.com/jjj999/bamboo/tree/master/examples/upsidedown)
+
+リクエストされた文字列を逆順に反転させて返すアプリケーションです．
+
+### [image_traffic](https://github.com/jjj999/bamboo/tree/master/examples/image_traffic)
+
+アクセスに対して静的な画像を返すアプリケーションです．
+
+### [tweets](https://github.com/jjj999/bamboo/tree/master/examples/tweets)
+
+CLI ベースの簡易的な Twitter のような投稿アプリです．認証機能は実装されていません．
