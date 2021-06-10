@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import ABCMeta, abstractmethod
+import typing as t
 
 from ..http import (
     ContentType,
@@ -44,6 +45,10 @@ class ApiData(ContentTypeHolder, metaclass=ABCMeta):
             raw : Raw data to be validated.
             content_type : Values of `Content-Type` header.
         """
+        pass
+
+    @abstractmethod
+    def __extract__(self) -> t.Union[bytes, t.Iterable[bytes]]:
         pass
 
 
@@ -99,3 +104,6 @@ class BinaryApiData(ApiData):
         """Content type with `text/plain`.
         """
         return DEFAULT_CONTENT_TYPE_PLAIN
+
+    def __extract__(self) -> bytes:
+        return self.raw

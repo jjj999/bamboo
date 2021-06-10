@@ -271,6 +271,12 @@ class JsonApiData(ApiData):
             )
         return cls(**data)
 
+    def __extract__(self) -> bytes:
+        encoding = self.__content_type__.charset
+        if encoding is None:
+            encoding = "utf-8"
+        return json.dumps(self.dict).encode(encoding=encoding)
+
     @cached_property
     def dict(self) -> t.Dict[str, t.Any]:
         return _extract_dict(self)

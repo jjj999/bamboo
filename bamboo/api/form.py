@@ -134,9 +134,15 @@ class FormApiData(ApiData):
             ) from e
         return _build_form_api(cls, raw)
 
+    def __extract__(self) -> bytes:
+        encoding = self.__content_type__.charset
+        if encoding is None:
+            encoding = "utf-8"
+        return self.string.encode(encoding=encoding)
+
     @cached_property
     def dict(self) -> t.Dict[str, t.Any]:
-        keys = t.get_type_hints(self).keys()
+        keys = t.get_type_hints(self.__class__).keys()
         return {key: getattr(self, key) for key in keys}
 
     @cached_property

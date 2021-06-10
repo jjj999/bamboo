@@ -8,7 +8,7 @@ import os
 import typing as t
 from urllib.parse import parse_qs
 
-from .api.json import JsonApiData
+from .api.base import ApiData
 from .asgi import (
     ASGIHTTPEvents,
     WebSocketAccept_t,
@@ -730,9 +730,30 @@ class HTTPMixIn(metaclass=ABCMeta):
             length = sum(map(len, bodies))
             self.add_content_length(length)
 
+    def send_api(
+        self,
+        api: ApiData,
+        status: HTTPStatus = HTTPStatus.OK,
+    ) -> None:
+        """Set given api data to the response body.
+
+        Args:
+            api: ApiData object to be sent.
+            status: HTTP status of the response.
+
+        Raises:
+            StatusCodeAlreadySetError: Raised if response status code
+                has already been set.
+        """
+        self.send_body(
+            api.__extract__(),
+            content_type=api.__content_type__,
+            status=status,
+        )
+
     def send_json(
         self,
-        body: t.Union[t.Dict[str, t.Any], JsonApiData],
+        body: t.Dict[str, t.Any],
         status: HTTPStatus = HTTPStatus.OK,
         encoding: str = "UTF-8"
     ) -> None:
@@ -747,9 +768,6 @@ class HTTPMixIn(metaclass=ABCMeta):
             StatusCodeAlreadySetError: Raised if response status code
                 has already been set.
         """
-        if isinstance(body, JsonApiData):
-            body = body.dict
-
         body = json.dumps(body).encode(encoding=encoding)
         content_type = ContentType(MediaTypes.json, encoding)
         self.send_body(body, content_type=content_type, status=status)
