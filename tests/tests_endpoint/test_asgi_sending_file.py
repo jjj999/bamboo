@@ -53,7 +53,7 @@ class BigFileServingEndpoint(ASGIHTTPEndpoint):
         self.send_file(PATH_BIGDATA_1GB, NAME_BIGDATA_1GB)
 
 
-class WSGISendingFileTest(unittest.TestCase):
+class TestASGISendingFile(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:

@@ -51,7 +51,7 @@ class CallbackEndpoint(WSGIEndpoint):
         self.send_only_status()
 
 
-class WSGIAppTest(unittest.TestCase):
+class TestWSGIApp(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:

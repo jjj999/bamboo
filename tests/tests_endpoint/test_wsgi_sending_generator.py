@@ -61,7 +61,7 @@ class BigFileServingEndpoint(WSGIEndpoint):
         self.send_body(buffering_generator(PATH_BIGDATA_1GB))
 
 
-class WSGISendingFileTest(unittest.TestCase):
+class TestWSGISendingGenerator(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:

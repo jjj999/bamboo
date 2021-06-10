@@ -48,7 +48,7 @@ class MockImageEndpoint(WSGIEndpoint):
         self.send_body(image, content_type=ContentType(MediaTypes.jpeg))
 
 
-class TestHTTPRequest(unittest.TestCase):
+class TestTestExecutor(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:

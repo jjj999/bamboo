@@ -12,7 +12,7 @@ def test_generator() -> t.Generator[bytes, None, None]:
         yield os.getrandom(i)
 
 
-class BufferedConcatIteratorTest(unittest.TestCase):
+class TestBufferedConcatIterator(unittest.TestCase):
 
     def setUp(self) -> None:
         self.total = sum((

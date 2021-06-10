@@ -3,7 +3,7 @@ import unittest
 from bamboo.util.string import CircularChar, SerialString
 
 
-class TestUtilString(unittest.TestCase):
+class TestString(unittest.TestCase):
 
     def test_char(self):
         char = CircularChar()

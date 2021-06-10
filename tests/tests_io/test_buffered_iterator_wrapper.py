@@ -10,7 +10,7 @@ def test_generator() -> t.Generator[bytes, None, None]:
         yield getrandom(i)
 
 
-class BufferedIteratorWrapperTest(unittest.TestCase):
+class TestBufferedIteratorWrapper(unittest.TestCase):
 
     def setUp(self) -> None:
         self.total = sum(range(10**2, 10**3))

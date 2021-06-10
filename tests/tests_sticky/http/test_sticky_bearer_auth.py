@@ -39,7 +39,7 @@ class TestWSGIEndpoint(WSGIEndpoint):
         self.send_only_status()
 
 
-class TestStickyRestrictsClient(unittest.TestCase):
+class TestStickyBearerAuth(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:

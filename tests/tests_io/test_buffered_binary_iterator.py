@@ -4,7 +4,7 @@ import unittest
 from bamboo import BufferedBinaryIterator
 
 
-class BufferedBinaryIteratorTest(unittest.TestCase):
+class TestBufferedBinaryIterator(unittest.TestCase):
 
     def setUp(self) -> None:
         self.total = 10**5

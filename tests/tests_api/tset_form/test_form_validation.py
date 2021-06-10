@@ -17,7 +17,7 @@ data_key_not_included = b"name=hogehoge&age=20"
 data_duplicated_key = b"name=hogehoge&name=hogest&age=20&email=hoge@hoge.com"
 
 
-class TestXWWWFromUrlEncodedData(unittest.TestCase):
+class TestFormValidation(unittest.TestCase):
 
     def test_data_raw(self):
         data = TestData.__validate__(data_raw, ideal_content_type)

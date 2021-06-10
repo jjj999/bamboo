@@ -20,7 +20,7 @@ account_dict = {
 account_string = b"name=hogehoge&age=18&email=hoge@hoge.com"
 
 
-class TestXWWWFromUrlEncodedData(unittest.TestCase):
+class TestFormExtraction(unittest.TestCase):
 
     def test_dict(self) -> None:
         api = AccountApi(**account_dict)

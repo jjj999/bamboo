@@ -33,7 +33,7 @@ class AttributesEndpoint(ASGIHTTPEndpoint):
         self.send_only_status()
 
 
-class ASGIAppTest(unittest.TestCase):
+class TestASGIApp(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:

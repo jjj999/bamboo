@@ -6,7 +6,7 @@ from bamboo import BufferedFileIterator
 from .. import PATH_IMAGE
 
 
-class BufferedFileIteratorTest(unittest.TestCase):
+class TestBufferedFileIterator(unittest.TestCase):
 
     def setUp(self) -> None:
         self.total = os.path.getsize(PATH_IMAGE)

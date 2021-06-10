@@ -53,7 +53,7 @@ class MultiplyEndpoint(WSGIEndpoint):
         self.send_json(body)
 
 
-class FlexibleLocsTest(unittest.TestCase):
+class TestFlexibleLocs(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
