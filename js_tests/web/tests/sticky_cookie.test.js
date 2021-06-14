@@ -1,7 +1,7 @@
 QUnit.module("sticky_cookie");
 
 QUnit.test("cookie", (assert) => {
-  const done = assert.async(10);
+  const done = assert.async(5);
 
   for (let i = 0; i < 5; i++) {
     fetch(
@@ -15,6 +15,7 @@ QUnit.test("cookie", (assert) => {
       throw err;
     })
     .finally(() => {
+      console.log("ok");
       done();
     });
   }
