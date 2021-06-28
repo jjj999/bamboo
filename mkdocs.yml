@@ -41,9 +41,10 @@ nav:
       - api/bamboo/pkg.md
       - api/bamboo/api.md
       - api/bamboo/app.md
-      - api/bamboo/base.md
+      - api/bamboo/asgi.md
       - api/bamboo/endpoint.md
       - api/bamboo/error.md
+      - api/bamboo/http.md
       - api/bamboo/io.md
       - api/bamboo/location.md
       - api/bamboo/router.md
