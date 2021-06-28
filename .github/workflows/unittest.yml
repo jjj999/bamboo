@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - hotfix-iss5-test
 
 jobs:
   build:

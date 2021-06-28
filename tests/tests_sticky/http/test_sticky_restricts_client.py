@@ -63,6 +63,9 @@ class TestStickyRestrictsClient(unittest.TestCase):
         cls.executor_asgi.close()
         cls.executor_wsgi.close()
 
+        with open(PATH_ASGI_SERVER_LOG) as f:
+            print(f.read())
+
     def test_asgi_correct(self):
         with http.get(self.uri_asgi) as res:
             self.assertTrue(res.ok)
