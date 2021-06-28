@@ -3,6 +3,7 @@
 [![Bamboo](docs/res/bamboo.png)](https://jjj999.github.io/bamboo/)
 [![PyPI version](https://badge.fury.io/py/bamboo-core.svg)](http://badge.fury.io/py/bamboo-core)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.python.org/pypi/bamboo-core/)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://jjj999.github.io/bamboo)
 
 ## Supported Interfaces
 
