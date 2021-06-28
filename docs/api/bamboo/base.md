@@ -1,3 +1,0 @@
-# base
-
-::: bamboo.base
