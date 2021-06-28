@@ -4,17 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-falcon = "*"
-fastapi = "*"
-flask = "*"
 gunicorn = "*"
-hug = "*"
+hypercorn = "*"
 mkdocstrings = "*"
 mkdocs-material = "*"
 peewee = "*"
+pre-commit = "*"
 psycopg2-binary = "*"
 uvicorn = "*"
-hypercorn = "*"
 websocket-client = "*"
 
 [packages]
@@ -24,5 +21,6 @@ bamboo-core = {editable = true, path = "."}
 python_version = "3.7"
 
 [scripts]
+init = "python scripts/init_dev_env.py"
 js_test = "python -m js_tests.run_tests"
 test = "python -m unittest discover -v"
