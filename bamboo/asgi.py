@@ -214,8 +214,16 @@ def get_http_send_errinfo(send: ASGISend_t) -> HTTPSendErrInfo_t:
     sendstart = get_http_sendstart(send)
     sendbody = get_http_sendbody(send)
 
-    async def send_errinfo(errinfo: ErrInfo) -> None:
+    async def send_errinfo(
+        errinfo: ErrInfo,
+        res_headers: t.Iterable[t.Tuple[str, str]],
+    ) -> None:
         status, headers, body = errinfo.get_all_form()
+
+        # Judge whether the response headers should be inheritted.
+        for header_name, header_value in res_headers:
+            if errinfo.should_inherit_header(header_name):
+                headers.append((header_name, header_value))
 
         await sendstart(status, headers)
         await sendbody(BufferedConcatIterator(body))
