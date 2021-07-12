@@ -394,6 +394,10 @@ class WSGIApp(AppBase):
             # NOTE
             #   Other exception not inheriting the ErrInfo class
             #   are not to be catched here.
+
+            for header_name, header_value in endpoint._res_headers:
+                if e.should_inherit_header(header_name):
+                    headers.append((header_name, header_value))
         else:
             status = endpoint._res_status
             headers = endpoint._res_headers
@@ -545,7 +549,7 @@ class ASGIApp(AppBase):
                 await pre_callback(endpoint)
             await callback(endpoint)
         except ErrInfo as e:
-            await send_errinfo(e)
+            await send_errinfo(e, endpoint._res_headers)
             return
 
             # NOTE

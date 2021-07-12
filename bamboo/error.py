@@ -22,8 +22,19 @@ class ErrInfo(Exception, ContentTypeHolder):
 
     Attributes:
         http_status (HTTPStatus) : HTTP status of the error.
+        inheritted_headers (Set[str]) : Header names to be inheritted.
     """
     http_status: HTTPStatus = HTTPStatus.BAD_REQUEST
+    inheritted_headers: t.Set[str] = set()
+
+    def __init_subclass__(cls) -> None:
+        # Make header names lower to ignore the difference of upper and
+        # lower charactors.
+        cls.inheritted_headers = set(map(str.lower, cls.inheritted_headers))
+
+    @classmethod
+    def should_inherit_header(cls, header_name: str) -> bool:
+        return header_name.lower() in cls.inheritted_headers
 
     @class_property
     def __content_type__(cls) -> ContentType:
