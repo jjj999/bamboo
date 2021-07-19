@@ -42,16 +42,19 @@ class Response(t.Generic[ResponseData_t]):
         self,
         conn: http.client.HTTPConnection,
         res: http.client.HTTPResponse,
+        uri: str,
         datacls: t.Type[ResponseData_t] = BinaryApiData,
     ) -> None:
         """
         Args:
             conn: connection object of a session.
             res: HTTPResponse of a request.
+            uri: Requested URI.
             datacls: ApiData class to attach raw response body.
         """
         self._conn = conn
         self._res = res
+        self._uri = uri
         self._datacls = datacls
         self._is_read = False
 
@@ -73,10 +76,10 @@ class Response(t.Generic[ResponseData_t]):
         return self._res.getheader(name)
 
     @property
-    def url(self) -> str:
-        """Real url of the endpoint.
+    def uri(self) -> str:
+        """Requested URI.
         """
-        return self._res.geturl()
+        return self._uri
 
     @property
     def status(self) -> int:

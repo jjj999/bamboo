@@ -67,17 +67,19 @@ class TestResponse(unittest.TestCase):
         with open(PATH_IMAGE, "rb") as f:
             image_ideal = f.read()
 
-        uri = "/" + os.path.join("mock", "image")
-        self.conn.request("GET", uri)
+        path = "/" + os.path.join("mock", "image")
+        uri = f"http://localhost:8000" + path
+        self.conn.request("GET", path)
         _res = self.conn.getresponse()
-        with Response(self.conn, _res) as res:
+        with Response(self.conn, _res, uri) as res:
             self.assertEqual(image_ideal, res.body)
 
     def test_attach_datacls(self):
-        uri = "/" + os.path.join("mock", "info")
-        self.conn.request("GET", uri)
+        path = "/" + os.path.join("mock", "info")
+        uri = f"http://localhost:8000" + path
+        self.conn.request("GET", path)
         _res = self.conn.getresponse()
-        with Response(self.conn, _res, datacls=InfoResponse) as res:
+        with Response(self.conn, _res, uri, datacls=InfoResponse) as res:
             data = res.attach()
 
         self.assertTrue(isinstance(data, InfoResponse))
