@@ -65,19 +65,3 @@ After the command, developers can commit with the command:
 ```
 git commit
 ```
-
-## Initilizing development environments
-
-First, developers should has Python 3.7 for the development and install `Pipenv`:
-
-```
-pip install --upgrade pip pipenv
-```
-
-Next, developers should run the command:
-
-```
-pipenv run init
-```
-
-That's it! Welcome the bamboo project and we all appreciate your joining!
