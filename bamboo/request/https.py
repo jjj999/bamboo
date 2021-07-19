@@ -56,9 +56,9 @@ def request(
         timeout=timeout,
         blocksize=blocksize
     )
-    conn.request(form.method, form.uri, body=form.body, headers=form.headers)
+    conn.request(form.method, form.path, body=form.body, headers=form.headers)
     _res = conn.getresponse()
-    return Response(conn, _res, datacls=datacls)
+    return Response(conn, _res, form.uri, datacls=datacls)
 
 
 def get(

@@ -18,6 +18,7 @@ class HTTPRequestForm:
     host: str
     port: t.Optional[int]
     uri: str
+    path: str
     method: str
     headers: t.Dict[str, str]
     body: t.Optional[bytes]
@@ -57,24 +58,28 @@ def get_http_request_form(
             "not available. Use HTTP."
         )
 
-    # port management
+    # port
     port = parsed_uri.port
     if not port:
         port = None
 
-    # query management
+    # query
     query_included = parse_qs(parsed_uri.query)
     query_included.update(query)
     query = unparse_qs(query_included)
 
-    # path management
+    # path
     path = parsed_uri.path
     if len(query):
         path = "?".join((path, query))
 
+    # uri
+    uri = f"{parsed_uri.scheme}://{parsed_uri.netloc}{path}"
+
     return HTTPRequestForm(
         parsed_uri.hostname,
         port,
+        uri,
         path,
         method,
         headers,

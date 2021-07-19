@@ -76,6 +76,7 @@ class TestHTTPRequest(unittest.TestCase):
         uri = "http://localhost:8000/mock/image"
         with http.get(uri) as res:
             data = res.body
+            self.assertEqual(uri, res.uri)
 
         self.assertEqual(image_ideal, data)
 
