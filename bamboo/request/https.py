@@ -3,6 +3,7 @@ import http.client
 import ssl
 import typing as t
 
+from . import _get_https_proxy_env, _parse_proxy_netloc
 from ..api.base import BinaryApiData
 from ..api.json import JsonApiData
 from ..http import HTTPMethods
@@ -37,6 +38,8 @@ def request(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     form = get_http_request_form(
         Schemes.HTTPS,
@@ -47,15 +50,40 @@ def request(
         json=json,
         query=query
     )
-    conn = http.client.HTTPSConnection(
-        form.host,
-        form.port,
-        key_file=key_file,
-        cert_file=cert_file,
-        context=context,
-        timeout=timeout,
-        blocksize=blocksize
-    )
+
+    if use_proxy:
+        _http_proxy_env = _get_https_proxy_env()
+        if isinstance(use_proxy, tuple):
+            proxy_host, proxy_port = use_proxy
+        elif _http_proxy_env:
+            proxy_host, proxy_port = _parse_proxy_netloc(_http_proxy_env)
+        else:
+            raise ConnectionAbortedError(
+                "Specified 'use_proxy' as True, but any proxy "
+                "settings were not found."
+            )
+
+        conn = http.client.HTTPSConnection(
+            proxy_host,
+            port=proxy_port,
+            key_file=key_file,
+            cert_file=cert_file,
+            context=context,
+            timeout=timeout,
+            blocksize=blocksize,
+        )
+        conn.set_tunnel(form.host, port=form.port, headers=proxy_headers)
+    else:
+        conn = http.client.HTTPSConnection(
+            form.host,
+            port=form.port,
+            key_file=key_file,
+            cert_file=cert_file,
+            context=context,
+            timeout=timeout,
+            blocksize=blocksize,
+        )
+
     conn.request(form.method, form.path, body=form.body, headers=form.headers)
     _res = conn.getresponse()
     return Response(conn, _res, form.uri, datacls=datacls)
@@ -73,6 +101,8 @@ def get(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     """Request with the GET method on HTTPS.
 
@@ -94,6 +124,9 @@ def get(
         key_file: Path of a public key file.
         cert_file: Path of a certification file.
         context: SSLContext of your communication.
+        use_proxy: Address of a proxy server or whether the connection
+            uses a proxy based on the environment variables.
+        proxy_headers: Headers to be used on the request to the proxy.
 
     Returns:
         Response object generated with the response.
@@ -110,7 +143,9 @@ def get(
         datacls=datacls,
         key_file=key_file,
         cert_file=cert_file,
-        context=context
+        context=context,
+        use_proxy=use_proxy,
+        proxy_headers=proxy_headers,
     )
 
 
@@ -126,6 +161,8 @@ def post(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     """Request with the POST method on HTTPS.
 
@@ -147,6 +184,9 @@ def post(
         key_file: Path of a public key file.
         cert_file: Path of a certification file.
         context: SSLContext of your communication.
+        use_proxy: Address of a proxy server or whether the connection
+            uses a proxy based on the environment variables.
+        proxy_headers: Headers to be used on the request to the proxy.
 
     Returns:
         Response object generated with the response.
@@ -163,7 +203,9 @@ def post(
         datacls=datacls,
         key_file=key_file,
         cert_file=cert_file,
-        context=context
+        context=context,
+        use_proxy=use_proxy,
+        proxy_headers=proxy_headers,
     )
 
 
@@ -179,6 +221,8 @@ def put(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     """Request with the PUT method on HTTPS.
 
@@ -200,6 +244,9 @@ def put(
         key_file: Path of a public key file.
         cert_file: Path of a certification file.
         context: SSLContext of your communication.
+        use_proxy: Address of a proxy server or whether the connection
+            uses a proxy based on the environment variables.
+        proxy_headers: Headers to be used on the request to the proxy.
 
     Returns:
         Response object generated with the response.
@@ -216,7 +263,9 @@ def put(
         datacls=datacls,
         key_file=key_file,
         cert_file=cert_file,
-        context=context
+        context=context,
+        use_proxy=use_proxy,
+        proxy_headers=proxy_headers,
     )
 
 
@@ -232,6 +281,8 @@ def delete(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     """Request with the DELETE method on HTTPS.
 
@@ -253,6 +304,9 @@ def delete(
         key_file: Path of a public key file.
         cert_file: Path of a certification file.
         context: SSLContext of your communication.
+        use_proxy: Address of a proxy server or whether the connection
+            uses a proxy based on the environment variables.
+        proxy_headers: Headers to be used on the request to the proxy.
 
     Returns:
         Response object generated with the response.
@@ -269,7 +323,9 @@ def delete(
         datacls=datacls,
         key_file=key_file,
         cert_file=cert_file,
-        context=context
+        context=context,
+        use_proxy=use_proxy,
+        proxy_headers=proxy_headers,
     )
 
 
@@ -285,6 +341,8 @@ def head(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     """Request with the HEAD method on HTTPS.
 
@@ -306,6 +364,9 @@ def head(
         key_file: Path of a public key file.
         cert_file: Path of a certification file.
         context: SSLContext of your communication.
+        use_proxy: Address of a proxy server or whether the connection
+            uses a proxy based on the environment variables.
+        proxy_headers: Headers to be used on the request to the proxy.
 
     Returns:
         Response object generated with the response.
@@ -322,7 +383,9 @@ def head(
         datacls=datacls,
         key_file=key_file,
         cert_file=cert_file,
-        context=context
+        context=context,
+        use_proxy=use_proxy,
+        proxy_headers=proxy_headers,
     )
 
 
@@ -338,6 +401,8 @@ def options(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     """Request with the OPTIONS method on HTTPS.
 
@@ -359,6 +424,9 @@ def options(
         key_file: Path of a public key file.
         cert_file: Path of a certification file.
         context: SSLContext of your communication.
+        use_proxy: Address of a proxy server or whether the connection
+            uses a proxy based on the environment variables.
+        proxy_headers: Headers to be used on the request to the proxy.
 
     Returns:
         Response object generated with the response.
@@ -375,7 +443,9 @@ def options(
         datacls=datacls,
         key_file=key_file,
         cert_file=cert_file,
-        context=context
+        context=context,
+        use_proxy=use_proxy,
+        proxy_headers=proxy_headers,
     )
 
 
@@ -391,6 +461,8 @@ def patch(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     """Request with the PATCH method on HTTPS.
 
@@ -412,6 +484,9 @@ def patch(
         key_file: Path of a public key file.
         cert_file: Path of a certification file.
         context: SSLContext of your communication.
+        use_proxy: Address of a proxy server or whether the connection
+            uses a proxy based on the environment variables.
+        proxy_headers: Headers to be used on the request to the proxy.
 
     Returns:
         Response object generated with the response.
@@ -428,7 +503,9 @@ def patch(
         datacls=datacls,
         key_file=key_file,
         cert_file=cert_file,
-        context=context
+        context=context,
+        use_proxy=use_proxy,
+        proxy_headers=proxy_headers,
     )
 
 
@@ -444,6 +521,8 @@ def trace(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     """Request with the TRACE method on HTTPS.
 
@@ -465,6 +544,9 @@ def trace(
         key_file: Path of a public key file.
         cert_file: Path of a certification file.
         context: SSLContext of your communication.
+        use_proxy: Address of a proxy server or whether the connection
+            uses a proxy based on the environment variables.
+        proxy_headers: Headers to be used on the request to the proxy.
 
     Returns:
         Response object generated with the response.
@@ -481,7 +563,9 @@ def trace(
         datacls=datacls,
         key_file=key_file,
         cert_file=cert_file,
-        context=context
+        context=context,
+        use_proxy=use_proxy,
+        proxy_headers=proxy_headers,
     )
 
 
@@ -497,6 +581,8 @@ def connect(
     key_file: t.Optional[str] = None,
     cert_file: t.Optional[str] = None,
     context: t.Optional[ssl.SSLContext] = None,
+    use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
+    proxy_headers: t.Dict[str, str] = {},
 ) -> Response[ResponseData_t]:
     """Request with the CONNECT method on HTTPS.
 
@@ -518,6 +604,9 @@ def connect(
         key_file: Path of a public key file.
         cert_file: Path of a certification file.
         context: SSLContext of your communication.
+        use_proxy: Address of a proxy server or whether the connection
+            uses a proxy based on the environment variables.
+        proxy_headers: Headers to be used on the request to the proxy.
 
     Returns:
         Response object generated with the response.
@@ -534,5 +623,7 @@ def connect(
         datacls=datacls,
         key_file=key_file,
         cert_file=cert_file,
-        context=context
+        context=context,
+        use_proxy=use_proxy,
+        proxy_headers=proxy_headers,
     )
