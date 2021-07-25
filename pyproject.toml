@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bamboo-core"
-version = "0.10.1"
+version = "0.10.2"
 description = "General purpose server framework in Python"
 authors = ["jjj999 <jjj999to@gmail.com>"]
 maintainers = ["jjj999 <jjj999to@gmail.com>"]
