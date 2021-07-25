@@ -527,7 +527,7 @@ class ASGIApp(AppBase):
 
         flexible_locs, endpoint_class = self.validate(path)
         if endpoint_class is None:
-            await send_errinfo(self._error_404)
+            await send_errinfo(self._error_404, ())
             return
 
         parcel_config = ParcelConfig(endpoint_class)
@@ -536,7 +536,7 @@ class ASGIApp(AppBase):
         pre_callback = endpoint_class._get_pre_response_method(method)
         callback = endpoint_class._get_response_method(method)
         if callback is None:
-            await send_errinfo(self._error_404)
+            await send_errinfo(self._error_404, ())
             return
 
         endpoint = endpoint_class(self, scope, recv, flexible_locs, *parcel)
