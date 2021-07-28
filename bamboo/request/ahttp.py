@@ -1,31 +1,15 @@
-from __future__ import annotations
-import http.client
-import ssl
+import asyncio
+import concurrent.futures
 import typing as t
 
-from . import _get_https_proxy_env, _parse_proxy_netloc
+from . import http
 from ..api.base import BinaryApiData
 from ..api.json import JsonApiData
 from ..http import HTTPMethods
-from ..request import ResponseData_t, Schemes
-from ..request.request_form import get_http_request_form
-from ..request.response import Response
+from ..request import ResponseData_t, Response
 
 
-__all__ = [
-    "connect",
-    "delete",
-    "get",
-    "head",
-    "options",
-    "patch",
-    "post",
-    "put",
-    "trace",
-]
-
-
-def request(
+async def request(
     uri: str,
     method: str,
     headers: t.Dict[str, str] = {},
@@ -35,55 +19,28 @@ def request(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    form = get_http_request_form(
-        Schemes.HTTPS,
+    eloop = asyncio.get_event_loop()
+    return await eloop.run_in_executor(
+        executor,
+        http.request,
         uri,
         method,
-        headers=headers,
-        body=body,
-        json=json,
-        query=query
+        headers,
+        body,
+        json,
+        query,
+        timeout,
+        blocksize,
+        datacls,
+        use_proxy,
+        proxy_headers,
     )
 
-    if use_proxy:
-        _http_proxy_env = _get_https_proxy_env()
-        if isinstance(use_proxy, tuple):
-            proxy_host, proxy_port = use_proxy
-        elif _http_proxy_env:
-            proxy_host, proxy_port = _parse_proxy_netloc(_http_proxy_env)
-        else:
-            raise ConnectionAbortedError(
-                "Specified 'use_proxy' as True, but any proxy "
-                "settings were not found."
-            )
-
-        conn = http.client.HTTPSConnection(
-            proxy_host,
-            port=proxy_port,
-            context=context,
-            timeout=timeout,
-            blocksize=blocksize,
-        )
-        conn.set_tunnel(form.host, port=form.port, headers=proxy_headers)
-    else:
-        conn = http.client.HTTPSConnection(
-            form.host,
-            port=form.port,
-            context=context,
-            timeout=timeout,
-            blocksize=blocksize,
-        )
-
-    conn.request(form.method, form.path, body=form.body, headers=form.headers)
-    _res = conn.getresponse()
-    return Response(conn, _res, form.uri, datacls=datacls)
-
-
-def get(
+async def get(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
@@ -92,17 +49,11 @@ def get(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    """Request with the GET method on HTTPS.
-
-    Note:
-        Sometimes your specified arguments may cause security problems in
-        communications with the function. It is strongly recommended to
-        reference Python ssl module security considerations documents.
-        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+    """Request with the GET method on HTTP asynchronously.
 
     Args:
         uri: URI to be requested.
@@ -113,15 +64,16 @@ def get(
         timeout: Seconds waiting for the connection.
         blocksize: Block size of sending data.
         datacls: `ApiData` or its subclass to be attached from the response body.
-        context: SSLContext of your communication.
         use_proxy: Address of a proxy server or whether the connection
             uses a proxy based on the environment variables.
         proxy_headers: Headers to be used on the request to the proxy.
+        executor: Executor in which the request will be conducted.
 
     Returns:
         Response object generated with the response.
     """
-    return request(
+    return await request(
+        executor,
         uri,
         HTTPMethods.GET,
         headers=headers,
@@ -131,13 +83,12 @@ def get(
         timeout=timeout,
         blocksize=blocksize,
         datacls=datacls,
-        context=context,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
     )
 
 
-def post(
+async def post(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
@@ -146,17 +97,11 @@ def post(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    """Request with the POST method on HTTPS.
-
-    Note:
-        Sometimes your specified arguments may cause security problems in
-        communications with the function. It is strongly recommended to
-        reference Python ssl module security considerations documents.
-        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+    """Request with the POST method on HTTP asynchronously.
 
     Args:
         uri: URI to be requested.
@@ -167,15 +112,16 @@ def post(
         timeout: Seconds waiting for the connection.
         blocksize: Block size of sending data.
         datacls: `ApiData` or its subclass to be attached from the response body.
-        context: SSLContext of your communication.
         use_proxy: Address of a proxy server or whether the connection
             uses a proxy based on the environment variables.
         proxy_headers: Headers to be used on the request to the proxy.
+        executor: Executor in which the request will be conducted.
 
     Returns:
         Response object generated with the response.
     """
-    return request(
+    return await request(
+        executor,
         uri,
         HTTPMethods.POST,
         headers=headers,
@@ -185,13 +131,12 @@ def post(
         timeout=timeout,
         blocksize=blocksize,
         datacls=datacls,
-        context=context,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
     )
 
 
-def put(
+async def put(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
@@ -200,17 +145,11 @@ def put(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    """Request with the PUT method on HTTPS.
-
-    Note:
-        Sometimes your specified arguments may cause security problems in
-        communications with the function. It is strongly recommended to
-        reference Python ssl module security considerations documents.
-        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+    """Request with the PUT method on HTTP asynchronously.
 
     Args:
         uri: URI to be requested.
@@ -221,15 +160,16 @@ def put(
         timeout: Seconds waiting for the connection.
         blocksize: Block size of sending data.
         datacls: `ApiData` or its subclass to be attached from the response body.
-        context: SSLContext of your communication.
         use_proxy: Address of a proxy server or whether the connection
             uses a proxy based on the environment variables.
         proxy_headers: Headers to be used on the request to the proxy.
+        executor: Executor in which the request will be conducted.
 
     Returns:
         Response object generated with the response.
     """
-    return request(
+    return await request(
+        executor,
         uri,
         HTTPMethods.PUT,
         headers=headers,
@@ -239,13 +179,12 @@ def put(
         timeout=timeout,
         blocksize=blocksize,
         datacls=datacls,
-        context=context,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
     )
 
 
-def delete(
+async def delete(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
@@ -254,17 +193,11 @@ def delete(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    """Request with the DELETE method on HTTPS.
-
-    Note:
-        Sometimes your specified arguments may cause security problems in
-        communications with the function. It is strongly recommended to
-        reference Python ssl module security considerations documents.
-        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+    """Request with the DELETE method on HTTP asynchronously.
 
     Args:
         uri: URI to be requested.
@@ -275,15 +208,16 @@ def delete(
         timeout: Seconds waiting for the connection.
         blocksize: Block size of sending data.
         datacls: `ApiData` or its subclass to be attached from the response body.
-        context: SSLContext of your communication.
         use_proxy: Address of a proxy server or whether the connection
             uses a proxy based on the environment variables.
         proxy_headers: Headers to be used on the request to the proxy.
+        executor: Executor in which the request will be conducted.
 
     Returns:
         Response object generated with the response.
     """
-    return request(
+    return await request(
+        executor,
         uri,
         HTTPMethods.DELETE,
         headers=headers,
@@ -293,13 +227,12 @@ def delete(
         timeout=timeout,
         blocksize=blocksize,
         datacls=datacls,
-        context=context,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
     )
 
 
-def head(
+async def head(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
@@ -308,17 +241,11 @@ def head(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    """Request with the HEAD method on HTTPS.
-
-    Note:
-        Sometimes your specified arguments may cause security problems in
-        communications with the function. It is strongly recommended to
-        reference Python ssl module security considerations documents.
-        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+    """Request with the HEAD method on HTTP asynchronously.
 
     Args:
         uri: URI to be requested.
@@ -329,15 +256,16 @@ def head(
         timeout: Seconds waiting for the connection.
         blocksize: Block size of sending data.
         datacls: `ApiData` or its subclass to be attached from the response body.
-        context: SSLContext of your communication.
         use_proxy: Address of a proxy server or whether the connection
             uses a proxy based on the environment variables.
         proxy_headers: Headers to be used on the request to the proxy.
+        executor: Executor in which the request will be conducted.
 
     Returns:
         Response object generated with the response.
     """
-    return request(
+    return await request(
+        executor,
         uri,
         HTTPMethods.HEAD,
         headers=headers,
@@ -347,13 +275,12 @@ def head(
         timeout=timeout,
         blocksize=blocksize,
         datacls=datacls,
-        context=context,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
     )
 
 
-def options(
+async def options(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
@@ -362,17 +289,11 @@ def options(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    """Request with the OPTIONS method on HTTPS.
-
-    Note:
-        Sometimes your specified arguments may cause security problems in
-        communications with the function. It is strongly recommended to
-        reference Python ssl module security considerations documents.
-        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+    """Request with the OPTIONS method on HTTP asynchronously.
 
     Args:
         uri: URI to be requested.
@@ -383,15 +304,16 @@ def options(
         timeout: Seconds waiting for the connection.
         blocksize: Block size of sending data.
         datacls: `ApiData` or its subclass to be attached from the response body.
-        context: SSLContext of your communication.
         use_proxy: Address of a proxy server or whether the connection
             uses a proxy based on the environment variables.
         proxy_headers: Headers to be used on the request to the proxy.
+        executor: Executor in which the request will be conducted.
 
     Returns:
         Response object generated with the response.
     """
-    return request(
+    return await request(
+        executor,
         uri,
         HTTPMethods.OPTIONS,
         headers=headers,
@@ -401,13 +323,12 @@ def options(
         timeout=timeout,
         blocksize=blocksize,
         datacls=datacls,
-        context=context,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
     )
 
 
-def patch(
+async def patch(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
@@ -416,17 +337,11 @@ def patch(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    """Request with the PATCH method on HTTPS.
-
-    Note:
-        Sometimes your specified arguments may cause security problems in
-        communications with the function. It is strongly recommended to
-        reference Python ssl module security considerations documents.
-        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+    """Request with the PATCH method on HTTP asynchronously.
 
     Args:
         uri: URI to be requested.
@@ -437,15 +352,16 @@ def patch(
         timeout: Seconds waiting for the connection.
         blocksize: Block size of sending data.
         datacls: `ApiData` or its subclass to be attached from the response body.
-        context: SSLContext of your communication.
         use_proxy: Address of a proxy server or whether the connection
             uses a proxy based on the environment variables.
         proxy_headers: Headers to be used on the request to the proxy.
+        executor: Executor in which the request will be conducted.
 
     Returns:
         Response object generated with the response.
     """
-    return request(
+    return await request(
+        executor,
         uri,
         HTTPMethods.PATCH,
         headers=headers,
@@ -455,13 +371,12 @@ def patch(
         timeout=timeout,
         blocksize=blocksize,
         datacls=datacls,
-        context=context,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
     )
 
 
-def trace(
+async def trace(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
@@ -470,17 +385,11 @@ def trace(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    """Request with the TRACE method on HTTPS.
-
-    Note:
-        Sometimes your specified arguments may cause security problems in
-        communications with the function. It is strongly recommended to
-        reference Python ssl module security considerations documents.
-        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+    """Request with the TRACE method on HTTP asynchronously.
 
     Args:
         uri: URI to be requested.
@@ -491,15 +400,16 @@ def trace(
         timeout: Seconds waiting for the connection.
         blocksize: Block size of sending data.
         datacls: `ApiData` or its subclass to be attached from the response body.
-        context: SSLContext of your communication.
         use_proxy: Address of a proxy server or whether the connection
             uses a proxy based on the environment variables.
         proxy_headers: Headers to be used on the request to the proxy.
+        executor: Executor in which the request will be conducted.
 
     Returns:
         Response object generated with the response.
     """
-    return request(
+    return await request(
+        executor,
         uri,
         HTTPMethods.TRACE,
         headers=headers,
@@ -509,13 +419,12 @@ def trace(
         timeout=timeout,
         blocksize=blocksize,
         datacls=datacls,
-        context=context,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
     )
 
 
-def connect(
+async def connect(
     uri: str,
     headers: t.Dict[str, str] = {},
     body: t.Optional[bytes] = None,
@@ -524,17 +433,11 @@ def connect(
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
-    context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
     proxy_headers: t.Dict[str, str] = {},
+    executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
-    """Request with the CONNECT method on HTTPS.
-
-    Note:
-        Sometimes your specified arguments may cause security problems in
-        communications with the function. It is strongly recommended to
-        reference Python ssl module security considerations documents.
-        Link: https://docs.python.org/3/library/ssl.html#ssl-security
+    """Request with the CONNECT method on HTTP asynchronously.
 
     Args:
         uri: URI to be requested.
@@ -545,15 +448,16 @@ def connect(
         timeout: Seconds waiting for the connection.
         blocksize: Block size of sending data.
         datacls: `ApiData` or its subclass to be attached from the response body.
-        context: SSLContext of your communication.
         use_proxy: Address of a proxy server or whether the connection
             uses a proxy based on the environment variables.
         proxy_headers: Headers to be used on the request to the proxy.
+        executor: Executor in which the request will be conducted.
 
     Returns:
         Response object generated with the response.
     """
-    return request(
+    return await request(
+        executor,
         uri,
         HTTPMethods.CONNECT,
         headers=headers,
@@ -563,7 +467,6 @@ def connect(
         timeout=timeout,
         blocksize=blocksize,
         datacls=datacls,
-        context=context,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
     )
