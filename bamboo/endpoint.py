@@ -42,9 +42,6 @@ if t.TYPE_CHECKING:
     App_t = t.TypeVar("App_t", bound=AppBase)
 
 
-__all__ = []
-
-
 # Base classes for each interfaces  ------------------------------------------
 
 class EndpointBase(metaclass=ABCMeta):
@@ -313,13 +310,13 @@ class WSGIEndpointBase(EndpointBase):
         return (None, None)
 
     def get_header(self, name: str) -> t.Optional[str]:
-        name = name.upper()
-        if name == "CONTENT-TYPE":
+        name = name.upper().replace("-", "_")
+        if name == "CONTENT_TYPE":
             return self.content_type
-        if name == "CONTENT-LENGTH":
+        if name == "CONTENT_LENGTH":
             return self._environ.get("CONTENT_LENGTH")
 
-        name = "HTTP_" + name.replace("-", "_")
+        name = "HTTP_" + name
         return self._environ.get(name)
 
     @property
@@ -443,7 +440,7 @@ class ASGIEndpointBase(EndpointBase):
         return (None, None)
 
     def get_header(self, name: str) -> t.Optional[str]:
-        name = name.lower()
+        name = name.lower().replace("_", "-")
         return self._req_headers.get(name)
 
     @property
