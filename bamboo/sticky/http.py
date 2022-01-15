@@ -35,24 +35,6 @@ from ..util.convert import decode2binary
 from ..util.ip import is_valid_ipv4
 
 
-__all__ = [
-    "SetCookieValue_t",
-    "add_preflight",
-    "allow_simple_access_control",
-    "basic_auth",
-    "bearer_auth",
-    "data_format",
-    "get_asgi_preflight",
-    "get_wsgi_preflight",
-    "has_header_of",
-    "has_query_of",
-    "may_occur",
-    "restricts_client",
-    "set_cache_control",
-    "set_cookie",
-]
-
-
 class CallbackConfigBase(metaclass=ABCMeta):
 
     ATTR: str
@@ -797,9 +779,10 @@ def bearer_auth(
 class RequiredQueryInfo:
 
     query: str
-    err_empty: t.Optional[ErrInfo] = None
-    err_not_unique: t.Optional[ErrInfo] = None
-    add_arg: bool = True
+    err_empty: t.Optional[ErrInfo]
+    err_not_unique: t.Optional[ErrInfo]
+    mapf: t.Optional[t.Callable[[t.Union[t.List[str], str, None]], t.Any]]
+    add_arg: bool
 
 
 class RequiredQueryConfig(CallbackConfigBase):
@@ -849,6 +832,9 @@ class RequiredQueryConfig(CallbackConfigBase):
                 if info.err_not_unique:
                     raise info.err_not_unique
 
+            if info.mapf is not None:
+                val = info.mapf(val)
+
             if info.add_arg:
                 callback(self, val, *args)
             else:
@@ -886,6 +872,9 @@ class RequiredQueryConfig(CallbackConfigBase):
                 if info.err_not_unique:
                     raise info.err_not_unique
 
+            if info.mapf is not None:
+                val = info.mapf(val)
+
             if info.add_arg:
                 await callback(self, val, *args)
             else:
@@ -906,11 +895,12 @@ def has_query_of(
     query: str,
     err_empty: t.Optional[ErrInfo] = None,
     err_not_unique: t.Optional[ErrInfo] = None,
+    mapf: t.Optional[t.Callable[[t.Union[t.List[str], str, None]], t.Any]] = None,
     add_arg: bool = True,
 ) -> CallbackDecorator_t:
     """Set callback up to receive given query parameter from clients.
     """
-    info = RequiredQueryInfo(query, err_empty, err_not_unique, add_arg)
+    info = RequiredQueryInfo(query, err_empty, err_not_unique, mapf, add_arg)
 
     def wrapper(callback: Callback_t) -> Callback_t:
         config = RequiredQueryConfig(callback)
