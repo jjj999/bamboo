@@ -1,4 +1,4 @@
-site_name: Bamboo
+site_name: bamboo
 site_description: The fast, beautiful and hackable Python web framework.
 site_url: https://jjj999.github.io/bamboo/
 
@@ -15,7 +15,9 @@ theme:
     repo: fontawesome/brands/github
   features:
     - navigation.instant
-    - navigation.tracking
+    - navigation.tabs
+    - navigation.expand
+    - navigation.top
     - search.highlight
   language: ja
   palette:
@@ -27,15 +29,28 @@ nav:
     - tutorials/concept.md
     - tutorials/sample_app.md
     - tutorials/routing.md
+    - tutorials/headers.md
+    - tutorials/query_params.md
     - tutorials/define_api.md
+    - tutorials/huge_data_transportation.md
     - tutorials/make_endpoint_component.md
     - tutorials/error_handling.md
     - tutorials/test.md
     - tutorials/various_endpoints.md
     - tutorials/sticky.md
-    - tutorials/to_microservices.md
+    - tutorials/cache.md
+    - tutorials/cookie.md
+    - tutorials/security.md
+    - tutorials/websocket.md
+  - Advanced Topics:
+    - advanced/db_integration.md
+    - advanced/flowchart.md
+    - advanced/microservices.md
+    - advanced/dapr.md
+    - advanced/packaging.md
   - Deployment:
     - deploy/heroku.md
+  - background.md
   - API References:
     - bamboo:
       - api/bamboo/pkg.md

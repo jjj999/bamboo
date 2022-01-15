@@ -1,6 +1,6 @@
-# Bamboo
+# bamboo
 
-[![Bamboo](docs/res/bamboo.png)](https://jjj999.github.io/bamboo/)
+[![bamboo](https://github.com/jjj999/bamboo/blob/master/docs/res/bamboo.png?raw=true)](https://jjj999.github.io/bamboo/)
 [![PyPI version](https://badge.fury.io/py/bamboo-core.svg)](http://badge.fury.io/py/bamboo-core)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.python.org/pypi/bamboo-core/)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://jjj999.github.io/bamboo)
@@ -10,12 +10,12 @@
 - WSGI
 - ASGI v3.0 (HTTP, WebSocket and Lifespan)
 
-## Installling
+## Installing
 
 * Python: >= 3.7
 
 ```
-$ python -m pip install bamboo-core
+python -m pip install bamboo-core
 ```
 
 ## [Usage](https://jjj999.github.io/bamboo/tutorials/concept/)
