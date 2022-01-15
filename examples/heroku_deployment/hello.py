@@ -19,4 +19,4 @@ class HelloEndpoint(WSGIEndpoint):
 
     @data_format(input=None, output=HelloData)
     def do_GET(self) -> None:
-        self.send_json(HelloData(text="Hello, World!"))
+        self.send_api(HelloData(text="Hello, World!"))

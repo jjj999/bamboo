@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 from datetime import datetime
-import functools
-import json
 import traceback
 import typing as t
 
@@ -14,7 +12,7 @@ from bamboo import (
     WSGITestExecutor,
 )
 from bamboo.api import JsonApiData
-from bamboo.request import Response, http
+from bamboo.request import http
 from bamboo.sticky.http import data_format
 from peewee import (
     BigAutoField,
@@ -283,34 +281,17 @@ app = WSGIApp()
 Callback_t = t.Callable[[WSGIEndpoint], None]
 
 
-def print_request_body(callback: Callback_t) -> Callback_t:
-
-    @functools.wraps(callback)
-    def printer(self: WSGIEndpoint) -> None:
-        if len(self.body):
-            data = json.loads(self.body)
-            print("Requested")
-            print("---------")
-            print(json.dumps(data, indent=4))
-
-        callback(self)
-
-    return printer
-
-
 @app.route("user")
 class UserEndpoint(WSGIEndpoint):
 
     def setup(self, controller: UserController) -> None:
         self.controller = controller
 
-    @print_request_body
     @data_format(input=UserRegisterInput, output=None)
     def do_POST(self, req: UserRegisterInput) -> None:
         self.controller.register(req.name, req.email)
         self.send_only_status(HTTPStatus.OK)
 
-    @print_request_body
     @data_format(input=UserDeleteInput, output=None)
     def do_DELETE(self, req: UserDeleteInput) -> None:
         self.controller.delete(req.email)
@@ -323,25 +304,21 @@ class TweetsEndpoint(WSGIEndpoint):
     def setup(self, controller: TweetController) -> None:
         self.controller = controller
 
-    @print_request_body
     @data_format(input=TweetsGetInput, output=TweetsGetOutput)
     def do_GET(self, req: TweetsGetInput) -> None:
         tweets = self.controller.get_tweets(req.email)
-        self.send_json(TweetsGetOutput(tweets=tweets))
+        self.send_api(TweetsGetOutput(tweets=tweets))
 
-    @print_request_body
     @data_format(input=TweetPostInput, output=TweetPostOutput)
     def do_POST(self, req: TweetPostInput) -> None:
         id = self.controller.post(req.email, req.content)
-        self.send_json(TweetPostOutput(id=id))
+        self.send_api(TweetPostOutput(id=id))
 
-    @print_request_body
     @data_format(input=TweetUpdateInput, output=None)
     def do_PUT(self, req: TweetUpdateInput) -> None:
         self.controller.update(req.id, req.new_content)
         self.send_only_status(HTTPStatus.OK)
 
-    @print_request_body
     @data_format(input=TweetDeleteInput, output=None)
     def do_DELETE(self, req: TweetDeleteInput) -> None:
         self.controller.delete(req.id, req.email)
