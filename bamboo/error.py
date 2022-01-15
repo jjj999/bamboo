@@ -12,20 +12,17 @@ from .io import BufferedConcatIterator
 from .util.deco import class_property
 
 
-__all__ = []
-
-
 class ErrInfo(Exception, ContentTypeHolder):
     """Base class of all error handlings.
 
     This class defines the attributes of all classes for error handling.
-
-    Attributes:
-        http_status (HTTPStatus) : HTTP status of the error.
-        inheritted_headers (Set[str]) : Header names to be inheritted.
     """
+
     http_status: HTTPStatus = HTTPStatus.BAD_REQUEST
+    """HTTP status of the error."""
+
     inheritted_headers: t.Set[str] = set()
+    """Header names to be inheritted."""
 
     def __init_subclass__(cls) -> None:
         # Make header names lower to ignore the difference of upper and
@@ -34,13 +31,33 @@ class ErrInfo(Exception, ContentTypeHolder):
 
     @classmethod
     def should_inherit_header(cls, header_name: str) -> bool:
+        """Check if the given header will be inheritted or not.
+
+        Args:
+            header_name: Header name to be checked.
+
+        Returns:
+            `True` if the given header will be inheritted, otherwise `False`.
+        """
         return header_name.lower() in cls.inheritted_headers
 
     @class_property
     def __content_type__(cls) -> ContentType:
-        """Content type with `text/plain`.
-        """
+        """Content type with `text/plain`."""
         return DEFAULT_CONTENT_TYPE_PLAIN
+
+    def inherit_header(self, header_name: str) -> None:
+        """Make the given header will be inheritted from the endpoint.
+
+        This method register the header name as a condidate to be inheritted
+        from the endpoint's response headers. Note that the given header
+        could not be inheritted if the endpoint don't have the corresponding
+        response header, even if the method is called.
+
+        Args:
+            header_name: Header name to be inheritted.
+        """
+        self.inheritted_headers.add(header_name.lower())
 
     def get_headers(self) -> t.List[t.Tuple[str, str]]:
         """Publishes additional headers for error response.
@@ -52,6 +69,9 @@ class ErrInfo(Exception, ContentTypeHolder):
 
     def get_body(self) -> t.Union[bytes, t.Iterable[bytes]]:
         """Publishes response body for error response.
+
+        If one want to send a costom response body, one can freely
+        override the method and return the binary.
 
         Returns
             Response body of the error.
@@ -79,9 +99,6 @@ class ErrInfo(Exception, ContentTypeHolder):
         headers.append(self.__content_type__.to_header())
         return (stat, headers, BufferedConcatIterator(body))
 
-# ----------------------------------------------------------------------------
-
-# Default errors    ----------------------------------------------------------
 
 class DefaultNotFoundErrInfo(ErrInfo):
 
@@ -108,7 +125,7 @@ class DefaultNotApplicableIpErrInfo(ErrInfo):
     http_status = HTTPStatus.FORBIDDEN
 
 
-class DefualtCORSErrInfo(ErrInfo):
+class DefualtCORSOriginNotAllowedErrInfo(ErrInfo):
 
     http_status = HTTPStatus.FORBIDDEN
 
@@ -146,15 +163,43 @@ class DefaultAuthHeaderNotFoundErrInfo(ErrInfo):
 
 
 DEFAULT_NOT_FOUND_ERROR = DefaultNotFoundErrInfo()
-DEFUALT_INCORRECT_DATA_FORMAT_ERROR = DefaultDataFormatErrInfo()
-DEFAULT_HEADER_NOT_FOUND_ERROR = DefaultHeaderNotFoundErrInfo()
-DEFAULT_QUERY_PARAM_NOT_FOUND_ERROR = DefaultQueryParamNotFoundErrInfo()
-DEFAULT_NOT_APPLICABLE_IP_ERROR = DefaultNotApplicableIpErrInfo()
-DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR = DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.basic)
-DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR = DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.bearer)
-DEFAULT_CORS_ERROR = DefualtCORSErrInfo()
+"""The default error of the status 404."""
 
-# ----------------------------------------------------------------------------
+DEFUALT_INCORRECT_DATA_FORMAT_ERROR = DefaultDataFormatErrInfo()
+"""The default error of the status 415."""
+
+DEFAULT_HEADER_NOT_FOUND_ERROR = DefaultHeaderNotFoundErrInfo()
+"""The default error raised when a request doesn't have the header
+promised by server side. The status to be returned to the client is 400.
+"""
+
+DEFAULT_QUERY_PARAM_NOT_FOUND_ERROR = DefaultQueryParamNotFoundErrInfo()
+"""The default error raised when a request doesn't have the query parameter
+promised by server side. The status to be returned to the client is 400.
+"""
+
+DEFAULT_NOT_APPLICABLE_IP_ERROR = DefaultNotApplicableIpErrInfo()
+"""The default error raised when a forbidden client IP is found.
+The status to be returned to the client is 415.
+"""
+
+DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR = \
+    DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.basic)
+"""The default error raised when the header `Authorization` is not found
+for basic authentication. The status to be returned to the client is 401.
+"""
+
+DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR = \
+    DefaultAuthHeaderNotFoundErrInfo(AuthSchemes.bearer)
+"""The default error raised when the header `Authorization` is not found
+for bearer authentication. The status to be returned to the client is 401.
+"""
+
+DEFAULT_CORS_ERROR = DefualtCORSOriginNotAllowedErrInfo()
+"""The default error raised when an origin doesn't allowed to access
+the endpoint within the CORS sessions.
+"""
+
 
 class ApiErrInfo(ErrInfo):
     """ErrInfo to handle API error.
@@ -162,20 +207,22 @@ class ApiErrInfo(ErrInfo):
     This ErrInfo has implemented method of 'get_body'. This class
     emits Json data including error information defined by developer
     when the error is sent.
-
-    Attributes:
-        http_status (HTTPStatus): HTTP status of the error.
-        code (str): Error code for your API.
-        dev_message (Optional[str]): Message to explain developers the error.
-        user_message (Optional[str]): Message to explain end users the error.
-        info (Optional[str]): Information about the error.
-        encoding (str): Encoding to encode response body.
     """
+
     code: str
+    """Error code for your API."""
+
     dev_message: t.Optional[str] = None
+    """Message to explain developers the error."""
+
     user_message: t.Optional[str] = None
+    """Message to explain end users the error."""
+
     info: t.Optional[str] = None
+    """Information about the error."""
+
     encoding: str = "UTF-8"
+    """Encoding to encode response body."""
 
     @class_property
     def __content_type__(cls) -> ContentType:
