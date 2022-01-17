@@ -50,12 +50,22 @@ class cached_property(t.Generic[Object, ReturnGetter]):
         if obj is None:
             return self
         if self._fget is not None:
-            val = self._obj2val.get(obj)
-            if val is None:
+            if obj in self._obj2val:
+                val = self._obj2val.get(obj)
+            else:
                 val = self._fget(obj)
                 self._obj2val[obj] = val
             return val
         raise AttributeError("'getter' has not been set yet.")
+
+    def _has_cache(self, obj: Object) -> bool:
+        return obj in self._obj2val
+
+    def _get_cache(self, obj: Object) -> ReturnGetter:
+        return self._obj2val[obj]
+
+    def _set_cache(self, obj: Object, val: ReturnGetter) -> None:
+        self._obj2val[obj] = val
 
     def getter(
         self,
@@ -155,16 +165,29 @@ class awaitable_cached_property(t.Generic[Object, ReturnGetter]):
         self,
         obj: t.Union[Object, None],
         clazz: t.Optional[t.Type[Object]] = None
-    ) -> t.Union[awaitable_property, ReturnGetter]:
+    ) -> t.Union[
+        awaitable_cached_property[Object, ReturnGetter],
+        ReturnGetter,
+    ]:
         if obj is None:
             return self
         if self._fget is not None:
-            val = self._obj2val.get(obj)
-            if val is None:
+            if self._has_cache(obj):
+                val = self._get_cache(obj)
+            else:
                 val = await self._fget(obj)
-                self._obj2val[obj] = val
+                self._set_cache(obj, val)
             return val
         raise AttributeError("'getter' has not been set yet.")
+
+    def _has_cache(self, obj: Object) -> bool:
+        return obj in self._obj2val
+
+    def _get_cache(self, obj: Object) -> ReturnGetter:
+        return self._obj2val[obj]
+
+    def _set_cache(self, obj: Object, val: ReturnGetter) -> None:
+        self._obj2val[obj] = val
 
     def getter(
         self,
