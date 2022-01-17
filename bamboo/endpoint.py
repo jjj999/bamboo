@@ -23,7 +23,11 @@ from .http import (
     HTTPStatus,
     MediaTypes,
 )
-from .io import BufferedConcatIterator, BufferedFileIterator
+from .io import (
+    BufferedConcatIterator,
+    BufferedFileIterator,
+    BufferedStreamIterator,
+)
 from .util.deco import (
     awaitable_property,
     awaitable_cached_property,
@@ -838,26 +842,51 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
         WSGIEndpointBase.__init__(self, app, environ, flexible_locs, *parcel)
         HTTPMixIn.__init__(self)
 
-    def _recv_body_secure(self) -> bytes:
-        """Receive request body securely.
+    def get_req_body_stream(self) -> io.BufferedIOBase:
+        return self._environ.get("wsgi.input")
+
+    def get_req_body_iter(
+        self,
+        bufsize: int = 8192,
+        cache: bool = True,
+    ) -> t.Generator[bytes, None]:
+        """Make an access to the request body as an iterator.
+
+        Args:
+            bufsize: Chunk size of each item.
 
         Returns:
-            Request body sent to the endpoint.
+            Iterator with binary of the request body.
         """
-        # TODO
-        #   Take measures against DoS attack.
-        content_length = self.content_length
-        if content_length is None:
-            content_length = -1
+        stream = self.get_req_body_stream()
+        cacher = self.__class__.body
 
-        body = self._environ.get("wsgi.input").read(content_length)
-        return body
+        while True:
+            chunk = stream.read(bufsize)
+            if not chunk:
+                break
+            yield chunk
+
+            # TODO
+            #   Seek more efficient ways
+            if cache:
+                if cacher._has_cache(self):
+                    chunk = cacher._get_cache(self) + chunk
+
+                cacher._set_cache(self, chunk)
 
     @cached_property
     def body(self) -> bytes:
         """Request body received from client.
         """
-        return self._recv_body_secure()
+        buffer = io.BytesIO()
+        for chunk in self.get_req_body_iter():
+            buffer.write(chunk)
+
+        buffer.flush()
+        data = buffer.getvalue()
+        buffer.close()
+        return data
 
     @property
     def content_length(self) -> t.Optional[int]:
@@ -930,22 +959,78 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
         ASGIEndpointBase.__init__(self, app, scope, flexible_locs, *parcel)
         HTTPMixIn.__init__(self)
 
-    @awaitable_cached_property
-    async def body(self) -> bytes:
-        """Request body received from client.
-        """
+    async def _receive_body(
+        self,
+        bufsize: int = 8192,
+        cache: bool = False,
+    ) -> t.AsyncGenerator[bytes, None]:
         buffer = io.BytesIO()
         more_body = True
+        cacher = await self.__class__.body
 
         while more_body:
             chunk = await self._receive()
             type = chunk.get("type")
             if type == ASGIHTTPEvents.disconnect:
                 self._is_disconnected = True
-                break
+                return
 
-            buffer.write(chunk.get("body", b""))
+            body = chunk.get("body", b"")
+            buffer.write(body)
+            buffer.flush()
             more_body = chunk.get("more_body", False)
+
+            while buffer.tell() >= bufsize:
+                buffer.seek(0)
+                item = buffer.read(bufsize)
+                yield item
+
+                if cache:
+                    # TODO
+                    #   Seek more efficient ways
+                    if cacher._has_cache(self):
+                        item = cacher._get_cache(self) + item
+
+                    cacher._set_cache(self, item)
+
+                rest = buffer.read()
+                buffer.close()
+                buffer = io.BytesIO(rest)
+
+        # TODO
+        #   Seek more efficient ways
+        item = buffer.read()
+        yield item
+        if cache:
+            if cacher._has_cache(self):
+                item = cacher._get_cache(self) + item
+
+            cacher._set_cache(self, item)
+
+        buffer.close()
+
+    def get_req_body_iter(
+        self,
+        bufsize: int = 8192,
+        cache: bool = False,
+    ) -> t.AsyncIterable[bytes, None]:
+        """Make an access to the request body as an iterator.
+
+        Args:
+            bufsize: Chunk size of each item.
+
+        Returns:
+            Async iterator with binary of the request body.
+        """
+        return self._receive_body(bufsize=bufsize, cache=cache)
+
+    @awaitable_cached_property
+    async def body(self) -> bytes:
+        """Request body received from client.
+        """
+        buffer = io.BytesIO()
+        async for chunk in self.get_req_body_iter():
+            buffer.write(chunk)
 
         buffer.flush()
         data = buffer.getvalue()
