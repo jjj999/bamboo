@@ -11,16 +11,21 @@ class _ASGIProtocols:
     """Iterable for the ASGI protocols.
     """
 
-    http        = "http"
-    websocket   = "websocket"
-    lifespan    = "lifespan"
+    http: str = "http"
+    """The HTTP protocol within ASGI."""
 
-    _events = {
+    websocket: str = "websocket"
+    """The WebSocket protocol within ASGI."""
+
+    lifespan: str = "lifespan"
+    """The lifespan protocol within ASGI."""
+
+    _events: t.Set[str] = {
         http,
         websocket,
         lifespan,
     }
-    __instance = None
+    __instance: t.Optional[_ASGIHTTPEvents] = None
 
     def __new__(cls) -> _ASGIProtocols:
         if cls.__instance is None:
@@ -38,18 +43,25 @@ class _ASGIHTTPEvents:
     """Iterable for events of the ASGI HTTP protocol.
     """
 
-    request         = "http.request"
-    response_start  = "http.response.start"
-    response_body   = "http.response.body"
-    disconnect      = "http.disconnect"
+    request: str = "http.request"
+    """Event when the server get a request."""
 
-    _events = {
+    response_start: str = "http.response.start"
+    """Event when the server is about to start the response."""
+
+    response_body: str = "http.response.body"
+    """Event when the server is sending a chunk of the response body."""
+
+    disconnect: str= "http.disconnect"
+    """Event when a connection is broken."""
+
+    _events: t.Set[str] = {
         request,
         response_start,
         response_body,
         disconnect,
     }
-    __instance = None
+    __instance: t.Optional[_ASGIHTTPEvents] = None
 
     def __new__(cls) -> _ASGIHTTPEvents:
         if cls.__instance is None:
@@ -200,7 +212,7 @@ def get_http_sendstart(send: ASGISend_t) -> HTTPSendStart_t:
 
 def get_http_sendbody(send: ASGISend_t) -> HTTPSendBody_t:
 
-    async def sendbody(body: t.Union[t.Iterable[bytes]]) -> None:
+    async def sendbody(body: t.Iterable[bytes]) -> None:
         for chunk in body:
             msg = format_http_sendbody_msg(chunk, more=True)
             await send(msg)
