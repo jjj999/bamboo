@@ -1,5 +1,10 @@
 from __future__ import annotations
-from abc import ABCMeta, abstractmethod
+from abc import (
+    ABCMeta,
+    abstractmethod,
+)
+import os
+import pathlib
 import typing as t
 
 from .asgi import (
@@ -22,9 +27,19 @@ from .endpoint import (
     ASGIHTTPEndpoint,
     ASGIWebSocketEndpoint,
     EndpointBase,
+    StaticASGIEndpoint,
+    StaticEndpoint,
+    StaticWSGIEndpoint,
+    StaticDownloadASGIEndpoint,
+    StaticDownloadWSGIEndpoint,
+    StaticRedirectASGIEndpoint,
+    StaticRedirectWSGIEndpoint,
     WSGIEndpoint,
 )
-from .error import DEFAULT_NOT_FOUND_ERROR, ErrInfo
+from .error import (
+    DEFAULT_NOT_FOUND_ERROR,
+    ErrInfo,
+)
 from .io import BufferedConcatIterator
 from .location import (
     Location_t,
@@ -37,6 +52,7 @@ from .router import (
     Uri2Endpoints_t,
 )
 from .sticky import _get_bamboo_attr
+from .util.path import iglob
 
 
 __all__ = []
@@ -274,6 +290,8 @@ class AppBase(t.Generic[Endpoint_t], metaclass=ABCMeta):
                     f"the {self.__class__.__name__}."
                 )
 
+            locs_normalized = tuple([loc for loc in locs if loc])
+
             # version setting
             ver_config = VersionConfig(endpoint)
             ver_config.set(self, version)
@@ -283,12 +301,71 @@ class AppBase(t.Generic[Endpoint_t], metaclass=ABCMeta):
             assert _version is not None
             if len(_version):
                 _version = tuple(f"{self.TAG_VERSION}{v}" for v in _version)
-            self._router.register(locs, endpoint, version=_version)
+            self._router.register(locs_normalized, endpoint, version=_version)
 
             return endpoint
         return register_endpoint
 
-    def set_parcel(self, endpoint: t.Type[Endpoint_t], *parcel: t.Any) -> None:
+    def set_static(
+        self,
+        doc_root: str,
+        dir_download: t.Optional[str] = None,
+        files_download: t.Tuple[str, ...] = (),
+        dirs_ignore: t.Tuple[str, ...] = (),
+        files_ignore: t.Tuple[str, ...] = (),
+        static_endpoint: t.Type[StaticEndpoint] = StaticEndpoint,
+        static_redirect_endpoint: t.Optional[t.Type[StaticEndpoint]] = StaticEndpoint,
+        static_download_endpoint: t.Type[StaticEndpoint] = StaticEndpoint,
+    ) -> AppBase:
+        if not os.path.isdir(doc_root):
+            raise ValueError(f"Directory '{doc_root}' not found.")
+        if dir_download is not None and not os.path.isdir(dir_download):
+            raise ValueError(f"Directory '{dir_download}' not found.")
+
+        paths_download = set(files_download)
+        if dir_download is not None:
+            paths_download.update(iglob(
+                f"{dir_download}{os.sep}**",
+                recursive=True,
+                remove_dir=True,
+                root_dir=doc_root,
+            ))
+
+        paths_ignore = set(files_ignore)
+        for dir_ignore in dirs_ignore:
+            paths_ignore.update(iglob(
+                f"{dir_ignore}{os.sep}**",
+                recursive=True,
+                remove_dir=True,
+                root_dir=doc_root,
+            ))
+
+        for path_doc in iglob("**", recursive=True, remove_dir=True, root_dir=doc_root):
+            if path_doc in paths_download or path_doc in paths_ignore:
+                continue
+
+            self.route(*path_doc.split(os.sep))(static_endpoint)
+
+            if (
+                static_redirect_endpoint is not None and
+                os.path.basename(path_doc) == "index.html"
+            ):
+                path_doc = os.path.dirname(path_doc)
+                self.route(*path_doc.split(os.sep))(static_redirect_endpoint)
+
+        for path_download in paths_download:
+            self.route(*path_download.split(os.sep))(static_download_endpoint)
+
+        self.set_parcel(static_endpoint, doc_root)
+        self.set_parcel(static_redirect_endpoint, doc_root)
+        self.set_parcel(static_download_endpoint, doc_root)
+        return self
+
+    def set_parcel(
+        self,
+        endpoint: t.Type[Endpoint_t],
+        *parcel: t.Any,
+    ) -> AppBase:
         """Set parcel to an endpoint.
 
         This method enables to give objects to `Endpoint` objects
@@ -306,6 +383,7 @@ class AppBase(t.Generic[Endpoint_t], metaclass=ABCMeta):
         """
         parcel_config = ParcelConfig(endpoint)
         parcel_config.set(self, parcel)
+        return self
 
     @property
     def tree(self) -> Uri2Endpoints_t:
@@ -380,12 +458,13 @@ class WSGIApp(AppBase):
         if callback is None:
             return self.send_404(start_response)
 
-        endpoint = endpoint_class(self, environ, flexible_locs, *parcel)
+        endpoint = endpoint_class(self, environ, flexible_locs)
         # NOTE
         #   Subclasses of the ErrInfo must be raised in pre-response
         #   methods or response methods. Otherwise, the errors behave
         #   like ordinary exception objects.
         try:
+            endpoint.setup(*parcel)
             if pre_callback:
                 pre_callback(endpoint)
             callback(endpoint)
@@ -439,12 +518,36 @@ class WSGIApp(AppBase):
     ) -> t.Callable[[t.Type[WSGIEndpoint]], t.Type[WSGIEndpoint]]:
         return super().route(*locs, version=version)
 
+    def set_static(
+        self,
+        doc_root: str,
+        dir_download: t.Optional[str] = None,
+        files_download: t.Tuple[str, ...] = (),
+        dirs_ignore: t.Tuple[str, ...] = (),
+        files_ignore: t.Tuple[str, ...] = (),
+        static_endpoint: t.Type[StaticEndpoint] = StaticWSGIEndpoint,
+        static_redirect_endpoint: t.Optional[t.Type[StaticEndpoint]] = StaticRedirectWSGIEndpoint,
+        static_download_endpoint: t.Type[StaticEndpoint] = StaticDownloadWSGIEndpoint,
+    ) -> WSGIApp:
+        super().set_static(
+            doc_root,
+            dir_download=dir_download,
+            files_download=files_download,
+            dirs_ignore=dirs_ignore,
+            files_ignore=files_ignore,
+            static_endpoint=static_endpoint,
+            static_redirect_endpoint=static_redirect_endpoint,
+            static_download_endpoint=static_download_endpoint,
+        )
+        return self
+
     def set_parcel(
         self,
         endpoint: t.Type[WSGIEndpoint],
         *parcel: t.Any
-    ) -> None:
-        return super().set_parcel(endpoint, *parcel)
+    ) -> WSGIApp:
+        super().set_parcel(endpoint, *parcel)
+        return self
 
 
 class ASGIApp(AppBase):
@@ -539,12 +642,13 @@ class ASGIApp(AppBase):
             await send_errinfo(self._error_404, ())
             return
 
-        endpoint = endpoint_class(self, scope, recv, flexible_locs, *parcel)
+        endpoint = endpoint_class(self, scope, recv, flexible_locs)
         # NOTE
         #   Subclasses of the ErrInfo must be raised in pre-response
         #   methods or response methods. Otherwise, the errors behave
         #   like ordinary exception objects.
         try:
+            endpoint.setup(*parcel)
             if pre_callback:
                 await pre_callback(endpoint)
             await callback(endpoint)
@@ -656,9 +760,33 @@ class ASGIApp(AppBase):
     ) -> t.Callable[[t.Type[ASGIEndpointBase]], t.Type[ASGIEndpointBase]]:
         return super().route(*locs, version=version)
 
+    def set_static(
+        self,
+        doc_root: str,
+        dir_download: t.Optional[str] = None,
+        files_download: t.Tuple[str, ...] = (),
+        dirs_ignore: t.Tuple[str, ...] = (),
+        files_ignore: t.Tuple[str, ...] = (),
+        static_endpoint: t.Type[StaticEndpoint] = StaticASGIEndpoint,
+        static_redirect_endpoint: t.Optional[t.Type[StaticEndpoint]] = StaticRedirectASGIEndpoint,
+        static_download_endpoint: t.Type[StaticEndpoint] = StaticDownloadASGIEndpoint,
+    ) -> ASGIApp:
+        super().set_static(
+            doc_root,
+            dir_download=dir_download,
+            files_download=files_download,
+            dirs_ignore=dirs_ignore,
+            files_ignore=files_ignore,
+            static_endpoint=static_endpoint,
+            static_redirect_endpoint=static_redirect_endpoint,
+            static_download_endpoint=static_download_endpoint,
+        )
+        return self
+
     def set_parcel(
         self,
         endpoint: t.Type[ASGIEndpointBase],
         *parcel: t.Any,
-    ) -> None:
-        return super().set_parcel(endpoint, *parcel)
+    ) -> ASGIApp:
+        super().set_parcel(endpoint, *parcel)
+        return self

@@ -2,6 +2,7 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 import dataclasses
 import enum
+import pathlib
 import re
 import typing as t
 
@@ -135,6 +136,34 @@ class _AuthSchemes:
 HTTPMethods = _HTTPMethods()
 MediaTypes = _MediaTypes()
 AuthSchemes = _AuthSchemes()
+
+
+# TODO
+#   Seek more efficent ways
+def file2mime(filepath: str) -> str:
+    suffix = pathlib.Path(filepath).suffix
+    if suffix == ".html":
+        return MediaTypes.html
+    elif suffix == ".xml":
+        return MediaTypes.xml
+    elif suffix == ".css":
+        return MediaTypes.css
+    elif suffix == ".js":
+        return MediaTypes.javascript
+    elif suffix == ".zip":
+        return MediaTypes.zip
+    elif suffix == ".jpg" or suffix == ".jpeg":
+        return MediaTypes.jpeg
+    elif suffix == ".png":
+        return MediaTypes.png
+    elif suffix == ".svg":
+        return MediaTypes.svg
+    elif suffix == "mp4":
+        return MediaTypes.mp4
+    elif suffix == ".xlsx":
+        return MediaTypes.excel
+    else:
+        return MediaTypes.plain
 
 
 @dataclasses.dataclass

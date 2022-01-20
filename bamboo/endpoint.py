@@ -1,5 +1,8 @@
 from __future__ import annotations
-from abc import ABCMeta, abstractmethod
+from abc import (
+    ABCMeta,
+    abstractmethod,
+)
 import codecs
 import inspect
 import io
@@ -16,17 +19,18 @@ from .asgi import (
     WebSocketRecvMsg_t,
     WebSocketSendMsg_t,
 )
+from .error import DEFAULT_NOT_FOUND_ERROR
 from .http import (
     ContentType,
     DEFAULT_CONTENT_TYPE_PLAIN,
     HTTPMethods,
     HTTPStatus,
     MediaTypes,
+    file2mime,
 )
 from .io import (
     BufferedConcatIterator,
     BufferedFileIterator,
-    BufferedStreamIterator,
 )
 from .util.deco import (
     awaitable_property,
@@ -46,8 +50,6 @@ if t.TYPE_CHECKING:
     App_t = t.TypeVar("App_t", bound=AppBase)
 
 
-# Base classes for each interfaces  ------------------------------------------
-
 class EndpointBase(metaclass=ABCMeta):
     """Base class of Endpoint to define logic to requests.
 
@@ -62,7 +64,6 @@ class EndpointBase(metaclass=ABCMeta):
         self,
         app: App_t,
         flexible_locs: t.Tuple[str, ...],
-        *parcel: t.Any
     ) -> None:
         """
         Note:
@@ -70,12 +71,11 @@ class EndpointBase(metaclass=ABCMeta):
             by application object.
 
         Args:
+            app: Application object which routes the endpoint.
             flexible_locs: Flexible locations requested.
-            *parcel: Parcel sent via application object.
         """
         self._app = app
         self._flexible_locs = flexible_locs
-        self.setup(*parcel)
 
     def setup(self, *parcel) -> None:
         """Execute setup of the endpoint object.
@@ -248,16 +248,14 @@ class WSGIEndpointBase(EndpointBase):
         app: WSGIApp,
         environ: t.Dict[str, t.Any],
         flexible_locs: t.Tuple[str, ...],
-        *parcel: t.Any
     ) -> None:
         """
         Args:
             environ: environ variable received from WSGI server.
             flexible_locs: flexible locations requested.
-            *parcel: Parcel sent via application object.
         """
         self._environ = environ
-        super().__init__(app, flexible_locs, *parcel)
+        super().__init__(app, flexible_locs)
 
     @property
     def environ(self) -> t.Dict[str, t.Any]:
@@ -355,13 +353,11 @@ class ASGIEndpointBase(EndpointBase):
         app: App_t,
         scope: t.Dict[str, t.Any],
         flexible_locs: t.Tuple[str, ...],
-        *parcel: t.Any
     ) -> None:
         """
         Args:
             scope: scope variable received from ASGI server.
             flexible_locs: Flexible locations requested.
-            *parcel: Parcel sent via application object.
         """
         self._scope = scope
 
@@ -373,7 +369,7 @@ class ASGIEndpointBase(EndpointBase):
             req_headers = [map(codecs.decode, h) for h in req_headers]
             self._req_headers.update(dict(req_headers))
 
-        super().__init__(app, flexible_locs, *parcel)
+        super().__init__(app, flexible_locs)
 
     @property
     def scope(self) -> t.Dict[str, t.Any]:
@@ -831,29 +827,41 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
         app: WSGIApp,
         environ: t.Dict[str, t.Any],
         flexible_locs: t.Tuple[str, ...],
-        *parcel: t.Any
     ) -> None:
         """
         Args:
-            environ: environ variable received from WSGI server.
-            flexible_locs: flexible locations requested.
-            *parcel: Parcel sent via application object.
+            app: Application object which routes the endpoint.
+            environ: Environ variable received from WSGI server.
+            flexible_locs: Flexible locations requested.
         """
-        WSGIEndpointBase.__init__(self, app, environ, flexible_locs, *parcel)
+        WSGIEndpointBase.__init__(self, app, environ, flexible_locs)
         HTTPMixIn.__init__(self)
 
     def get_req_body_stream(self) -> io.BufferedIOBase:
+        """Fetch the stream with which request body can be received.
+
+        Returns:
+            The stream with request body.
+        """
         return self._environ.get("wsgi.input")
 
     def get_req_body_iter(
         self,
         bufsize: int = 8192,
         cache: bool = True,
-    ) -> t.Generator[bytes, None]:
+    ) -> t.Generator[bytes, None, None]:
         """Make an access to the request body as an iterator.
+
+        Note:
+            If the flag `cache` is `True`, the request body data is to be
+            cached into the property `body`, i.e. one always can access
+            to the request body even after the iteration. On the other hand,
+            if the `cache` is `False`, caching is not conducted and
+            access to the `body` will be failed.
 
         Args:
             bufsize: Chunk size of each item.
+            cache: If the request body is to be cached or not.
 
         Returns:
             Iterator with binary of the request body.
@@ -944,26 +952,41 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
         scope: t.Dict[str, t.Any],
         receive: t.Callable[[], t.Awaitable[t.Dict[str, t.Any]]],
         flexible_locs: t.Tuple[str, ...],
-        *parcel
     ) -> None:
         """
         Args:
-            scope: scope variable received from ASGI server.
+            app: Application object which routes the endpoint.
+            scope: Scope variable received from ASGI server.
             receive: `receive` method given from ASGI server.
             flexible_locs: Flexible locations requested.
-            *parcel: Parcel sent via application object.
         """
         self._receive = receive
         self._is_disconnected = False
 
-        ASGIEndpointBase.__init__(self, app, scope, flexible_locs, *parcel)
+        ASGIEndpointBase.__init__(self, app, scope, flexible_locs)
         HTTPMixIn.__init__(self)
 
-    async def _receive_body(
+    async def get_req_body_iter(
         self,
         bufsize: int = 8192,
         cache: bool = False,
     ) -> t.AsyncGenerator[bytes, None]:
+        """Make an access to the request body as an iterator.
+
+        Note:
+            If the flag `cache` is `True`, the request body data is to be
+            cached into the property `body`, i.e. one always can access
+            to the request body even after the iteration. On the other hand,
+            if the `cache` is `False`, caching is not conducted and
+            access to the `body` will be failed.
+
+        Args:
+            bufsize: Chunk size of each item.
+            cache: If the request body is to be cached or not.
+
+        Returns:
+            Async iterator with binary of the request body.
+        """
         buffer = io.BytesIO()
         more_body = True
         cacher = await self.__class__.body
@@ -1008,21 +1031,6 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
             cacher._set_cache(self, item)
 
         buffer.close()
-
-    def get_req_body_iter(
-        self,
-        bufsize: int = 8192,
-        cache: bool = False,
-    ) -> t.AsyncIterable[bytes, None]:
-        """Make an access to the request body as an iterator.
-
-        Args:
-            bufsize: Chunk size of each item.
-
-        Returns:
-            Async iterator with binary of the request body.
-        """
-        return self._receive_body(bufsize=bufsize, cache=cache)
 
     @awaitable_cached_property
     async def body(self) -> bytes:
@@ -1075,3 +1083,79 @@ class ASGIWebSocketEndpoint(ASGIEndpointBase):
         close: WebSocketClose_t,
     ) -> None:
         raise NotImplementedError
+
+
+class StaticEndpoint(EndpointBase):
+
+    def setup(self, doc_root: str) -> None:
+        self._filepath = os.path.join(doc_root, *self.path[1:].split("/"))
+        self._content_type = ContentType(file2mime(self._filepath))
+
+        if not os.path.isfile(self.filepath) and not os.path.isdir(self.filepath):
+            raise DEFAULT_NOT_FOUND_ERROR
+
+    @property
+    def filepath(self) -> str:
+        return self._filepath
+
+    @property
+    def content_type(self) -> ContentType:
+        return self._content_type
+
+
+class StaticWSGIEndpoint(WSGIEndpoint, StaticEndpoint):
+
+    def do_GET(self) -> None:
+        self.send_file(self.filepath, content_type=self.content_type)
+
+
+class StaticRedirectWSGIEndpoint(WSGIEndpoint, StaticEndpoint):
+
+    def setup(self, doc_root: str) -> None:
+        super().setup(doc_root)
+
+    def do_GET(self) -> None:
+        self.add_header("Location", f"{self.path}index.html")
+        self.send_only_status(HTTPStatus.MOVED_PERMANENTLY)
+
+
+class StaticDownloadWSGIEndpoint(WSGIEndpoint, StaticEndpoint):
+
+    def do_GET(self) -> None:
+        self.send_file(
+            self.filepath,
+            content_type=self.content_type,
+            fname=os.path.basename(self.filepath),
+        )
+
+
+class StaticASGIEndpoint(ASGIHTTPEndpoint, StaticEndpoint):
+
+    async def do_GET(self) -> None:
+        self.send_file(self.filepath, content_type=self.content_type)
+
+
+class StaticRedirectASGIEndpoint(ASGIHTTPEndpoint, StaticEndpoint):
+
+    def setup(self, doc_root: str, suffix: str) -> None:
+        super().setup(doc_root)
+
+        self._suffix = suffix
+
+    @property
+    def suffix(self) -> str:
+        return self._suffix
+
+    async def do_GET(self) -> None:
+        self.add_header("Location", f"{self.path}{self.suffix}")
+        self.send_only_status(HTTPStatus.MOVED_PERMANENTLY)
+
+
+class StaticDownloadASGIEndpoint(ASGIHTTPEndpoint, StaticEndpoint):
+
+    async def do_GET(self) -> None:
+        self.send_file(
+            self.filepath,
+            content_type=self.content_type,
+            fname=os.path.basename(self.filepath),
+        )
