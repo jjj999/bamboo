@@ -1022,6 +1022,7 @@ class ASGIHTTPEndpoint(ASGIEndpointBase, HTTPMixIn):
 
         # TODO
         #   Seek more efficient ways
+        buffer.seek(0)
         item = buffer.read()
         yield item
         if cache:
