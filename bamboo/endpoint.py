@@ -868,9 +868,19 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
         """
         stream = self.get_req_body_stream()
         cacher = self.__class__.body
+        length = self.content_length
+        remain = length
 
         while True:
-            chunk = stream.read(bufsize)
+            if length is None:
+                chunk = stream.read(bufsize)
+            elif remain <= 0:
+                break
+            else:
+                counts = remain if remain < bufsize else bufsize
+                chunk = stream.read(counts)
+                remain -= len(chunk)
+
             if not chunk:
                 break
             yield chunk
