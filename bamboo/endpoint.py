@@ -848,7 +848,7 @@ class WSGIEndpoint(WSGIEndpointBase, HTTPMixIn):
     def get_req_body_iter(
         self,
         bufsize: int = 8192,
-        cache: bool = True,
+        cache: bool = False,
     ) -> t.Generator[bytes, None, None]:
         """Make an access to the request body as an iterator.
 
