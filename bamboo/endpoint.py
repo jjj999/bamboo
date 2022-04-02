@@ -712,18 +712,18 @@ class HTTPMixIn(metaclass=ABCMeta):
         bodies.extend(others)
 
         is_all_bytes = True
-        is_empty = False
+        not_empty = False
         for chunk in bodies:
             is_all_bytes &= isinstance(chunk, bytes)
             if is_all_bytes:
-                is_empty |= len(chunk) > 0
+                not_empty |= len(chunk) > 0
             self._res_body.append(chunk)
 
         if content_type:
             self.add_content_type(content_type)
 
         # Content-Length if avalidable
-        if is_all_bytes and not is_empty:
+        if is_all_bytes and not_empty:
             length = sum(map(len, bodies))
             self.add_content_length(length)
 
