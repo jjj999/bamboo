@@ -39,15 +39,17 @@ def get_http_request_form(
         raise ValueError(f"Specified method '{method}' is not available.")
 
     # body management
-    if body and json:
-        raise ValueError("Request body is specified both 'body' and 'json'.")
-    if body:
+    if body is not None:
+        if json is not None:
+            raise ValueError(
+                "Request body is specified both 'body' and 'json'."
+            )
         if "Content-Type" not in headers:
             headers["Content-Type"] = MediaTypes.plain
-    if json:
+    if json is not None:
         if isinstance(json, JsonApiData):
             json = json.dict
-        body = js.dumps(json)
+        body = js.dumps(json).encode()
         if "Content-Type" not in headers:
             headers["Content-Type"] = MediaTypes.json
 
