@@ -3,7 +3,7 @@ name: Unittest
 on:
   push:
     branches:
-      - master
+      - main
       - develop
       - hotfix-iss*
       - feature-iss*
