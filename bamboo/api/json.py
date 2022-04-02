@@ -245,8 +245,6 @@ class JsonApiData(ApiData):
             raw: Raw data to be validated.
             content_type: Values of `Content-Type` header.
         """
-        super().__init__(raw, content_type)
-
         if content_type.charset is None:
             content_type.charset = "UTF-8"
 
