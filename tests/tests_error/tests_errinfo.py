@@ -66,14 +66,12 @@ class TestErrInfo(unittest.TestCase):
     def test_asgi(self) -> None:
         with http.get(self.uri_asgi) as res:
             self.assertFalse(res.ok)
-            print(res.headers)
             self.assertIn("X-Bamboo-AAA", res.headers)
             self.assertIn("X-Bamboo-BBB", res.headers)
 
     def test_wsgi(self) -> None:
         with http.get(self.uri_wsgi) as res:
             self.assertFalse(res.ok)
-            print(res.headers)
             self.assertIn("X-Bamboo-AAA", res.headers)
             self.assertIn("X-Bamboo-BBB", res.headers)
 
