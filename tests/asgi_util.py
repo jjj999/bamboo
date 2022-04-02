@@ -24,10 +24,12 @@ class ASGIServerForm:
 def serve_at(form: ASGIServerForm) -> None:
     f_log = open(form.path_log, "wt")
     sys.stdout = f_log
+    sys.stderr = f_log
     sys.stdin = f_log
 
     if not len(form.host):
         form.host = "localhost"
+
     uvicorn.run(
         form.app,
         host=form.host,
