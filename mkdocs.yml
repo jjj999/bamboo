@@ -75,7 +75,6 @@ nav:
       - api/bamboo_util/pkg.md
       - api/bamboo_util/convert.md
       - api/bamboo_util/deco.md
-      - api/bamboo_util/ip.md
       - api/bamboo_util/string.md
       - api/bamboo_util/time.md
 
