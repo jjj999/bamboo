@@ -1,0 +1,1556 @@
+
+<!doctype html>
+<html lang="ja" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The fast, beautiful and hackable Python web framework.">
+      
+      
+      
+      
+        <link rel="canonical" href="https://jjj999.github.io/bamboo/tutorials/routing/">
+      
+      <link rel="icon" href="../../res/take.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.1.11">
+    
+    
+      
+        <title>ルーティング - bamboo</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.3754935a.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4cae4f">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="green" data-md-color-accent="">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          コンテンツにスキップ
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="ヘッダー">
+    <a href="../.." title="bamboo" class="md-header__button md-logo" aria-label="bamboo" data-md-component="logo">
+      
+  <img src="../../res/take.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bamboo
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ルーティング
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <div class="md-header__option">
+        <div class="md-select">
+          
+          <button class="md-header__button md-icon" aria-label="Select language">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04M18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12m-2.62 7 1.62-4.33L19.12 17h-3.24z"/></svg>
+          </button>
+          <div class="md-select__inner">
+            <ul class="md-select__list">
+              
+                <li class="md-select__item">
+                  <a href="/" hreflang="ja" class="md-select__link">
+                    日本語
+                  </a>
+                </li>
+                
+            </ul>
+          </div>
+        </div>
+      </div>
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="検索" placeholder="検索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="クリア" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            検索を初期化
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/jjj999/bamboo/" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jjj999/bamboo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="タブ" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../concept/" class="md-tabs__link md-tabs__link--active">
+        Tutorials
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../advanced/db_integration/" class="md-tabs__link">
+        Advanced Topics
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../deploy/heroku/" class="md-tabs__link">
+        Deployment
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../background/" class="md-tabs__link">
+      Background
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/bamboo/pkg/" class="md-tabs__link">
+        API References
+      </a>
+    </li>
+  
+
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="ナビゲーション" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bamboo" class="md-nav__button md-logo" aria-label="bamboo" data-md-component="logo">
+      
+  <img src="../../res/take.png" alt="logo">
+
+    </a>
+    bamboo
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/jjj999/bamboo/" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jjj999/bamboo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      <label class="md-nav__link" for="__nav_2">
+        Tutorials
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concept/" class="md-nav__link">
+        bamboo のコンセプト
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sample_app/" class="md-nav__link">
+        サンプルアプリケーションを実装してみる
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          ルーティング
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        ルーティング
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="目次">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目次
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    クライアントからのリクエスト
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    ルーティングの概念
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http" class="md-nav__link">
+    HTTP メソッド
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo" class="md-nav__link">
+    bamboo でのルーティング
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    ロケーション
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    フレキシブルロケーションの注意点
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    独自のフレキシブルロケーションの実装
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../headers/" class="md-nav__link">
+        ヘッダーの取扱い
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query_params/" class="md-nav__link">
+        クエリパラメータの取扱い
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../define_api/" class="md-nav__link">
+        API の定義
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../huge_data_transportation/" class="md-nav__link">
+        巨大なデータの転送
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../make_endpoint_component/" class="md-nav__link">
+        エンドポイントの拡張
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../error_handling/" class="md-nav__link">
+        エラーハンドリング
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../test/" class="md-nav__link">
+        アプリケーションのテスト
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../various_endpoints/" class="md-nav__link">
+        エンドポイントの種類
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sticky/" class="md-nav__link">
+        コールバックの修飾
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cache/" class="md-nav__link">
+        キャッシュに関する設定
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cookie/" class="md-nav__link">
+        Cookie に関する設定
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/" class="md-nav__link">
+        セキュリティを強化する
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../websocket/" class="md-nav__link">
+        WebSocket アプリケーションの実装
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
+      
+      <label class="md-nav__link" for="__nav_3">
+        Advanced Topics
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Advanced Topics" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced Topics
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/db_integration/" class="md-nav__link">
+        データベースとの統合
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/flowchart/" class="md-nav__link">
+        フローチャートを描く
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/microservices/" class="md-nav__link">
+        マイクロサービスアーキテクチャ
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/dapr/" class="md-nav__link">
+        dapr との連携
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/packaging/" class="md-nav__link">
+        アプリケーションのパッケージング
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" data-md-state="indeterminate" type="checkbox" id="__nav_4" checked>
+      
+      <label class="md-nav__link" for="__nav_4">
+        Deployment
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Deployment" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../deploy/heroku/" class="md-nav__link">
+        Heroku を利用したアプリケーションのデプロイ
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../background/" class="md-nav__link">
+        Background
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" data-md-state="indeterminate" type="checkbox" id="__nav_6" checked>
+      
+      <label class="md-nav__link" for="__nav_6">
+        API References
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="API References" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          API References
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_1" data-md-state="indeterminate" type="checkbox" id="__nav_6_1" checked>
+      
+      <label class="md-nav__link" for="__nav_6_1">
+        bamboo
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="bamboo" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          bamboo
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/pkg/" class="md-nav__link">
+        bamboo
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/api/" class="md-nav__link">
+        api
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/app/" class="md-nav__link">
+        app
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/asgi/" class="md-nav__link">
+        asgi
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/endpoint/" class="md-nav__link">
+        endpoint
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/error/" class="md-nav__link">
+        error
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/http/" class="md-nav__link">
+        http
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/io/" class="md-nav__link">
+        io
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/location/" class="md-nav__link">
+        location
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/router/" class="md-nav__link">
+        router
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo/test/" class="md-nav__link">
+        test
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" data-md-state="indeterminate" type="checkbox" id="__nav_6_2" checked>
+      
+      <label class="md-nav__link" for="__nav_6_2">
+        bamboo.request
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="bamboo.request" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          bamboo.request
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_request/pkg/" class="md-nav__link">
+        bamboo.request
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_request/http/" class="md-nav__link">
+        bamboo.request.http
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_request/https/" class="md-nav__link">
+        bamboo.request.https
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3" data-md-state="indeterminate" type="checkbox" id="__nav_6_3" checked>
+      
+      <label class="md-nav__link" for="__nav_6_3">
+        bamboo.sticky
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="bamboo.sticky" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          bamboo.sticky
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_sticky/pkg/" class="md-nav__link">
+        bamboo.sticky
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_sticky/http/" class="md-nav__link">
+        bamboo.sticky.http
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4" data-md-state="indeterminate" type="checkbox" id="__nav_6_4" checked>
+      
+      <label class="md-nav__link" for="__nav_6_4">
+        bamboo.util
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="bamboo.util" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          bamboo.util
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_util/pkg/" class="md-nav__link">
+        bamboo.util
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_util/convert/" class="md-nav__link">
+        bamboo.util.convert
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_util/deco/" class="md-nav__link">
+        bamboo.util.deco
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_util/string/" class="md-nav__link">
+        bamboo.util.string
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/bamboo_util/time/" class="md-nav__link">
+        bamboo.util.time
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="目次">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目次
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    クライアントからのリクエスト
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    ルーティングの概念
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http" class="md-nav__link">
+    HTTP メソッド
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo" class="md-nav__link">
+    bamboo でのルーティング
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    ロケーション
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    フレキシブルロケーションの注意点
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    独自のフレキシブルロケーションの実装
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/jjj999/bamboo/edit/master/docs/tutorials/routing.md" title="編集" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="_1">ルーティング</h1>
+<p>ルーティングは Web アプリケーションを開発する上で基本となる要素のうちの一つです．ルーティングは，クライアントがリクエストした URI を解釈し，それに見合う処理を探す役割をします．ここではまず，サーバーサイドではクライアントからのリクエストが本質的にどのように見えるのかを説明します．そしてなぜルーティングの概念が発生するのかについて述べます．次に，bamboo ではルーティングをどのように実行しているのかについて述べ，URI 設定時に重要となるロケーションという概念について説明します．</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>このドキュメントでは以降 HTTP での通信を仮定します．</p>
+</div>
+<h2 id="_2">クライアントからのリクエスト</h2>
+<p>ルーティングを理解するためには，まずクライアントからのリクエストがサーバーサイドでどのように見えているのかを知っておく必要があります．あなたがこのページの URI である</p>
+<div class="highlight"><pre><span></span><code>https://jjj999.github.io/bamboo/tutorials/routing/
+</code></pre></div>
+<p>にアクセスしたとしましょう．するとあなたのリクエストは <strong>github.io</strong> というドメインに対応する IP アドレスに向けて転送されます．その行き先にはこのページを管理しているサーバーが待ち構えています．そしてそのサーバーは HTTP に則った以下のデータを受け取ります:</p>
+<div class="highlight"><pre><span></span><code>GET /bamboo/tutorials/routing/ HTTP/1.0
+以下 ヘッダフィールド --------
+</code></pre></div>
+<p>これがクライアントが実際に送信するリクエストデータです．リクエストは通常</p>
+<ul>
+<li>リクエスト行</li>
+<li>ヘッダフィールド</li>
+<li>ボディ</li>
+</ul>
+<p>で構成され，上の例の1行目はリクエスト行にあたります．リクエスト行は</p>
+<ul>
+<li>HTTP メソッド</li>
+<li>URI のパス</li>
+<li>HTTP バージョン</li>
+</ul>
+<p>を空白区切りで記入したもので，1行のみで構成されます．これこそがサーバーサイドから見たクライアントのリクエストの姿です．</p>
+<h2 id="_3">ルーティングの概念</h2>
+<p>上の説明は少々違和感があります．なぜなら，クライアントは</p>
+<div class="highlight"><pre><span></span><code>https://jjj999.github.io/bamboo/tutorials/routing/
+</code></pre></div>
+<p>という URI にアクセスしたはずなのに，実際にそのリクエストを受け取ったのは <code>github.io</code> のサーバーなのです．それではどうやって残りの <code>bamboo/tutorials/routing/</code> までを特定しているのでしょうか．実はそれを行うのはサーバーの仕事なのです．</p>
+<p>サーバーが <code>bamboo/tutorials/routing/</code> のような受け取った URI のパスをどのように解釈してレスポンスを返すかは基本的には自由です．<code>bamboo/tutorials/routing/</code> を指定されたからと言って，ルーティングに関係するチュートリアルのドキュメントが書かれた HTML ファイルを送る必要はありません．ただ，クライアントはルーティングに関係するチュートリアルのドキュメントを求めてその URI にアクセスするわけですから，それに相応するレスポンスを返すべきです．</p>
+<p>サーバーへのリクエストは何も HTML ファイルを送れという命令だけではありません．例えば，ブラウザやスマートフォンでメールアドレスとパスワードを入力してログインをする場合を考えてみましょう．あなたが入力したデータは何によって検証され，何によってログインを許可されたり再入力を求められたりするのでしょうか．その正体もやはりサーバーです．あなたがログインボタンを押すと水面下では特定の URI を指定してサーバー側にリクエストが送信されているのです．そしてサーバーはあなたが入力したメールアドレスとパスワードを見て，それが本当に正しいものなのかを内部で検証し，その結果をレスポンスとして返しているのです．そのときサーバーはログイン完了後のサイトを HTML ファイルとして送信するかもしれませんし，単にログイン完了を示す小さなテキストデータのみを送るかもしれません．</p>
+<p>ここまで来ればルーティングの概念が理解できるようになっていることでしょう．ずばりルーティングとは，クライアントから受け取った URI のパスを解析して，どういうレスポンスを返す処理を行うかを特定することです．あなたがこれから作ろうとするサーバーにはたくさんの機能が盛り込まれるかもしれません．しかし，クライアントがその機能にアクセスするためには1つ1つの機能に対応した URI が必要です．その URI (のパス) の定義はあなた自身が行うことになります．</p>
+<h2 id="http">HTTP メソッド</h2>
+<p>さきほど，サーバーは URI のパスから行うべき処理を決定することが出来る述べました．しかし実際には URI のパスの他にもう一つ必要な情報があります．それが <strong>HTTP メソッド</strong> です．URI のパスがリクエストを処理する場所を表すのであれば，HTTP メソッドが表すのはそのアクションです．たとえば，あなたが銀行に行ったとしましょう．その銀行には〇〇支店などという店名が付けられていることでしょう．それは URI のパスと似た発想です．一方で，銀行では出来ることはいくつかあります．口座から現金の引き出し，預け入れ，他口座への振込，等々です．これらはあなたが銀行に行った際に行えるアクションであり，<strong>HTTP メソッド</strong>に似た概念です．</p>
+<p>注意すべきことは HTTP メソッドには限られたアクションしかないということです．あなたが銀行ではなく郵便局に行けば，あなたの行えるアクションは変わりますが，HTTP メソッドは URI のパスが変わろうとその選べるアクションは変わりません．現在 bamboo でサポートされている HTTP メソッドには以下のようなものがあります:</p>
+<ul>
+<li>GET</li>
+<li>HEAD</li>
+<li>POST</li>
+<li>PUT</li>
+<li>DELETE</li>
+<li>CONNECT</li>
+<li>OPTIONS</li>
+<li>TRACE</li>
+<li>PATCH</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>HTTP メソッドにはそれぞれアクションの意味があります (<a href="https://developer.mozilla.org/ja/docs/Web/HTTP/Methods">参考</a>)．意味を理解して上手く使い分けて設計すると，システムが美しくなり見通しが良くなります．</p>
+</div>
+<h2 id="bamboo">bamboo でのルーティング</h2>
+<p>bamboo のアプリケーションオブジェクトには既にルーティング機能が実装されています．さきほど述べたように，レスポンスを返す処理は URI のパスと HTTP メソッドによって特定されるので，それを予め定義しておく必要があります．bamboo では以下の例のように定義します．</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">bamboo</span> <span class="kn">import</span> <span class="n">WSGIApp</span><span class="p">,</span> <span class="n">WSGIEndpoint</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">WSGIApp</span><span class="p">()</span>
+
+<span class="c1"># URI のパスの定義</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="s2">&quot;client&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">HelloEndpoint</span><span class="p">(</span><span class="n">WSGIEndpoint</span><span class="p">):</span>
+
+    <span class="c1"># 対応する HTTP メソッドの定義</span>
+    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_body</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;Hello, Client!&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>上の例では次のリクエスト行を持つリクエストが送られてくると，<code>do_GET()</code> メソッドが呼び出されることになります:</p>
+<div class="highlight"><pre><span></span><code>GET /hello/client HTTP/1.1
+</code></pre></div>
+<p>上の例からも垣間見えるように，bamboo でのルーティングは2段階で行われます:</p>
+<ol>
+<li>リクエスト行の URI のパスを解析し，エンドポイントを特定する</li>
+<li>特定されたエンドポイントがリクエスト行の HTTP メソッドに対応するレスポンスメソッド (上の例では <code>do_GET()</code>) 持っているか調べる</li>
+</ol>
+<p>エンドポイントと URI のパスを紐付ける処理を行うのがアプリケーションオブジェクトの <code>route()</code> デコレータであり，そのエンドポイントが対応している HTTP メソッドは <code>do_[METHOD]()</code> の命名規則を持つメソッドが定義されているかどうかで判断されます．ちなみに，エンドポイントクラス定義時ではなく別の場所で URI のパスを紐づけたい場合は以下のように <code>route()</code> メソッドを呼び出す必要があります:</p>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="s2">&quot;client&quot;</span><span class="p">)(</span><span class="n">HelloEndpoint</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>エンドポイントという言葉はよくこの URI のパスという意味で使われます．また，パスという言葉は元来リソースの在り処を指す言葉として使用されてきました．一方で，bamboo におけるエンドポイントはこの URI のパスと非常に密接な関係を持つ概念です．bamboo のエンドポイントはリクエストの行き着く場所であり，レスポンスが返される場所でもあります．つまり，常にお金が出入りする銀行の支店のようなものです．URI のパスというのは一般のクライアントがそこにアクセスできるように付けた住所であり，bamboo のエンドポイントにとっては数ある属性のうちの一つの属性に過ぎません．</p>
+</div>
+<h2 id="_4">ロケーション</h2>
+<p>URI のパスには様々なバリエーションがあります．例えば，Github では URI のパスは</p>
+<div class="highlight"><pre><span></span><code>&lt;アカウント名&gt;/&lt;リポジトリ名&gt;/...
+</code></pre></div>
+<p>のように定義されています．これはユーザーのリソースを扱う場合に非常に有用なパスの定義です．しかし，これを先程の例のように bamboo で定義するのはほぼ不可能です．なぜなら，ソースコードを書いた状態ではどんなユーザー名を持つユーザーがどんなリポジトリ名を持つリポジトリを作成するかわからないからです．つまり Github の URI パターンは，アクセス出来る URI が動的に追加されているのです．</p>
+<p>bamboo ではこのような URI のパスの定義をサポートするために，<strong>ロケーション</strong> という概念を導入しています．ロケーションとは URI のパスを分解したときの1つ1つの要素のことです．例えば <code>/hello/client</code> というパスは <code>hello</code> というロケーションと <code>client</code> というロケーションに分解されます．さらに，ロケーションには次の2つの種類があります:</p>
+<ul>
+<li>静的ロケーション</li>
+<li>フレキシブルロケーション</li>
+</ul>
+<p>静的ロケーションとは開発時に固定されるロケーションのことで，<code>hello</code> や <code>client</code> は静的ロケーションの一種です．静的ロケーションは <code>str</code> オブジェクトです．一方，フレキシブルロケーションは静的ロケーションのように固定されず，ある規則に則ったロケーションを許容します．フレキシブルロケーションは <code>bamboo.FlexibleLocation</code> クラスのサブクラスのオブジェクトで表現されます．一例として bamboo には <code>AnyStringLocation</code> というフレキシブルロケーションの実装クラスがあります．このクラスはどんな文字列でも許容するロケーションで，オプションとして許容する文字数の最大値を指定できます．これを使って以下のようにさきほどの <code>HelloEndpoint</code> の URI のパスを再設定してみます:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">bamboo</span> <span class="kn">import</span> <span class="n">AnyStringLocation</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">,</span> <span class="n">AnyStringLocation</span><span class="p">())(</span><span class="n">HelloEndpoint</span><span class="p">)</span>
+</code></pre></div>
+<p>こうすると，さきほどまでは <code>/hello/client</code> しか受け付けなかったエンドポイントが，<code>hello/world</code> や <code>hello/bamboo</code> のようなパスも受け付けられるようになります．冒頭の Github の URI のパスもこのようなフレキシブルロケーションを利用すると簡単に定義することが可能になります．</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>フレキシブルロケーションの登場により，開発時に設定するロケーションの組み合わせと実際にクライアントから受け取るロケーションの組み合わせは正確には一致しなくなりました．例えば開発時に <code>("hello", AnyStringLocation())</code> と設定しても，実際に受け取るのは <code>("hello", "client")</code> だったり <code>("hello", "world")</code> だったりします．クライアントから受け取るロケーションの組み合わせを「URI のパス」と呼ぶ分には曖昧さは発生しませんが，フレキシブルロケーションを含むロケーションの組み合わせを「URI のパス」と呼ぶのはふさわしくありません．このような理由から，bamboo では開発時にエンドポイントに紐付けるロケーションの組み合わせのことを <strong>URI パターン</strong> と呼んでいます．</p>
+</div>
+<h2 id="_5">フレキシブルロケーションの注意点</h2>
+<p>フレキシブルロケーションは上述したように静的ロケーションではカバーできない表現を可能にします．しかし，その柔軟さゆえに危険性もはらんでいます．まずは以下の例を見てください:</p>
+<div class="highlight"><pre><span></span><code>```python
+app.route(&quot;superuser&quot;, &quot;setting&quot;)(SuperUserSettingEndpoint)
+app.route(AnyStringLocation(max=64), &quot;setting&quot;)(UserSettingEndpoint)
+```
+</code></pre></div>
+<p>上記のコードは，管理者と一般ユーザーの設定の変更を行うエンドポイントに差別化を図ろうとしています．しかし，上記のコードはあるパスが指定された場合には正常に動作しない可能性があります．そのパスとは <code>superuser/setting</code> です．なぜならこのパスは一般ユーザー用のロケーションの組み合わせとしても有効だからです．したがって，2つのエンドポイントに対して有効なパスとなってしまい，意図したエンドポイントに到達しない可能性があります．</p>
+<p>このような問題に対処するために，bamboo ではアプリケーション実行時に以下のような規則でアプリケーションオブジェクトに登録された全ての異なる2つの URI パターンを検証します:</p>
+<ol>
+<li>URI パターンに含まれるロケーションの数が異なる場合は有効</li>
+<li>URI パターンに含まれるロケーションの数が同じだが，内部の同位置にある静的ロケーションが異なる場合は有効</li>
+<li>1, 2 に当てはまらない場合は無効</li>
+</ol>
+<p>この規則は何だか難しげではありますが，特に注意すべき点は URI パターンに含まれるロケーションの数が同じ URI パターンに対してのみです．このような場合に，上記の 2 番を満たしていれば，正常な URI パターンとして処理されます．以下にいくつか例を挙げますので参考にしてみてください．</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 有効 (ロケーションの数が異なる)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="n">AnyStringLocation</span><span class="p">())(</span><span class="n">Endpoint1</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="n">AnyStringLocation</span><span class="p">())(</span><span class="n">Endpoint2</span><span class="p">)</span>
+
+<span class="c1"># 有効 (同位置の静的ロケーションが異なる)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="s2">&quot;client&quot;</span><span class="p">)(</span><span class="n">Endpoint1</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="s2">&quot;server&quot;</span><span class="p">)(</span><span class="n">Endpoint2</span><span class="p">)</span>
+
+<span class="c1"># 無効 (同位置に静的ロケーションが存在しない)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="n">AnyStringLocation</span><span class="p">())(</span><span class="n">Endpoint1</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="s2">&quot;server&quot;</span><span class="p">)(</span><span class="n">Endpoint2</span><span class="p">)</span>
+
+<span class="c1"># 無効 (同位置の静的ロケーションが同じ)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="s2">&quot;client&quot;</span><span class="p">)(</span><span class="n">Endpoint1</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="s2">&quot;client&quot;</span><span class="p">)(</span><span class="n">Endpoint2</span><span class="p">)</span>
+
+<span class="c1"># 有効 (同位置の静的ロケーションが異なる)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;superuser&quot;</span><span class="p">,</span> <span class="s2">&quot;setting&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)(</span><span class="n">Endpoint1</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="s2">&quot;setting&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">)(</span><span class="n">Endpoint2</span><span class="p">)</span>
+
+<span class="c1"># 無効 (同位置の静的ロケーションが同じ)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;superuser&quot;</span><span class="p">,</span> <span class="s2">&quot;setting&quot;</span><span class="p">,</span> <span class="n">AnyStringLocation</span><span class="p">())(</span><span class="n">Endpoint1</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="n">AnyStringLocation</span><span class="p">(),</span> <span class="s2">&quot;setting&quot;</span><span class="p">,</span> <span class="n">AnyStringLocation</span><span class="p">())(</span><span class="n">Endpoint2</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>URI パターンの設計は少々神経質になる作業かもしれません．上手く URI パターンを設計するコツは，無効にならないように設計するのではなく，<strong>有効になるように設計</strong>することです．つまり神経質になるのはロケーションの数が同じ時だけで，確認すべきは静的ロケーションの位置とその内容だけです．ちなみに，無効な2つの URI パターン検出されると bamboo は <code>DuplicatedUriRegisteredError</code> を送出します．このエラーが発生したとき，無効と判断された2つの URI パターンが出力されるので，その内容を元に必要な部分を修正してください．</p>
+</div>
+<h2 id="_6">独自のフレキシブルロケーションの実装</h2>
+<p>フレキシブルロケーションは <code>bamboo.FlexibleLocation</code> クラスのサブクラスのオブジェクトです．つまり，<code>FlexibleLocation</code> のサブクラスを実装することで，独自のフレキシブルロケーションを実装できます．実装すべきメソッドは <code>is_valid()</code> メソッドただ1つです．このメソッドは <code>FlexibleLocation</code> では抽象メソッドとして実装されており，クライアントから送られてきたロケーションを引数として受け取り，自身のロケーションとしてふさわしいものかを検証します．さきほど紹介した <code>AnyStringLocation</code> は文字数が最大値を超えていないかのみを検証するロケーションです (文字数の最大値の設定はオプションなので，設定されていなければ何も検証しないロケーションになります)．</p>
+<p>今回は実装例としてアルファベットの小文字のみを許容するフレキシブルロケーションを定義してみましょう．検証は以下の手順で行います:</p>
+<ol>
+<li>パーセントエンコーディングされたパスをデコードする</li>
+<li>文字列がアルファベットかつ小文字であることを検証する</li>
+</ol>
+<p>実際に実装したフレキシブルロケーションは以下のようになります:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">unquote</span>
+<span class="kn">from</span> <span class="nn">bamboo</span> <span class="kn">import</span> <span class="n">FlexibleLocation</span>
+
+<span class="k">class</span> <span class="nc">LowercaseAlphaLocation</span><span class="p">(</span><span class="n">FlexibleLocation</span><span class="p">):</span>
+
+    <span class="c1"># loc にクライアントがリクエストした URI の</span>
+    <span class="c1"># ロケーションが渡される</span>
+    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="n">unquote</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loc</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()</span> <span class="ow">and</span> <span class="n">loc</span><span class="o">.</span><span class="n">islower</span><span class="p">()</span>
+</code></pre></div>
+<p>この作成したフレキシブルロケーションはエンドポイントの URI パターンを設定する際にそのまま使用できます:</p>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">LowercaseAlphaLocation</span><span class="p">())(</span><span class="n">SampleEndpoint</span><span class="p">)</span>
+</code></pre></div>
+<p>さきほど実装したフレキシブルロケーションに，文字数の最大値を設定したい場合は，<code>__init__()</code> メソッドを実装することが出来ます (簡易的な実装です) :</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">LowercaseAlphaLocation</span><span class="p">(</span><span class="n">FlexibleLocation</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">max</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max</span> <span class="o">=</span> <span class="nb">max</span>
+
+    <span class="k">def</span> <span class="nf">is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="n">unquote</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loc</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()</span> <span class="ow">and</span> <span class="n">loc</span><span class="o">.</span><span class="n">islower</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max</span>
+</code></pre></div>
+<p>この場合は，URI パターンの設定は以下のようになります:</p>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">LowercaseAlphaLocation</span><span class="p">(</span><span class="mi">5</span><span class="p">))(</span><span class="n">SampleEndpoint</span><span class="p">)</span>
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="フッター">
+      
+        
+        <a href="../sample_app/" class="md-footer__link md-footer__link--prev" aria-label="前: サンプルアプリケーションを実装してみる" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                前
+              </span>
+              サンプルアプリケーションを実装してみる
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../headers/" class="md-footer__link md-footer__link--next" aria-label="次: ヘッダーの取扱い" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                次
+              </span>
+              ヘッダーの取扱い
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2021 Yunhyeon Jeong
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/jjj999/bamboo" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tabs", "navigation.expand", "navigation.top", "search.highlight"], "translations": {"clipboard.copy": "\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u3078\u30b3\u30d4\u30fc", "clipboard.copied": "\u30b3\u30d4\u30fc\u3057\u307e\u3057\u305f", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\u3000\u3001\u3002\uff0c\uff0e]+", "search.placeholder": "\u691c\u7d22", "search.result.placeholder": "\u691c\u7d22\u30ad\u30fc\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044", "search.result.none": "\u4f55\u3082\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f", "search.result.one": "1\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.other": "#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.one": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3082\u30461\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.other": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3042\u3068#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.term.missing": "\u691c\u7d22\u306b\u542b\u307e\u308c\u306a\u3044", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      
+    
+  </body>
+</html>

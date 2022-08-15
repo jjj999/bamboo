@@ -1,0 +1,2872 @@
+
+<!doctype html>
+<html lang="ja" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The fast, beautiful and hackable Python web framework.">
+      
+      
+      
+      
+        <link rel="canonical" href="https://jjj999.github.io/bamboo/api/bamboo_sticky/http/">
+      
+      <link rel="icon" href="../../../res/take.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.1.11">
+    
+    
+      
+        <title>bamboo.sticky.http - bamboo</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.3754935a.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4cae4f">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="green" data-md-color-accent="">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bamboostickyhttp" class="md-skip">
+          コンテンツにスキップ
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="ヘッダー">
+    <a href="../../.." title="bamboo" class="md-header__button md-logo" aria-label="bamboo" data-md-component="logo">
+      
+  <img src="../../../res/take.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bamboo
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              bamboo.sticky.http
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <div class="md-header__option">
+        <div class="md-select">
+          
+          <button class="md-header__button md-icon" aria-label="Select language">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04M18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12m-2.62 7 1.62-4.33L19.12 17h-3.24z"/></svg>
+          </button>
+          <div class="md-select__inner">
+            <ul class="md-select__list">
+              
+                <li class="md-select__item">
+                  <a href="/" hreflang="ja" class="md-select__link">
+                    日本語
+                  </a>
+                </li>
+                
+            </ul>
+          </div>
+        </div>
+      </div>
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="検索" placeholder="検索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="クリア" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            検索を初期化
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/jjj999/bamboo/" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jjj999/bamboo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="タブ" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../tutorials/concept/" class="md-tabs__link">
+        Tutorials
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../advanced/db_integration/" class="md-tabs__link">
+        Advanced Topics
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../deploy/heroku/" class="md-tabs__link">
+        Deployment
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../../background/" class="md-tabs__link">
+      Background
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../bamboo/pkg/" class="md-tabs__link md-tabs__link--active">
+        API References
+      </a>
+    </li>
+  
+
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="ナビゲーション" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="bamboo" class="md-nav__button md-logo" aria-label="bamboo" data-md-component="logo">
+      
+  <img src="../../../res/take.png" alt="logo">
+
+    </a>
+    bamboo
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/jjj999/bamboo/" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jjj999/bamboo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" data-md-state="indeterminate" type="checkbox" id="__nav_2" checked>
+      
+      <label class="md-nav__link" for="__nav_2">
+        Tutorials
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/concept/" class="md-nav__link">
+        bamboo のコンセプト
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/sample_app/" class="md-nav__link">
+        サンプルアプリケーションを実装してみる
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/routing/" class="md-nav__link">
+        ルーティング
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/headers/" class="md-nav__link">
+        ヘッダーの取扱い
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/query_params/" class="md-nav__link">
+        クエリパラメータの取扱い
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/define_api/" class="md-nav__link">
+        API の定義
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/huge_data_transportation/" class="md-nav__link">
+        巨大なデータの転送
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/make_endpoint_component/" class="md-nav__link">
+        エンドポイントの拡張
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/error_handling/" class="md-nav__link">
+        エラーハンドリング
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/test/" class="md-nav__link">
+        アプリケーションのテスト
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/various_endpoints/" class="md-nav__link">
+        エンドポイントの種類
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/sticky/" class="md-nav__link">
+        コールバックの修飾
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/cache/" class="md-nav__link">
+        キャッシュに関する設定
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/cookie/" class="md-nav__link">
+        Cookie に関する設定
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/security/" class="md-nav__link">
+        セキュリティを強化する
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/websocket/" class="md-nav__link">
+        WebSocket アプリケーションの実装
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" data-md-state="indeterminate" type="checkbox" id="__nav_3" checked>
+      
+      <label class="md-nav__link" for="__nav_3">
+        Advanced Topics
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Advanced Topics" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Advanced Topics
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/db_integration/" class="md-nav__link">
+        データベースとの統合
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/flowchart/" class="md-nav__link">
+        フローチャートを描く
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/microservices/" class="md-nav__link">
+        マイクロサービスアーキテクチャ
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/dapr/" class="md-nav__link">
+        dapr との連携
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../advanced/packaging/" class="md-nav__link">
+        アプリケーションのパッケージング
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" data-md-state="indeterminate" type="checkbox" id="__nav_4" checked>
+      
+      <label class="md-nav__link" for="__nav_4">
+        Deployment
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Deployment" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Deployment
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deploy/heroku/" class="md-nav__link">
+        Heroku を利用したアプリケーションのデプロイ
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../background/" class="md-nav__link">
+        Background
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
+      
+      <label class="md-nav__link" for="__nav_6">
+        API References
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="API References" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          API References
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_1" data-md-state="indeterminate" type="checkbox" id="__nav_6_1" checked>
+      
+      <label class="md-nav__link" for="__nav_6_1">
+        bamboo
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="bamboo" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_1">
+          <span class="md-nav__icon md-icon"></span>
+          bamboo
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/pkg/" class="md-nav__link">
+        bamboo
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/api/" class="md-nav__link">
+        api
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/app/" class="md-nav__link">
+        app
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/asgi/" class="md-nav__link">
+        asgi
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/endpoint/" class="md-nav__link">
+        endpoint
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/error/" class="md-nav__link">
+        error
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/http/" class="md-nav__link">
+        http
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/io/" class="md-nav__link">
+        io
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/location/" class="md-nav__link">
+        location
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/router/" class="md-nav__link">
+        router
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo/test/" class="md-nav__link">
+        test
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" data-md-state="indeterminate" type="checkbox" id="__nav_6_2" checked>
+      
+      <label class="md-nav__link" for="__nav_6_2">
+        bamboo.request
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="bamboo.request" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          bamboo.request
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo_request/pkg/" class="md-nav__link">
+        bamboo.request
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo_request/http/" class="md-nav__link">
+        bamboo.request.http
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo_request/https/" class="md-nav__link">
+        bamboo.request.https
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_3" type="checkbox" id="__nav_6_3" checked>
+      
+      <label class="md-nav__link" for="__nav_6_3">
+        bamboo.sticky
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="bamboo.sticky" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_3">
+          <span class="md-nav__icon md-icon"></span>
+          bamboo.sticky
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pkg/" class="md-nav__link">
+        bamboo.sticky
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          bamboo.sticky.http
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        bamboo.sticky.http
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="目次">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目次
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http" class="md-nav__link">
+    bamboo.sticky.http
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.CacheControlInfo" class="md-nav__link">
+    CacheControlInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.ClientInfo" class="md-nav__link">
+    ClientInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.CookieInfo" class="md-nav__link">
+    CookieInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.DataFormatInfo" class="md-nav__link">
+    DataFormatInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.MultipleAuthSchemeError" class="md-nav__link">
+    MultipleAuthSchemeError
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.PreFlightInfo" class="md-nav__link">
+    PreFlightInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.RequiredHeaderInfo" class="md-nav__link">
+    RequiredHeaderInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.RequiredQueryInfo" class="md-nav__link">
+    RequiredQueryInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.SimpleAccessControlInfo" class="md-nav__link">
+    SimpleAccessControlInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.basic_auth" class="md-nav__link">
+    basic_auth()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.bearer_auth" class="md-nav__link">
+    bearer_auth()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.data_format" class="md-nav__link">
+    data_format()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.has_header_of" class="md-nav__link">
+    has_header_of()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.has_query_of" class="md-nav__link">
+    has_query_of()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.may_occur" class="md-nav__link">
+    may_occur()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.restricts_client" class="md-nav__link">
+    restricts_client()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_4" data-md-state="indeterminate" type="checkbox" id="__nav_6_4" checked>
+      
+      <label class="md-nav__link" for="__nav_6_4">
+        bamboo.util
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="bamboo.util" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_4">
+          <span class="md-nav__icon md-icon"></span>
+          bamboo.util
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo_util/pkg/" class="md-nav__link">
+        bamboo.util
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo_util/convert/" class="md-nav__link">
+        bamboo.util.convert
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo_util/deco/" class="md-nav__link">
+        bamboo.util.deco
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo_util/string/" class="md-nav__link">
+        bamboo.util.string
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bamboo_util/time/" class="md-nav__link">
+        bamboo.util.time
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="目次">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目次
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http" class="md-nav__link">
+    bamboo.sticky.http
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.CacheControlInfo" class="md-nav__link">
+    CacheControlInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.ClientInfo" class="md-nav__link">
+    ClientInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.CookieInfo" class="md-nav__link">
+    CookieInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.DataFormatInfo" class="md-nav__link">
+    DataFormatInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.MultipleAuthSchemeError" class="md-nav__link">
+    MultipleAuthSchemeError
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.PreFlightInfo" class="md-nav__link">
+    PreFlightInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.RequiredHeaderInfo" class="md-nav__link">
+    RequiredHeaderInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.RequiredQueryInfo" class="md-nav__link">
+    RequiredQueryInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.SimpleAccessControlInfo" class="md-nav__link">
+    SimpleAccessControlInfo
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.basic_auth" class="md-nav__link">
+    basic_auth()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.bearer_auth" class="md-nav__link">
+    bearer_auth()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.data_format" class="md-nav__link">
+    data_format()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.has_header_of" class="md-nav__link">
+    has_header_of()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.has_query_of" class="md-nav__link">
+    has_query_of()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.may_occur" class="md-nav__link">
+    may_occur()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bamboo.sticky.http.restricts_client" class="md-nav__link">
+    restricts_client()
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/jjj999/bamboo/edit/master/docs/api/bamboo_sticky/http.md" title="編集" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="bamboostickyhttp">bamboo.sticky.http</h1>
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="bamboo.sticky.http"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.CacheControlInfo">
+        <code>CacheControlInfo</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>CacheControlInfo(public: bool = False, private: bool = False, no_cache: bool = False, no_store: bool = False, max_age: Union[int, NoneType] = None, s_maxage: Union[int, NoneType] = None, max_stale: Union[int, NoneType] = None, min_fresh: Union[int, NoneType] = None, stale_while_revalidate: Union[int, NoneType] = None, stale_if_error: Union[int, NoneType] = None, must_revalidate: bool = False, proxy_revalidate: bool = False, immutable: bool = False, no_transform: bool = False, only_if_cached: bool = False)</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.ClientInfo">
+        <code>ClientInfo</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>ClientInfo(ip: Union[ipaddress.IPv4Address, ipaddress.IPv6Address], port: Union[int, NoneType] = None)</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.CookieInfo">
+        <code>CookieInfo</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>CookieInfo(cookie_name: str, expires: Union[str, NoneType] = None, max_age: Union[int, NoneType] = None, domain: Union[str, NoneType] = None, path: Union[str, NoneType] = None, secure: bool = True, http_only: bool = True, samesite: Union[str, NoneType] = None)</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.DataFormatInfo">
+        <code>DataFormatInfo</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p><code>dataclass</code> with information of data format at callbacks on <code>Endpoint</code>.</p>
+
+<p><strong>Attributes:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>input</code></td>
+        <td><code>Optional[Type[ApiData]]</code></td>
+        <td><p>Input data format.</p></td>
+      </tr>
+      <tr>
+        <td><code>output</code></td>
+        <td><code>Optional[Type[ApiData]]</code></td>
+        <td><p>Output data format.</p></td>
+      </tr>
+      <tr>
+        <td><code>is_validate</code></td>
+        <td><code>bool</code></td>
+        <td><p>If input data is to be validate.</p></td>
+      </tr>
+      <tr>
+        <td><code>err_validate</code></td>
+        <td><code>ErrInfo</code></td>
+        <td><p>Error information sent
+when validation failes.</p></td>
+      </tr>
+  </tbody>
+</table>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.MultipleAuthSchemeError">
+        <code>MultipleAuthSchemeError</code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Raised if several authentication schemes of the 'Authorization'
+header are detected.</p>
+
+
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.PreFlightInfo">
+        <code>PreFlightInfo</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>PreFlightInfo(allow_methods: Tuple[str], allow_origins: Tuple[str] = (), allow_headers: Tuple[str] = (), expose_headers: Tuple[str] = (), max_age: Union[int, NoneType] = None, allow_credentials: bool = False, err_not_allowed_origin: bamboo.error.ErrInfo = DefualtCORSOriginNotAllowedErrInfo(), err_not_allowed_method: bamboo.error.ErrInfo = DefualtCORSOriginNotAllowedErrInfo(), add_arg: bool = True)</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.RequiredHeaderInfo">
+        <code>RequiredHeaderInfo</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p><code>dataclass</code> with information of header which should be included in
+response headers.</p>
+
+<p><strong>Attributes:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>header</code></td>
+        <td><code>str</code></td>
+        <td><p>Name of header.</p></td>
+      </tr>
+      <tr>
+        <td><code>err</code></td>
+        <td><code>Optional[bamboo.error.ErrInfo]</code></td>
+        <td><p>Error information sent when the header is not included.</p></td>
+      </tr>
+      <tr>
+        <td><code>add_arg</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether the header is given as a callback's argument.</p></td>
+      </tr>
+  </tbody>
+</table>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.RequiredQueryInfo">
+        <code>RequiredQueryInfo</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>RequiredQueryInfo(query: str, err_empty: Union[bamboo.error.ErrInfo, NoneType], err_not_unique: Union[bamboo.error.ErrInfo, NoneType], mapf: Union[Callable[[Union[List[str], str, NoneType]], Any], NoneType], add_arg: bool)</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.SimpleAccessControlInfo">
+        <code>SimpleAccessControlInfo</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>SimpleAccessControlInfo(origins: Tuple[str] = (), allow_credentials: bool = False, err_not_allowed: bamboo.error.ErrInfo = DefualtCORSOriginNotAllowedErrInfo(), add_arg: bool = True)</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.basic_auth">
+<code class="highlight language-python"><span class="n">basic_auth</span><span class="p">(</span><span class="n">err</span><span class="o">=</span><span class="n">DefaultAuthHeaderNotFoundErrInfo</span><span class="p">())</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Set callback up to require <code>Authorization</code> header in Basic
+authentication.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>err</code></td>
+        <td><code>ErrInfo</code></td>
+        <td><p>Error sent when <code>Authorization</code> header is not found, received
+scheme doesn't match, or extracting user ID and password from
+credentials failes.</p></td>
+        <td><code>DefaultAuthHeaderNotFoundErrInfo()</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Callable[[Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]], NoneType], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]], Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]]], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]]</code></td>
+      <td><p>Decorator to make callback to be set  up to require
+the <code>Authorization</code> header.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MockEndpoint</span><span class="p">(</span><span class="n">WSGIEndpoint</span><span class="p">):</span>
+
+    <span class="nd">@basic_auth</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># It is guaranteed that request headers include the</span>
+        <span class="c1"># `Authorization` header at this point, and user_id and</span>
+        <span class="c1"># password are the ones extracted from the header.</span>
+
+        <span class="c1"># Authenticate with any function working on your system.</span>
+        <span class="n">authenticate</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+
+        <span class="c1"># Do something...</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>bamboo/sticky/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">basic_auth</span><span class="p">(</span>
+    <span class="n">err</span><span class="p">:</span> <span class="n">ErrInfo</span> <span class="o">=</span> <span class="n">DEFAULT_BASIC_AUTH_HEADER_NOT_FOUND_ERROR</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallbackDecorator_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Set callback up to require `Authorization` header in Basic</span>
+<span class="sd">    authentication.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        err: Error sent when `Authorization` header is not found, received</span>
+<span class="sd">            scheme doesn&#39;t match, or extracting user ID and password from</span>
+<span class="sd">            credentials failes.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Decorator to make callback to be set  up to require</span>
+<span class="sd">        the `Authorization` header.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        class MockEndpoint(WSGIEndpoint):</span>
+
+<span class="sd">            @basic_auth()</span>
+<span class="sd">            def do_GET(self, user_id: str, password: str) -&gt; None:</span>
+<span class="sd">                # It is guaranteed that request headers include the</span>
+<span class="sd">                # `Authorization` header at this point, and user_id and</span>
+<span class="sd">                # password are the ones extracted from the header.</span>
+
+<span class="sd">                # Authenticate with any function working on your system.</span>
+<span class="sd">                authenticate(user_id, password)</span>
+
+<span class="sd">                # Do something...</span>
+<span class="sd">        ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callback_t</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">AuthSchemeConfig</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">AuthSchemes</span><span class="o">.</span><span class="n">basic</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.bearer_auth">
+<code class="highlight language-python"><span class="n">bearer_auth</span><span class="p">(</span><span class="n">err</span><span class="o">=</span><span class="n">DefaultAuthHeaderNotFoundErrInfo</span><span class="p">())</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Set callback up to require <code>Authorization</code> header in token
+authentication for OAuth 2.0.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>err</code></td>
+        <td><code>ErrInfo</code></td>
+        <td><p>Error sent when <code>Authorization</code> header is not found, or
+when received scheme doesn't match.</p></td>
+        <td><code>DefaultAuthHeaderNotFoundErrInfo()</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Callable[[Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]], NoneType], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]], Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]]], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]]</code></td>
+      <td><p>Decorator to make callback to be set  up to require
+the <code>Authorization</code> header.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MockEndpoint</span><span class="p">(</span><span class="n">WSGIEndpoint</span><span class="p">):</span>
+
+    <span class="nd">@bearer_auth</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># It is guaranteed that request headers include the</span>
+        <span class="c1"># `Authorization` header at this point, and token is</span>
+        <span class="c1"># the one extracted from the header.</span>
+
+        <span class="c1"># Authenticate with any function working on your system.</span>
+        <span class="n">authenticate</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+        <span class="c1"># Do something...</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>bamboo/sticky/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">bearer_auth</span><span class="p">(</span>
+    <span class="n">err</span><span class="p">:</span> <span class="n">ErrInfo</span> <span class="o">=</span> <span class="n">DEFAULT_BEARER_AUTH_HEADER_NOT_FOUND_ERROR</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallbackDecorator_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Set callback up to require `Authorization` header in token</span>
+<span class="sd">    authentication for OAuth 2.0.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        err : Error sent when `Authorization` header is not found, or</span>
+<span class="sd">            when received scheme doesn&#39;t match.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Decorator to make callback to be set  up to require</span>
+<span class="sd">        the `Authorization` header.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        class MockEndpoint(WSGIEndpoint):</span>
+
+<span class="sd">            @bearer_auth()</span>
+<span class="sd">            def do_GET(self, token: str) -&gt; None:</span>
+<span class="sd">                # It is guaranteed that request headers include the</span>
+<span class="sd">                # `Authorization` header at this point, and token is</span>
+<span class="sd">                # the one extracted from the header.</span>
+
+<span class="sd">                # Authenticate with any function working on your system.</span>
+<span class="sd">                authenticate(token)</span>
+
+<span class="sd">                # Do something...</span>
+<span class="sd">        ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callback_t</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">AuthSchemeConfig</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">AuthSchemes</span><span class="o">.</span><span class="n">bearer</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.data_format">
+<code class="highlight language-python"><span class="n">data_format</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">err_validate</span><span class="o">=</span><span class="n">DefaultDataFormatErrInfo</span><span class="p">(),</span> <span class="n">err_noheader</span><span class="o">=</span><span class="n">DefaultHeaderNotFoundErrInfo</span><span class="p">())</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Set data format of input/output data as API to callback on
+<code>Endpoint</code>.</p>
+<p>This decorator can be used to add attributes of data format information
+to a response method, and execute validation if input raw data has
+expected format defined on <code>input</code> argument.</p>
+<p>To represent no data inputs/outputs, specify <code>input</code>/<code>output</code> arguments
+as <code>None</code>. If <code>input</code> is <code>None</code>, then any data received from client will
+not be read. If <code>is_validate</code> is <code>False</code>, then validation will not be
+executed.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>input</code></td>
+        <td><code>Optional[Type[bamboo.api.base.ApiData]]</code></td>
+        <td><p>Input data format.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>output</code></td>
+        <td><code>Optional[Type[bamboo.api.base.ApiData]]</code></td>
+        <td><p>Output data format.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>is_validate</code></td>
+        <td><code>bool</code></td>
+        <td><p>If input data is to be validated.</p></td>
+        <td><code>True</code></td>
+      </tr>
+      <tr>
+        <td><code>err_validate</code></td>
+        <td><code>ErrInfo</code></td>
+        <td><p>Error information sent when validation failes.</p></td>
+        <td><code>DefaultDataFormatErrInfo()</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Callable[[Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]], NoneType], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]], Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]]], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]]</code></td>
+      <td><p>Decorator to add attributes of data format information to callback.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">UserData</span><span class="p">(</span><span class="n">JsonApiData</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
+
+<span class="k">class</span> <span class="nc">MockEndpoint</span><span class="p">(</span><span class="n">WSGIEndpoint</span><span class="p">):</span>
+
+    <span class="nd">@data_format</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">UserData</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rec_body</span><span class="p">:</span> <span class="n">UserData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">user_name</span> <span class="o">=</span> <span class="n">rec_body</span><span class="o">.</span><span class="n">name</span>
+        <span class="c1"># Do something...</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>bamboo/sticky/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">data_format</span><span class="p">(</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="n">ApiData</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="n">ApiData</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">is_validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">err_validate</span><span class="p">:</span> <span class="n">ErrInfo</span> <span class="o">=</span> <span class="n">DEFUALT_INCORRECT_DATA_FORMAT_ERROR</span><span class="p">,</span>
+    <span class="n">err_noheader</span><span class="p">:</span> <span class="n">ErrInfo</span> <span class="o">=</span> <span class="n">DEFAULT_HEADER_NOT_FOUND_ERROR</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallbackDecorator_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Set data format of input/output data as API to callback on</span>
+<span class="sd">    `Endpoint`.</span>
+
+<span class="sd">    This decorator can be used to add attributes of data format information</span>
+<span class="sd">    to a response method, and execute validation if input raw data has</span>
+<span class="sd">    expected format defined on `input` argument.</span>
+
+<span class="sd">    To represent no data inputs/outputs, specify `input`/`output` arguments</span>
+<span class="sd">    as `None`. If `input` is `None`, then any data received from client will</span>
+<span class="sd">    not be read. If `is_validate` is `False`, then validation will not be</span>
+<span class="sd">    executed.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input: Input data format.</span>
+<span class="sd">        output: Output data format.</span>
+<span class="sd">        is_validate: If input data is to be validated.</span>
+<span class="sd">        err_validate: Error information sent when validation failes.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Decorator to add attributes of data format information to callback.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        class UserData(JsonApiData):</span>
+<span class="sd">            name: str</span>
+<span class="sd">            email: str</span>
+<span class="sd">            age: int</span>
+
+<span class="sd">        class MockEndpoint(WSGIEndpoint):</span>
+
+<span class="sd">            @data_format(input=UserData, output=None)</span>
+<span class="sd">            def do_GET(self, rec_body: UserData) -&gt; None:</span>
+<span class="sd">                user_name = rec_body.name</span>
+<span class="sd">                # Do something...</span>
+<span class="sd">        ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataformat</span> <span class="o">=</span> <span class="n">DataFormatInfo</span><span class="p">(</span>
+        <span class="nb">input</span><span class="p">,</span>
+        <span class="n">output</span><span class="p">,</span>
+        <span class="n">is_validate</span><span class="p">,</span>
+        <span class="n">err_validate</span><span class="p">,</span>
+        <span class="n">err_noheader</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callback_t</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">DataFormatConfig</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">dataformat</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.has_header_of">
+<code class="highlight language-python"><span class="n">has_header_of</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_arg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Set callback up to receive given header from clients.</p>
+<p>If request headers don't include specified <code>header</code>, then response
+headers and body will be made based on <code>err</code> and sent.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>header</code></td>
+        <td><code>str</code></td>
+        <td><p>Name of header.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>err</code></td>
+        <td><code>Optional[bamboo.error.ErrInfo]</code></td>
+        <td><p>Error information sent when specified <code>header</code> is not found.</p></td>
+        <td><code>None</code></td>
+      </tr>
+      <tr>
+        <td><code>add_arg</code></td>
+        <td><code>bool</code></td>
+        <td><p>Whether the header is given as a callback's argument.</p></td>
+        <td><code>True</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Callable[[Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]], NoneType], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]], Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]]], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]]</code></td>
+      <td><p>Decorator to make callback to be set up to receive the header.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">BasicAuthHeaderNotFoundErrInfo</span><span class="p">(</span><span class="n">ErrInfo</span><span class="p">):</span>
+    <span class="n">http_status</span> <span class="o">=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span>
+
+    <span class="k">def</span> <span class="nf">get_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">,</span> <span class="s1">&#39;Basic realm=&quot;SECRET AREA&quot;&#39;</span><span class="p">)]</span>
+
+<span class="k">class</span> <span class="nc">MockEndpoint</span><span class="p">(</span><span class="n">WSGIEndpoint</span><span class="p">):</span>
+
+    <span class="nd">@has_header_of</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">,</span> <span class="n">BasicAuthHeaderNotFoundErrInfo</span><span class="p">())</span>
+    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># It is guaranteed that request headers include the</span>
+        <span class="c1"># `Authorization` header at this point.</span>
+        <span class="n">header_auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_header</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Do something...</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>bamboo/sticky/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">has_header_of</span><span class="p">(</span>
+    <span class="n">header</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">err</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">ErrInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">add_arg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallbackDecorator_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Set callback up to receive given header from clients.</span>
+
+<span class="sd">    If request headers don&#39;t include specified `header`, then response</span>
+<span class="sd">    headers and body will be made based on `err` and sent.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        header: Name of header.</span>
+<span class="sd">        err: Error information sent when specified `header` is not found.</span>
+<span class="sd">        add_arg: Whether the header is given as a callback&#39;s argument.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Decorator to make callback to be set up to receive the header.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        class BasicAuthHeaderNotFoundErrInfo(ErrInfo):</span>
+<span class="sd">            http_status = HTTPStatus.UNAUTHORIZED</span>
+
+<span class="sd">            def get_headers(self) -&gt; List[Tuple[str, str]]:</span>
+<span class="sd">                return [(&quot;WWW-Authenticate&quot;, &#39;Basic realm=&quot;SECRET AREA&quot;&#39;)]</span>
+
+<span class="sd">        class MockEndpoint(WSGIEndpoint):</span>
+
+<span class="sd">            @has_header_of(&quot;Authorization&quot;, BasicAuthHeaderNotFoundErrInfo())</span>
+<span class="sd">            def do_GET(self) -&gt; None:</span>
+<span class="sd">                # It is guaranteed that request headers include the</span>
+<span class="sd">                # `Authorization` header at this point.</span>
+<span class="sd">                header_auth = self.get_header(&quot;Authorization&quot;)</span>
+
+<span class="sd">                # Do something...</span>
+<span class="sd">        ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">RequiredHeaderInfo</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">add_arg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callback_t</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">RequiredHeaderConfig</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.has_query_of">
+<code class="highlight language-python"><span class="n">has_query_of</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">err_empty</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">err_not_unique</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mapf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_arg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Set callback up to receive given query parameter from clients.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>bamboo/sticky/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">has_query_of</span><span class="p">(</span>
+    <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">err_empty</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">ErrInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">err_not_unique</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">ErrInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mapf</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">add_arg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallbackDecorator_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Set callback up to receive given query parameter from clients.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">RequiredQueryInfo</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">err_empty</span><span class="p">,</span> <span class="n">err_not_unique</span><span class="p">,</span> <span class="n">mapf</span><span class="p">,</span> <span class="n">add_arg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callback_t</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">RequiredQueryConfig</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.may_occur">
+<code class="highlight language-python"><span class="n">may_occur</span><span class="p">(</span><span class="o">*</span><span class="n">errors</span><span class="p">)</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Register error classes to callback on <code>Endpoint</code>.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>*errors</code></td>
+        <td><code>Type[bamboo.error.ErrInfo]</code></td>
+        <td><p>Error classes which may occuur.</p></td>
+        <td><code>()</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Callable[[Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]], NoneType], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]], Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]]], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]]</code></td>
+      <td><p>CallbackDecorator_t: Decorator to register
+    error classes to callback.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MockErrInfo</span><span class="p">(</span><span class="n">ErrInfo</span><span class="p">):</span>
+    <span class="n">http_status</span> <span class="o">=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">INTERNAL_SERVER_ERROR</span>
+
+    <span class="k">def</span> <span class="nf">get_body</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;Intrernal server error occured&quot;</span>
+
+<span class="k">class</span> <span class="nc">MockEndpoint</span><span class="p">(</span><span class="n">WSGIEndpoint</span><span class="p">):</span>
+
+    <span class="nd">@may_occur</span><span class="p">(</span><span class="n">MockErrInfo</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Do something...</span>
+
+        <span class="c1"># It is possible to send error response.</span>
+        <span class="k">if</span> <span class="n">is_some_flag</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_err</span><span class="p">(</span><span class="n">MockErrInfo</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_only_status</span><span class="p">()</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>bamboo/sticky/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">may_occur</span><span class="p">(</span><span class="o">*</span><span class="n">errors</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="n">ErrInfo</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CallbackDecorator_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Register error classes to callback on `Endpoint`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        *errors: Error classes which may occuur.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        CallbackDecorator_t: Decorator to register</span>
+<span class="sd">            error classes to callback.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        class MockErrInfo(ErrInfo):</span>
+<span class="sd">            http_status = HTTPStatus.INTERNAL_SERVER_ERROR</span>
+
+<span class="sd">            def get_body(self) -&gt; bytes:</span>
+<span class="sd">                return b&quot;Intrernal server error occured&quot;</span>
+
+<span class="sd">        class MockEndpoint(WSGIEndpoint):</span>
+
+<span class="sd">            @may_occur(MockErrInfo)</span>
+<span class="sd">            def do_GET(self) -&gt; None:</span>
+<span class="sd">                # Do something...</span>
+
+<span class="sd">                # It is possible to send error response.</span>
+<span class="sd">                if is_some_flag():</span>
+<span class="sd">                    self.send_err(MockErrInfo())</span>
+
+<span class="sd">                self.send_only_status()</span>
+<span class="sd">        ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callback_t</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">HTTPErrorConfig</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">*</span><span class="n">errors</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 class="doc doc-heading" id="bamboo.sticky.http.restricts_client">
+<code class="highlight language-python"><span class="n">restricts_client</span><span class="p">(</span><span class="o">*</span><span class="n">clients</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">DefaultNotApplicableIpErrInfo</span><span class="p">())</span></code>
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Restrict IP addresses at callback.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>*client_ips</code></td>
+        <td><code></code></td>
+        <td><p>IP addresses to be allowed to request</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>err</code></td>
+        <td><code>ErrInfo</code></td>
+        <td><p>Error information sent when request from IP not included
+specified IPs comes.</p></td>
+        <td><code>DefaultNotApplicableIpErrInfo()</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Callable[[Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]], NoneType], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]], Union[Callable[[bamboo.endpoint.WSGIEndpoint, Tuple[Any, ...]]], Callable[[bamboo.endpoint.ASGIHTTPEndpoint, Tuple[Any, ...]], Awaitable[NoneType]]]]</code></td>
+      <td><p>Decorator to make callback to be set up to restrict IP addresses.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>ValueError</code></td>
+        <td><p>Raised if invalid IP address is detected</p></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Examples:</strong></p>
+    <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">MockEndpoint</span><span class="p">(</span><span class="n">WSGIEndpoint</span><span class="p">):</span>
+
+    <span class="c1"># Restrict to allow only localhost to request</span>
+    <span class="c1"># to this callback</span>
+    <span class="nd">@restricts_client</span><span class="p">(</span><span class="n">ClientInfo</span><span class="p">(</span><span class="s2">&quot;localhost&quot;</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Only localhost can access to the callback.</span>
+
+        <span class="c1"># Do something...</span>
+</code></pre></div>
+
+        <details class="quote">
+          <summary>Source code in <code>bamboo/sticky/http.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">restricts_client</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">clients</span><span class="p">:</span> <span class="n">ClientInfo</span><span class="p">,</span>
+    <span class="n">err</span><span class="p">:</span> <span class="n">ErrInfo</span> <span class="o">=</span> <span class="n">DEFAULT_NOT_APPLICABLE_IP_ERROR</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallbackDecorator_t</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Restrict IP addresses at callback.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        *client_ips: IP addresses to be allowed to request</span>
+<span class="sd">        err: Error information sent when request from IP not included</span>
+<span class="sd">            specified IPs comes.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Decorator to make callback to be set up to restrict IP addresses.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: Raised if invalid IP address is detected</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        class MockEndpoint(WSGIEndpoint):</span>
+
+<span class="sd">            # Restrict to allow only localhost to request</span>
+<span class="sd">            # to this callback</span>
+<span class="sd">            @restricts_client(ClientInfo(&quot;localhost&quot;))</span>
+<span class="sd">            def do_GET(self) -&gt; None:</span>
+<span class="sd">                # Only localhost can access to the callback.</span>
+
+<span class="sd">                # Do something...</span>
+<span class="sd">        ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callback_t</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callback_t</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">RestrictedClientsConfig</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="o">*</span><span class="n">clients</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">err</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="フッター">
+      
+        
+        <a href="../pkg/" class="md-footer__link md-footer__link--prev" aria-label="前: bamboo.sticky" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                前
+              </span>
+              bamboo.sticky
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../../bamboo_util/pkg/" class="md-footer__link md-footer__link--next" aria-label="次: bamboo.util" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                次
+              </span>
+              bamboo.util
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2021 Yunhyeon Jeong
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/jjj999/bamboo" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tabs", "navigation.expand", "navigation.top", "search.highlight"], "translations": {"clipboard.copy": "\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u3078\u30b3\u30d4\u30fc", "clipboard.copied": "\u30b3\u30d4\u30fc\u3057\u307e\u3057\u305f", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\s\\-\u3000\u3001\u3002\uff0c\uff0e]+", "search.placeholder": "\u691c\u7d22", "search.result.placeholder": "\u691c\u7d22\u30ad\u30fc\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044", "search.result.none": "\u4f55\u3082\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f", "search.result.one": "1\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.other": "#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.one": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3082\u30461\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.other": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3042\u3068#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.term.missing": "\u691c\u7d22\u306b\u542b\u307e\u308c\u306a\u3044", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.ddd52ceb.min.js"></script>
+      
+    
+  </body>
+</html>
