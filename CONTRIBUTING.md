@@ -10,18 +10,18 @@ We employ [the branching model](https://nvie.com/posts/a-successful-git-branchin
 
 In the flow, we have two important branches:
 
-- `master` branch
+- `main` branch
 - `develop` branch
 
-These branches has the common feature that they are not to vanish. On the other hand, their roles are not common; the `master` branch heads the newest and stable version of the package and the `develop` branch heads the next release of the package.
+These branches has the common feature that they are not to vanish. On the other hand, their roles are not common; the `main` branch heads the newest and stable version of the package and the `develop` branch heads the next release of the package.
 
 ### Version tags
 
-As explained above, the `master` and `develop` branches have their version tags to identify the package content. Note that there is a tagging rules for the branches.
+As explained above, the `main` and `develop` branches have their version tags to identify the package content. Note that there is a tagging rules for the branches.
 
-First, the tags consist of three numbers joined by dot, e.g. `0.1.2`. We often say the first number as **major number**, the second **minor number** and the last **patch number**. Second, the `develop` branch must have the tag whose minor number is the next number of the one of the `master` branch and patch number is zero. For example, if the `master` branch heads version `1.3.6`, then the `develop` branch heads version `1.4.0`.
+First, the tags consist of three numbers joined by dot, e.g. `0.1.2`. We often say the first number as **major number**, the second **minor number** and the last **patch number**. Second, the `develop` branch must have the tag whose minor number is the next number of the one of the `main` branch and patch number is zero. For example, if the `main` branch heads version `1.3.6`, then the `develop` branch heads version `1.4.0`.
 
-Althogh Some developers might think the second rule is awkward, the reseason is that the minor number increases when new features of the package are released, and the patch number increase when some reported bugs of the stable version at that time are fixed. As you can see later, tasks of feature implamentation and bug fixing are conducted in different types of branches, and the branches in which feature implementations are conducted are to be merged into the `develop` branch. Therefore, the `develop` branch always has new features of the package but the features are not fixed by bug reports. Thus, the `develop` branch has the tag whose minor number is the next of the `master` and patch number is zero.
+Althogh Some developers might think the second rule is awkward, the reseason is that the minor number increases when new features of the package are released, and the patch number increase when some reported bugs of the stable version at that time are fixed. As you can see later, tasks of feature implamentation and bug fixing are conducted in different types of branches, and the branches in which feature implementations are conducted are to be merged into the `develop` branch. Therefore, the `develop` branch always has new features of the package but the features are not fixed by bug reports. Thus, the `develop` branch has the tag whose minor number is the next of the `main` and patch number is zero.
 
 ### Supporting branches
 
@@ -35,7 +35,7 @@ In the `feature` branches, developers implements new features suggested in issue
 
 The `release` branches exist for placing the pre-stages of new releases. In the branches, developers do some tests mainly and fix bugs if they are caught. The branches are to be merged if they can be released and deleted. These branches can be identified by the next release number and should be named as `release-X.X` (`X.X` is a pair of a major number and a minor number).
 
-The `hotfix` branches are created when the project receives bug reports. The branches always are derived from the `master` branch and merged into both of the `master` and `develop` branches because the reported bugs will be in the package which the `master` branch heads and also `develop` branch heads. The branches are deleted if the merges finish. Because these branches can be identified by issue numbers, the branches should be named as `hotfix-issXXX` (`XXX` is the issue number).
+The `hotfix` branches are created when the project receives bug reports. The branches always are derived from the `main` branch and merged into both of the `main` and `develop` branches because the reported bugs will be in the package which the `main` branch heads and also `develop` branch heads. The branches are deleted if the merges finish. Because these branches can be identified by issue numbers, the branches should be named as `hotfix-issXXX` (`XXX` is the issue number).
 
 ### `gh-pages` branch
 
@@ -50,7 +50,7 @@ If you have some issues, you can publish them using the templates:
 
 ## New Pull Requests
 
-Developers should pull request if they want to merge their branch into the `master` or `develop` branches.
+Developers should pull request if they want to merge their branch into the `main` or `develop` branches.
 
 ## Commits
 

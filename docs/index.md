@@ -1,6 +1,6 @@
 # Bamboo
 
-[![bamboo](https://github.com/jjj999/bamboo/blob/master/docs/res/bamboo.png?raw=true)](https://jjj999.github.io/bamboo/)
+[![bamboo](https://github.com/jjj999/bamboo/blob/main/docs/res/bamboo.png?raw=true)](https://jjj999.github.io/bamboo/)
 [![PyPI version](https://badge.fury.io/py/bamboo-core.svg)](http://badge.fury.io/py/bamboo-core)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://pypi.python.org/pypi/bamboo-core/)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://jjj999.github.io/bamboo)
@@ -45,14 +45,14 @@ API ドキュメントは[こちら](api/bamboo/pkg.md)．
 
 ## Examples
 
-### [upsidedown](https://github.com/jjj999/bamboo/tree/master/examples/upsidedown)
+### [upsidedown](https://github.com/jjj999/bamboo/tree/main/examples/upsidedown)
 
 リクエストされた文字列を逆順に反転させて返すアプリケーションです．
 
-### [image_traffic](https://github.com/jjj999/bamboo/tree/master/examples/image_traffic)
+### [image_traffic](https://github.com/jjj999/bamboo/tree/main/examples/image_traffic)
 
 アクセスに対して静的な画像を返すアプリケーションです．
 
-### [tweets](https://github.com/jjj999/bamboo/tree/master/examples/tweets)
+### [tweets](https://github.com/jjj999/bamboo/tree/main/examples/tweets)
 
 CLI ベースの簡易的な Twitter のような投稿アプリです．認証機能は実装されていません．
