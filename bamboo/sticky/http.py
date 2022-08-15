@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 import dataclasses
 import functools
 import inspect
+import ipaddress
 import re
 import typing as t
 
@@ -32,7 +33,6 @@ from ..error import (
 )
 from ..http import AuthSchemes, HTTPStatus
 from ..util.convert import decode2binary
-from ..util.ip import is_valid_ipv4
 
 
 class CallbackConfigBase(metaclass=ABCMeta):
@@ -428,11 +428,14 @@ def has_header_of(
 @dataclasses.dataclass(eq=True, frozen=True)
 class ClientInfo:
 
-    ip: str
+    ip: t.Union[ipaddress.IPv4Address, ipaddress.IPv6Address]
     port: t.Optional[int] = None
 
 
-_RestrictedClient_t = t.Dict[str, t.Set[t.Optional[int]]]
+_RestrictedClient_t = t.Dict[
+    t.Union[ipaddress.IPv4Address, ipaddress.IPv6Address],
+    t.Set[t.Optional[int]]
+]
 
 
 class RestrictedClientsConfig(CallbackConfigBase):
@@ -457,11 +460,6 @@ class RestrictedClientsConfig(CallbackConfigBase):
         err: ErrInfo = DEFAULT_NOT_APPLICABLE_IP_ERROR
     ) -> Callback_t:
         for client in clients:
-            if not is_valid_ipv4(client.ip):
-                raise ValueError(f"{client.ip} is an invalid IP address.")
-            if client.ip == "localhost":
-                client = ClientInfo("127.0.0.1", client.port)
-
             ports = self._registered.get(client.ip)
             if ports is None:
                 self._registered[client.ip] = set()
@@ -479,12 +477,16 @@ class RestrictedClientsConfig(CallbackConfigBase):
         callback: Callback_WSGI_t,
         err: ErrInfo
     ) -> Callback_WSGI_t:
-        acceptables = getattr(callback, cls.ATTR, {})
+        acceptables = getattr(callback, cls.ATTR, set())
 
         @functools.wraps(callback)
         @may_occur(err.__class__)
         def _callback(self: WSGIEndpoint, *args) -> None:
-            client = ClientInfo(*self.get_client_addr())
+            ip, port = self.get_client_addr()
+            if ip is None:
+                raise err
+
+            client = ClientInfo(ipaddress.ip_address(ip), port)
             ports = acceptables.get(client.ip)
             if ports is None:
                 raise err
@@ -505,7 +507,11 @@ class RestrictedClientsConfig(CallbackConfigBase):
         @functools.wraps(callback)
         @may_occur(err.__class__)
         async def _callback(self: ASGIHTTPEndpoint, *args) -> None:
-            client = ClientInfo(*self.get_client_addr())
+            ip, port = self.get_client_addr()
+            if ip is None:
+                raise err
+
+            client = ClientInfo(ipaddress.ip_address(ip), port)
             ports = acceptables.get(client.ip)
             if ports is None:
                 raise err
