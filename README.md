@@ -12,7 +12,7 @@
 
 ## Installing
 
-* Python: >= 3.7
+* Python: 3.11, 3.12, 3.13, 3.14, or 3.15
 
 ```
 python -m pip install bamboo-core

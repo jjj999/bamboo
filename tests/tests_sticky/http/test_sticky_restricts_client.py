@@ -12,7 +12,7 @@ from bamboo import (
 from bamboo.request import http
 from bamboo.sticky.http import ClientInfo, restricts_client
 
-from ... import get_log_name
+from ... import get_log_name, get_unused_ports
 from ...asgi_util import ASGIServerForm, ASGITestExecutor
 
 
@@ -20,6 +20,7 @@ app_asgi = ASGIApp()
 app_wsgi = WSGIApp()
 PATH_ASGI_SERVER_LOG = get_log_name(__file__, "asgi")
 PATH_WSGI_SERVER_LOG = get_log_name(__file__, "wsgi")
+PORT_ASGI = PORT_WSGI = 0
 CLIENTS_CORRECT = (
     ClientInfo(ipaddress.ip_address("127.0.0.1"), port=None),
     ClientInfo(ipaddress.ip_address("::1"), port=None),
@@ -58,12 +59,14 @@ class TestStickyRestrictsClient(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        form_asgi = ASGIServerForm("", 8000, app_asgi, PATH_ASGI_SERVER_LOG)
-        form_wsgi = WSGIServerForm("", 8001, app_wsgi, PATH_WSGI_SERVER_LOG)
+        global PORT_ASGI, PORT_WSGI
+        PORT_ASGI, PORT_WSGI = get_unused_ports(2)
+        form_asgi = ASGIServerForm("", PORT_ASGI, app_asgi, PATH_ASGI_SERVER_LOG)
+        form_wsgi = WSGIServerForm("", PORT_WSGI, app_wsgi, PATH_WSGI_SERVER_LOG)
         cls.executor_asgi = ASGITestExecutor(form_asgi).start_serve()
         cls.executor_wsgi = WSGITestExecutor(form_wsgi).start_serve()
-        cls.uri_asgi = "http://127.0.0.1:8000"
-        cls.uri_wsgi = "http://127.0.0.1:8001"
+        cls.uri_asgi = f"http://127.0.0.1:{PORT_ASGI}"
+        cls.uri_wsgi = f"http://127.0.0.1:{PORT_WSGI}"
 
     @classmethod
     def tearDownClass(cls) -> None:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 import dataclasses
 import multiprocessing
+from multiprocessing.process import BaseProcess
 import signal
 import sys
 import time
@@ -71,7 +72,11 @@ class WSGITestExecutor:
                 the server application.
         """
         self._forms: t.List[WSGIServerForm] = []
-        self._children: t.List[multiprocessing.Process] = []
+        self._children: t.List[BaseProcess] = []
+        try:
+            self._mp_context = multiprocessing.get_context("fork")
+        except ValueError:
+            self._mp_context = multiprocessing.get_context()
 
         self.add_forms(*forms)
 
@@ -107,7 +112,7 @@ class WSGITestExecutor:
             ```
         """
         for form in self._forms:
-            child = multiprocessing.Process(target=serve_at, args=(form,))
+            child = self._mp_context.Process(target=serve_at, args=(form,))
             child.start()
             self._children.append(child)
         time.sleep(waiting)

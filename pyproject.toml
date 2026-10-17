@@ -1,46 +1,105 @@
-[tool.poetry]
+[project]
 name = "bamboo-core"
 version = "0.10.5"
 description = "General purpose server framework in Python"
-authors = ["jjj999 <jjj999to@gmail.com>"]
-maintainers = ["jjj999 <jjj999to@gmail.com>"]
+authors = [
+    { name = "jjj999", email = "jjj999to@gmail.com" },
+]
+maintainers = [
+    { name = "jjj999", email = "jjj999to@gmail.com" },
+]
 license = "MIT"
 readme = "README.md"
-homepage = "https://jjj999.github.io/bamboo"
-repository = "https://github.com/jjj999/bamboo"
+requires-python = ">=3.11"
+dependencies = []
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     "Topic :: Internet :: WWW/HTTP :: WSGI",
     "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
+
+[project.urls]
+Homepage = "https://jjj999.github.io/bamboo"
+Repository = "https://github.com/jjj999/bamboo"
+
+[project.scripts]
+bamboo = "bamboo.cli:main"
+
+[tool.poetry]
 packages = [
     { include = "bamboo" }
 ]
 
-[tool.poetry.dependencies]
-python = "^3.7"
+[tool.poetry.group.dev.dependencies]
+build = "^1.6.1"
+gunicorn = "^26.2.0"
+hypercorn = "^0.18.0"
+pre-commit = "^4.7.0"
+pyright = "^1.1.414"
+pytest = "^9.1.1"
+pytest-cov = "^7.1.0"
+ruff = "^0.17.1"
+tox = "^4.66.0"
+uvicorn = "^0.54.0"
+websocket-client = "^1.9.2"
 
-[tool.poetry.dev-dependencies]
-gunicorn = "^20.1.0"
-Hypercorn = "^0.11.2"
-mkdocstrings = "^0.15.2"
-mkdocs-material = "^7.1.11"
-peewee = "^3.14.4"
-pre-commit = "^2.13.0"
-psycopg2-binary = "^2.9.1"
-tox = "^3.24.0"
-uvicorn = "^0.14.0"
-websocket-client = "^1.1.0"
+[tool.poetry.group.docs]
+optional = true
 
-[tool.poetry.scripts]
-bamboo = "bamboo.cli:main"
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.6.1"
+mkdocs-material = "^9.7.7"
+mkdocstrings = { version = "^1.0.7", extras = ["python"] }
+peewee = "^4.5.3"
+psycopg2-binary = "^2.9.13"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers -m 'not slow'"
+testpaths = ["tests"]
+python_files = ["test_*.py", "tests_*.py"]
+markers = [
+    "unit: lightweight tests that do not start external servers",
+    "integration: tests that start WSGI or ASGI servers or use network I/O",
+    "slow: long-running or large-data tests excluded from normal runs",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]
+
+[tool.ruff.format]
+indent-style = "space"
+
+[tool.pyright]
+include = ["bamboo"]
+exclude = [".venv", "build", "dist"]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.11"
+typeCheckingMode = "basic"
+
+[tool.coverage.run]
+branch = true
+source = ["bamboo"]
+
+[tool.coverage.report]
+show_missing = true

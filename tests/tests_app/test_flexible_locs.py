@@ -15,11 +15,12 @@ from bamboo.sticky.http import data_format
 from bamboo.util.string import rand_string
 from bamboo.util.time import get_datetime_rfc822
 
-from .. import get_log_name
+from .. import get_log_name, get_unused_port
 
 
 app = WSGIApp()
 PATH_SERVER_LOG = get_log_name(__file__)
+PORT = 0
 
 
 class InfoResponse(JsonApiData):
@@ -57,7 +58,9 @@ class TestFlexibleLocs(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        form = WSGIServerForm("", 8000, app, PATH_SERVER_LOG)
+        global PORT
+        PORT = get_unused_port()
+        form = WSGIServerForm("", PORT, app, PATH_SERVER_LOG)
         cls.executor = WSGITestExecutor(form).start_serve()
 
     @classmethod
@@ -68,7 +71,7 @@ class TestFlexibleLocs(unittest.TestCase):
         names = [rand_string(10) for _ in range(100)]
 
         for name in names:
-            uri = f"http://localhost:8000/{name}/info"
+            uri = f"http://localhost:{PORT}/{name}/info"
             with http.get(uri, datacls=InfoResponse) as res:
                 if res.ok:
                     body = res.attach()
@@ -81,7 +84,7 @@ class TestFlexibleLocs(unittest.TestCase):
         num_pairs = [(get_num(), get_num()) for _ in range(100)]
 
         for num_1, num_2 in num_pairs:
-            uri = f"http://localhost:8000/{num_1}/{num_2}/multiply"
+            uri = f"http://localhost:{PORT}/{num_1}/{num_2}/multiply"
             with http.get(uri, datacls=CalculationResult) as res:
                 if res.ok:
                     body = res.attach()

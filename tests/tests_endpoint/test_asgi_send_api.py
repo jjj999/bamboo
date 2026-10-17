@@ -13,7 +13,7 @@ from bamboo.api import (
 from bamboo.request import http
 from bamboo.sticky.http import data_format
 
-from ..import get_log_name
+from .. import get_log_name, get_unused_port
 from ..asgi_util import ASGIServerForm, ASGITestExecutor
 
 
@@ -21,7 +21,7 @@ app = ASGIApp()
 PATH_SERVER_LOG = get_log_name(__file__)
 
 HOST = "127.0.0.1"
-PORT = 8000
+PORT = 0
 URI_ROOT = f"http://{HOST}:{PORT}"
 URI_BINARY = os.path.join(URI_ROOT, "binary")
 URI_JSON = os.path.join(URI_ROOT, "json")
@@ -73,7 +73,13 @@ class TestASGISendApi(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        form = ASGIServerForm("", 8000, app, PATH_SERVER_LOG)
+        global PORT, URI_ROOT, URI_BINARY, URI_JSON, URI_FORM
+        PORT = get_unused_port()
+        URI_ROOT = f"http://{HOST}:{PORT}"
+        URI_BINARY = os.path.join(URI_ROOT, "binary")
+        URI_JSON = os.path.join(URI_ROOT, "json")
+        URI_FORM = os.path.join(URI_ROOT, "form")
+        form = ASGIServerForm("", PORT, app, PATH_SERVER_LOG)
         cls.executor = ASGITestExecutor(form).start_serve()
 
     @classmethod

@@ -8,10 +8,11 @@ from bamboo import (
 )
 from bamboo.request import http
 
-from .. import get_log_name
+from .. import get_log_name, get_unused_port
 
 
 PATH_SERVER_LOG = get_log_name(__file__)
+PORT = 0
 sub_app1 = WSGIApp()
 sub_app2 = WSGIApp()
 app = WSGIApp()
@@ -46,7 +47,9 @@ class TestGrafting(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        form = WSGIServerForm("", 8000, app, PATH_SERVER_LOG)
+        global PORT
+        PORT = get_unused_port()
+        form = WSGIServerForm("", PORT, app, PATH_SERVER_LOG)
         cls.executor = WSGITestExecutor(form).start_serve()
 
     @classmethod
@@ -54,16 +57,16 @@ class TestGrafting(unittest.TestCase):
         cls.executor.close()
 
     def test_world(self) -> None:
-        with http.get("http://localhost:8000/world") as res:
+        with http.get(f"http://localhost:{PORT}/world") as res:
             self.assertTrue(res.ok)
 
     def test_client(self) -> None:
         for i in range(1, 4):
-            with http.get(f"http://localhost:8000/v{i}/client") as res:
+            with http.get(f"http://localhost:{PORT}/v{i}/client") as res:
                 self.assertTrue(res.ok)
 
     def test_hoge(self) -> None:
-        with http.get("http://localhost:8000/hoge/hoge") as res:
+        with http.get(f"http://localhost:{PORT}/hoge/hoge") as res:
             self.assertTrue(res.ok)
 
 

@@ -17,8 +17,9 @@ from .. import (
     PATH_BIGDATA_1GB,
     PATH_BIGDATA_1KB,
     PATH_BIGDATA_1MB,
+    get_client_log_name,
     get_log_name,
-    get_client_log_name
+    get_unused_port,
 )
 from ..asgi_util import ASGIServerForm, ASGITestExecutor
 
@@ -27,6 +28,7 @@ app = ASGIApp()
 PATH_SERVER_LOG = get_log_name(__file__)
 PATH_CLIENT_LOG = get_client_log_name(__file__)
 FILE_CLIENT_LOG = open(PATH_CLIENT_LOG, "wt")
+PORT = 0
 
 
 @app.route("small")
@@ -57,7 +59,9 @@ class TestASGISendingFile(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        form = ASGIServerForm("", 8000, app, PATH_SERVER_LOG)
+        global PORT
+        PORT = get_unused_port()
+        form = ASGIServerForm("", PORT, app, PATH_SERVER_LOG)
         cls.executor = ASGITestExecutor(form).start_serve()
 
     @classmethod
@@ -90,15 +94,15 @@ class TestASGISendingFile(unittest.TestCase):
         )
 
     def test_small(self) -> None:
-        uri = "http://localhost:8000/small"
+        uri = f"http://localhost:{PORT}/small"
         self.measure_downloading(uri, PATH_BIGDATA_1KB)
 
     def test_medium(self) -> None:
-        uri = "http://localhost:8000/medium"
+        uri = f"http://localhost:{PORT}/medium"
         self.measure_downloading(uri, PATH_BIGDATA_1MB)
 
     def test_big(self) -> None:
-        uri = "http://localhost:8000/big"
+        uri = f"http://localhost:{PORT}/big"
         self.measure_downloading(uri, PATH_BIGDATA_1GB)
 
 

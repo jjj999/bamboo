@@ -13,7 +13,7 @@ from bamboo.request import http
 from bamboo.sticky.http import data_format
 from bamboo.util.time import get_datetime_rfc822
 
-from .. import PATH_IMAGE, get_log_name
+from .. import PATH_IMAGE, get_log_name, get_unused_ports
 
 
 NAME_SERVER = "Mocker"
@@ -52,8 +52,9 @@ class TestTestExecutor(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.urls_info = [f"http://localhost:800{i}/mock/info" for i in range(3)]
-        cls.urls_image = [f"http://localhost:800{i}/mock/image" for i in range(3)]
+        ports = get_unused_ports(3)
+        cls.urls_info = [f"http://localhost:{port}/mock/info" for port in ports]
+        cls.urls_image = [f"http://localhost:{port}/mock/image" for port in ports]
 
         app_1 = WSGIApp()
         app_2 = WSGIApp()
@@ -63,9 +64,9 @@ class TestTestExecutor(unittest.TestCase):
             app.route("mock", "info")(MockInfoEndpoint)
             app.route("mock", "image")(MockImageEndpoint)
 
-        form_1 = WSGIServerForm("", 8000, app_1, PATH_SERVER_LOG_1)
-        form_2 = WSGIServerForm("", 8001, app_2, PATH_SERVER_LOG_2)
-        form_3 = WSGIServerForm("", 8002, app_3, PATH_SERVER_LOG_3)
+        form_1 = WSGIServerForm("", ports[0], app_1, PATH_SERVER_LOG_1)
+        form_2 = WSGIServerForm("", ports[1], app_2, PATH_SERVER_LOG_2)
+        form_3 = WSGIServerForm("", ports[2], app_3, PATH_SERVER_LOG_3)
         cls.executor = WSGITestExecutor(form_1, form_2, form_3).start_serve()
 
     @classmethod

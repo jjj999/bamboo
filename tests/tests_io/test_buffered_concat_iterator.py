@@ -7,7 +7,7 @@ from bamboo import BufferedConcatIterator, BufferedFileIterator
 from .. import PATH_IMAGE
 
 
-def test_generator() -> t.Generator[bytes, None, None]:
+def generate_test_data() -> t.Generator[bytes, None, None]:
     for i in range(10**2, 10**3):
         yield os.getrandom(i)
 
@@ -26,9 +26,9 @@ class TestBufferedConcatIterator(unittest.TestCase):
         self.bufsize = 8192
         self.iter = BufferedConcatIterator(
             self.binary,
-            test_generator(),
+            generate_test_data(),
             self.binary,
-            test_generator(),
+            generate_test_data(),
             BufferedFileIterator(PATH_IMAGE),
             bufsize=self.bufsize
         )

@@ -15,12 +15,13 @@ from bamboo.request import Response
 from bamboo.sticky.http import data_format
 from bamboo.util.time import get_datetime_rfc822
 
-from .. import PATH_IMAGE, get_log_name
+from .. import PATH_IMAGE, get_log_name, get_unused_port
 
 
 app = WSGIApp()
 NAME_SERVER = "Mocker"
 PATH_SERVER_LOG = get_log_name(__file__)
+PORT = 0
 
 
 class InfoResponse(JsonApiData):
@@ -55,8 +56,10 @@ class TestResponse(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        cls.conn = client.HTTPConnection("localhost", 8000)
-        form = WSGIServerForm("", 8000, app, PATH_SERVER_LOG)
+        global PORT
+        PORT = get_unused_port()
+        cls.conn = client.HTTPConnection("localhost", PORT)
+        form = WSGIServerForm("", PORT, app, PATH_SERVER_LOG)
         cls.executor = WSGITestExecutor(form).start_serve()
 
     @classmethod
@@ -68,7 +71,7 @@ class TestResponse(unittest.TestCase):
             image_ideal = f.read()
 
         path = "/" + os.path.join("mock", "image")
-        uri = f"http://localhost:8000" + path
+        uri = f"http://localhost:{PORT}" + path
         self.conn.request("GET", path)
         _res = self.conn.getresponse()
         with Response(self.conn, _res, uri) as res:
@@ -76,7 +79,7 @@ class TestResponse(unittest.TestCase):
 
     def test_attach_datacls(self):
         path = "/" + os.path.join("mock", "info")
-        uri = f"http://localhost:8000" + path
+        uri = f"http://localhost:{PORT}" + path
         self.conn.request("GET", path)
         _res = self.conn.getresponse()
         with Response(self.conn, _res, uri, datacls=InfoResponse) as res:

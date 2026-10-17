@@ -205,7 +205,7 @@ class ContentType:
         ContentType
             New instance of this class based on the `raw` data
         """
-        raw = re.split(";\s*", raw)
+        raw = re.split(r";\s*", raw)
         result = cls(raw[0])
 
         for directive, val in [item.split("=") for item in raw[1:]]:

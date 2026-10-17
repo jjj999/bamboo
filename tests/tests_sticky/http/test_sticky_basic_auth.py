@@ -13,7 +13,7 @@ from bamboo.sticky.http import basic_auth
 from bamboo.util.convert import encode_base64_string
 from bamboo.util.string import rand_string
 
-from ... import get_log_name
+from ... import get_log_name, get_unused_ports
 from ...asgi_util import ASGIServerForm, ASGITestExecutor
 
 
@@ -22,6 +22,7 @@ app_wsgi = WSGIApp()
 PATH_ASGI_SERVER_LOG = get_log_name(__file__, "asgi")
 PATH_WSGI_SERVER_LOG = get_log_name(__file__, "wsgi")
 RANDOM_CREDENTIALS = [(rand_string(10), rand_string(10)) for _ in range(10)]
+PORT_ASGI = PORT_WSGI = 0
 
 
 def make_basic_credential(user_id: str, pw: str) -> str:
@@ -48,12 +49,14 @@ class TestStickyVasicAuth(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        form_asgi = ASGIServerForm("", 8000, app_asgi, PATH_ASGI_SERVER_LOG)
-        form_wsgi = WSGIServerForm("", 8001, app_wsgi, PATH_WSGI_SERVER_LOG)
+        global PORT_ASGI, PORT_WSGI
+        PORT_ASGI, PORT_WSGI = get_unused_ports(2)
+        form_asgi = ASGIServerForm("", PORT_ASGI, app_asgi, PATH_ASGI_SERVER_LOG)
+        form_wsgi = WSGIServerForm("", PORT_WSGI, app_wsgi, PATH_WSGI_SERVER_LOG)
         cls.executor_asgi = ASGITestExecutor(form_asgi).start_serve()
         cls.executor_wsgi = WSGITestExecutor(form_wsgi).start_serve()
-        cls.uri_asgi = "http://localhost:8000"
-        cls.uri_wsgi = "http://localhost:8001"
+        cls.uri_asgi = f"http://localhost:{PORT_ASGI}"
+        cls.uri_wsgi = f"http://localhost:{PORT_WSGI}"
 
     @classmethod
     def tearDownClass(cls) -> None:

@@ -15,7 +15,7 @@ from bamboo import (
 )
 from bamboo.request import http
 
-from .. import get_log_name
+from .. import get_log_name, get_unused_ports
 
 
 IDEAL_RESNPONSE = "Hello, World".encode()
@@ -42,18 +42,19 @@ class TestRouting(unittest.TestCase):
     def test_routing(self):
         # Make different uris
         paths = list(set(rand_strings(30)))
+        ports = get_unused_ports(len(paths))
 
         def client():
-            for i, path in enumerate(paths):
-                uri = f"http://localhost:{8000 + i}/{path}"
+            for port, path in zip(ports, paths):
+                uri = f"http://localhost:{port}/{path}"
                 with http.get(uri) as res:
                     self.assertEqual(res.body, IDEAL_RESNPONSE)
 
         forms = []
-        for i, path in enumerate(paths):
+        for port, path in zip(ports, paths):
             app = WSGIApp()
             app.route(path)(MockEndpoint)
-            forms.append(WSGIServerForm("", 8000 + i, app, PATH_SERVER_LOG))
+            forms.append(WSGIServerForm("", port, app, PATH_SERVER_LOG))
 
         WSGITestExecutor(*forms).exec(client)
 

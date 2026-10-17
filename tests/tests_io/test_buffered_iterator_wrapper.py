@@ -5,7 +5,7 @@ import unittest
 from bamboo import BufferedIteratorWrapper
 
 
-def test_generator() -> t.Generator[bytes, None, None]:
+def generate_test_data() -> t.Generator[bytes, None, None]:
     for i in range(10**2, 10**3):
         yield getrandom(i)
 
@@ -15,7 +15,7 @@ class TestBufferedIteratorWrapper(unittest.TestCase):
     def setUp(self) -> None:
         self.total = sum(range(10**2, 10**3))
         self.bufsize = 8192
-        self.iter = BufferedIteratorWrapper(test_generator(), self.bufsize)
+        self.iter = BufferedIteratorWrapper(generate_test_data(), self.bufsize)
 
     def test_iter(self):
         sum = 0

@@ -1,4 +1,4 @@
-name: Unittest
+name: Tests
 
 on:
   push:
@@ -8,24 +8,44 @@ on:
       - hotfix-iss*
       - feature-iss*
       - release-*
+  pull_request:
+
+permissions:
+  contents: read
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: [3.7]
+        python-version: ["3.11", "3.12", "3.13", "3.14", "3.15"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry install
-      - name: Unittest
+          pipx install --force poetry==2.5.1
+          poetry install --with dev
+      - name: Unit tests
+        run: poetry run pytest -o addopts= --strict-markers -m "not integration and not slow"
+      - name: Integration tests
+        run: poetry run pytest -o addopts= --strict-markers -m "integration and not slow"
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Install dependencies
         run: |
-          poetry run tox
+          pipx install --force poetry==2.5.1
+          poetry install --with dev
+      - name: Ruff
+        run: poetry run ruff check .
