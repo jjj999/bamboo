@@ -77,7 +77,7 @@ class EndpointBase(metaclass=ABCMeta):
         self._app = app
         self._flexible_locs = flexible_locs
 
-    def setup(self, *parcel) -> None:
+    def setup(self, *parcel: t.Any) -> None:
         """Execute setup of the endpoint object.
 
         This method will execute at initialization of the object by specifying

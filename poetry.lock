@@ -1051,7 +1051,7 @@ version = "4.5.3"
 description = "a little orm"
 optional = false
 python-versions = ">=3.8"
-groups = ["docs"]
+groups = ["dev", "docs"]
 files = [
     {file = "peewee-4.5.3-py3-none-any.whl", hash = "sha256:4c5db9d2a3c4ae9a5725b229c29af51dbd063193f3a6c03b837974a90e44548c"},
     {file = "peewee-4.5.3.tar.gz", hash = "sha256:434576afaf806428a01f84af74c42fde59372c4f6a6eba26d9b5372113344a8a"},
@@ -1699,4 +1699,4 @@ h11 = ">=0.16.0,<1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "ed76a84789cee138afc63f0f94e19dc067b663117cd43c258dab2992051df735"
+content-hash = "0904edf9ca1507d153ce78072581915f18411acb5fa52742487789223ff71ac1"

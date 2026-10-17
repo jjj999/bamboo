@@ -18,6 +18,7 @@ INTEGRATION_FILES = {
     "tests/tests_endpoint/test_wsgi_sending_file.py",
     "tests/tests_endpoint/test_wsgi_sending_generator.py",
     "tests/tests_error/tests_errinfo.py",
+    "tests/tests_examples/test_example_http.py",
     "tests/tests_request/test_http_request.py",
     "tests/tests_request/test_response.py",
     "tests/tests_router/test_routing.py",

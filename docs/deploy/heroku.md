@@ -8,23 +8,20 @@
 ## まず最初に
 初めに Heroku にユーザー登録をし，Heroku CLI をインストールする必要があります．具体的な方法については[こちら](https://devcenter.heroku.com/articles/getting-started-with-python)を参照してください．
 
-これと同時に必要になる Python ライブラリをインストールしておきましょう．ここでは Python は 3.8 系を仮定します (3.8 以上なら動作します) ．
+これと同時に必要になる Python ライブラリをインストールしておきましょう．現在の bamboo-core は Python 3.11 以上に対応しています．以下では Python 3.15 を使用します．
 
 ```
-$ pip install bamboo-core requests gunicorn
+$ python -m pip install bamboo-core gunicorn
 ```
 
 ## Bamboo による Web アプリケーションの作成
-Bamboo を用いた Web アプリケーションの具体的な実装方法は[チュートリアル](../tutorials/concept/)を参照してください．今回は簡易的な Web アプリケーションを製作することにしましょう．
+Bamboo を用いた Web アプリケーションの具体的な実装方法は[チュートリアル](../tutorials/concept.md)を参照してください．今回は簡易的な Web アプリケーションを製作することにしましょう．
 
 今回は例として，ただ `Hello, World!` をレスポンスとして送信する Web アプリケーションを作ります．以下にその実装を示します (ここでは hello.py として保存します):
 
 ```python
-from bamboo import (
-    JsonApiData,
-    WSGIApp,
-    WSGIEndpoint,
-)
+from bamboo import WSGIApp, WSGIEndpoint
+from bamboo.api import JsonApiData
 from bamboo.sticky.http import data_format
 
 app = WSGIApp()
@@ -37,33 +34,34 @@ class HelloEndpoint(WSGIEndpoint):
 
     @data_format(input=None, output=HelloData)
     def do_GET(self) -> None:
-        body = {"text": "Hello, World!"}
-        self.send_json(body)
+        self.send_api(HelloData(text="Hello, World!"))
 ```
 
 ## Heroku を利用したデプロイ
-Heroku でデプロイするには下記のファイル名と中身を持つファイルが必要です．ここまでで作成したファイルは[こちら](../../../example/heroku_deployment/)から参照できます．
+Heroku でデプロイするには下記のファイル名と中身を持つファイルが必要です．ここまでで作成したファイルは[GitHub の examples/heroku_deployment](https://github.com/jjj999/bamboo/tree/main/examples/heroku_deployment)から参照できます．
 
 - requirements.txt
     ```
     -i https://pypi.org/simple
     bamboo-core
-    gunicorn==20.0.4
+    gunicorn
     ```
 - Procfile
     ```
     web: gunicorn hello:app --log-file=-
     ```
-- runtime.txt
+- .python-version
     ```
-    python-3.8.7
+    3.15
     ```
+
+`.python-version` ではパッチバージョンを固定せず，メジャーバージョンだけを指定します．これにより，Heroku で利用可能な最新のセキュリティ更新を自動的に受け取れます．
 
 上記のファイルを作成したら，新たに Git リポジトリを作成しましょう:
 
 ```
 $ git init
-$ git add *
+$ git add .
 $ git commit -m "First commit."
 ```
 
@@ -79,7 +77,7 @@ heroku
 最後に作成したリモートリポジトリにコミット内容をプッシュすることでデプロイを行います (デフォルトのブランチが main の場合は master ではなく main をプッシュしてください):
 
 ```
-$ git push heroku master [or main]
+$ git push heroku main
 ```
 
 上記コマンドを実行するとデプロイが開始し，正常に完了すると
@@ -94,17 +92,21 @@ remote:        https://XXXXXXXXXXXXXXXXXXX.herokuapp.com/ deployed to Heroku
 デプロイが無事完了したらリクエストを送ってみましょう．
 
 ```python
+from bamboo.api import JsonApiData
 from bamboo.request import https
+
+class HelloData(JsonApiData):
+    text: str
 
 def main(root: str):
     uri = f"{root}/hello"
 
-    with https.get(uri) as res:
+    with https.get(uri, datacls=HelloData) as res:
         if res.ok:
-            body = json.loads(res.content)
-            print(f"Response: {body['text']}")
+            body = res.attach()
+            print(f"Response: {body.text}")
         else:
-            print(f"Error occured. Status code: {res.status_code}")
+            print(f"Error occurred. Status code: {res.status}")
 
 if __name__ == "__main__":
     # TODO EDIT host name

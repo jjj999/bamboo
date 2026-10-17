@@ -32,9 +32,7 @@ db = PostgresqlDatabase("bamboo-tutorials")
 
 
 class ModelBase(Model):
-
     class Meta:
-
         database = db
 
     @classmethod
@@ -43,19 +41,19 @@ class ModelBase(Model):
 
 
 class ControllerBase:
-
     def __init__(self, model: t.Type[ModelBase]) -> None:
         self.model = model
 
         if not model.table_exists():
             model.create_table()
 
+
 # --------------------------------------------------------------------------------
 
 # Errors    ----------------------------------------------------------------------
 
-class CustomErrInfo(ErrInfo):
 
+class CustomErrInfo(ErrInfo):
     msg: str
 
     def get_body(self) -> t.Union[bytes, t.Iterable[bytes]]:
@@ -63,7 +61,6 @@ class CustomErrInfo(ErrInfo):
 
 
 class InternalErrInfo(ErrInfo):
-
     http_status = HTTPStatus.INTERNAL_SERVER_ERROR
     msg = "Some errors occured in the server."
 
@@ -72,98 +69,91 @@ class InternalErrInfo(ErrInfo):
 
         traceback.print_exc()
 
+
 # User
 
-class UserAlreadyExistErrInfo(ErrInfo):
 
+class UserAlreadyExistErrInfo(ErrInfo):
     http_status = HTTPStatus.BAD_REQUEST
     msg = "User already exists."
 
 
 class UserNotExistErrInfo(ErrInfo):
-
     http_status = HTTPStatus.BAD_REQUEST
     msg = "User not found."
 
+
 # Tweet
 
-class TweetNotExistErrInfo(ErrInfo):
 
+class TweetNotExistErrInfo(ErrInfo):
     http_status = HTTPStatus.BAD_REQUEST
     msg = "Tweets not found."
 
 
 class TweetForbiddenErrInfo(ErrInfo):
-
     http_status = HTTPStatus.FORBIDDEN
     msg = "Deleting tweet was forbidden. Delete your own tweets."
+
 
 # ----------------------------------------------------------------------------
 
 # APIs  ----------------------------------------------------------------------
 
-class UserRegisterInput(JsonApiData):
 
+class UserRegisterInput(JsonApiData):
     email: str
     name: str
 
 
 class UserDeleteInput(JsonApiData):
-
     email: str
 
 
 class TweetsGetInput(JsonApiData):
-
     email: t.Optional[str] = None
 
 
 class SingleTweet(JsonApiData):
-
     id: int
     content: str
     datetime: str
 
 
 class TweetsGetOutput(JsonApiData):
-
     tweets: t.List[SingleTweet]
 
 
 class TweetPostInput(JsonApiData):
-
     email: str
     content: str
 
 
 class TweetPostOutput(JsonApiData):
-
     id: int
 
 
 class TweetUpdateInput(JsonApiData):
-
     id: int
     new_content: str
 
 
 class TweetDeleteInput(JsonApiData):
-
     id: int
     email: str
+
 
 # --------------------------------------------------------------------------------
 
 # User Model    ------------------------------------------------------------------
 
-class UserModel(ModelBase):
 
+class UserModel(ModelBase):
     email = CharField(primary_key=True)
     name = CharField()
 
 
 class UserController(ControllerBase):
-
     LEN_SERIAL_STRING = 16
 
     def __init__(self, model: t.Type[UserModel]) -> None:
@@ -189,12 +179,13 @@ class UserController(ControllerBase):
         except Exception as e:
             raise InternalErrInfo() from e
 
+
 # --------------------------------------------------------------------------------
 
 # Tweet Model   ------------------------------------------------------------------
 
-class TweetModel(ModelBase):
 
+class TweetModel(ModelBase):
     id = BigAutoField(primary_key=True)
     user = ForeignKeyField(UserModel, backref="tweets")
     content = TextField()
@@ -203,14 +194,12 @@ class TweetModel(ModelBase):
 
 @dataclass
 class Tweet:
-
     id: int
     content: str
     datetime: str
 
 
 class TweetController(ControllerBase):
-
     def __init__(self, model: TweetModel) -> None:
         super().__init__(model)
 
@@ -273,6 +262,7 @@ class TweetController(ControllerBase):
             ]
             return tweets
 
+
 # --------------------------------------------------------------------------------
 
 # Endpoitns ----------------------------------------------------------------------
@@ -283,7 +273,6 @@ Callback_t = t.Callable[[WSGIEndpoint], None]
 
 @app.route("user")
 class UserEndpoint(WSGIEndpoint):
-
     def setup(self, controller: UserController) -> None:
         self.controller = controller
 
@@ -300,7 +289,6 @@ class UserEndpoint(WSGIEndpoint):
 
 @app.route("tweet")
 class TweetsEndpoint(WSGIEndpoint):
-
     def setup(self, controller: TweetController) -> None:
         self.controller = controller
 
@@ -324,13 +312,14 @@ class TweetsEndpoint(WSGIEndpoint):
         self.controller.delete(req.id, req.email)
         self.send_only_status(HTTPStatus.OK)
 
+
 # --------------------------------------------------------------------------------
 
 # Client App    ------------------------------------------------------------------
 
+
 @dataclass
 class Uris:
-
     user: str
     tweet: str
 
@@ -456,12 +445,12 @@ def request_tweet_delete(uris: Uris, email: str) -> None:
 
 
 COMMANDS = (
-    (1,     "exit",     "ユーザーを削除します",         request_user_delete),
-    (2,     "all",      "全てのツイートを表示します",   request_tweets_all),
-    (3,     "history",  "ツイート履歴を表示します",     request_tweets_history),
-    (4,     "post",     "新規ツイートをします",         request_tweet_post),
-    (5,     "update",   "ツイート内容を編集します",     request_tweet_update),
-    (6,     "delete",   "ツイートを削除します",         request_tweet_delete),
+    (1, "exit", "ユーザーを削除します", request_user_delete),
+    (2, "all", "全てのツイートを表示します", request_tweets_all),
+    (3, "history", "ツイート履歴を表示します", request_tweets_history),
+    (4, "post", "新規ツイートをします", request_tweet_post),
+    (5, "update", "ツイート内容を編集します", request_tweet_update),
+    (6, "delete", "ツイートを削除します", request_tweet_delete),
 )
 
 
@@ -480,8 +469,10 @@ def request_interact(uris: Uris):
         email = request_user_register(uris)
 
     display_commands()
-    print("上のコマンド一覧から実行したいコマンドを選んでください．No でも コマンド名でも構いません．"
-          "終了したい場合は 'q'，コマンド一覧を表示したい場合は 'd' を入力してください．\n")
+    print(
+        "上のコマンド一覧から実行したいコマンドを選んでください．No でも コマンド名でも構いません．"
+        "終了したい場合は 'q'，コマンド一覧を表示したい場合は 'd' を入力してください．\n"
+    )
 
     while True:
         request = input("No または コマンド名 >> ")
@@ -501,10 +492,10 @@ def request_interact(uris: Uris):
         else:
             print("一致するコマンドが存在しません．\n")
 
+
 # --------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-
     import sys
 
     uris = Uris(

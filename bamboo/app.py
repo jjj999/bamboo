@@ -85,7 +85,6 @@ class VersionConfig:
         Args:
             app: Application including the internal `Endpoint`.
             version: Version to be set.
-            force: If forcing to set the `version`.
 
         Raises:
             ValueError: Raised if version of the `Endpoint` has already
@@ -143,7 +142,7 @@ class ParcelConfig:
     def __init__(self, endpoint: t.Type[EndpointBase]) -> None:
         """
         Args:
-            endpoint : `Endpoint` whose parcel is to be manipulated.
+            endpoint: `Endpoint` whose parcel is to be manipulated.
         """
         self._endpoint_class = endpoint
 
@@ -264,7 +263,7 @@ class AppBase(t.Generic[Endpoint_t], metaclass=ABCMeta):
 
         Args:
             *locs: Locations of path of the URI bound with the `Endpoint`.
-            version : Version of the `Endpoint`.
+            version: Version of the `Endpoint`.
 
         Returns:
             Decorator to add combination of URI and `Endpoint`.

@@ -13,4 +13,4 @@ $ python image_traffic.py
 ```
 
 ### 結果
-正常に動作すると，*receive.jpg* という画像が保存されます．サーバー側のログは *image_traffic.log* というファイルに出力されます．
+正常に動作すると，*received.jpg* という画像が保存されます．サーバー側のログは *image_traffic.log* というファイルに出力されます．

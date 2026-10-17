@@ -3,7 +3,7 @@ from bamboo import (
     WSGIApp,
     WSGIEndpoint,
     WSGIServerForm,
-    WSGITestExecutor
+    WSGITestExecutor,
 )
 from bamboo.api import JsonApiData
 from bamboo.request import http
@@ -16,7 +16,6 @@ app = WSGIApp()
 
 
 class MockResponse(JsonApiData):
-
     image: str
     datetime: str
 
@@ -33,10 +32,12 @@ class MockServeImageEndpoint(WSGIEndpoint):
         with open(self.path_img, "rb") as f:
             img = f.read()
 
-        self.send_api(MockResponse(
-            image=encode_binary(img),
-            datetime=get_datetime_rfc822(),
-        ))
+        self.send_api(
+            MockResponse(
+                image=encode_binary(img),
+                datetime=get_datetime_rfc822(),
+            )
+        )
 
 
 def request_image(uri: str, path_save: str) -> None:

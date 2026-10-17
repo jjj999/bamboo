@@ -529,7 +529,7 @@ def restricts_client(
     """Restrict IP addresses at callback.
 
     Args:
-        *client_ips: IP addresses to be allowed to request
+        *clients: Clients to be allowed to request.
         err: Error information sent when request from IP not included
             specified IPs comes.
 
@@ -751,7 +751,7 @@ def bearer_auth(
     authentication for OAuth 2.0.
 
     Args:
-        err : Error sent when `Authorization` header is not found, or
+        err: Error sent when `Authorization` header is not found, or
             when received scheme doesn't match.
 
     Returns:

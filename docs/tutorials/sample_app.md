@@ -10,7 +10,7 @@ bamboo にはアプリケーションとエンドポイントを実装したク�
 今回のサンプルアプリケーションでは `WSGIEndpoint` を使ってエンドポイントを作成していきます．
 
 !!! Note
-    特定のエンドポイントクラスは対応しているアプリケーションオブジェクトにしか登録できません．例えば `WSGIEndpoint` クラスの場合は `WSGIApp` オブジェクト，`ASGIHTTPEndpoint` の場合は `ASGIHTTPApp` にしか登録することが出来ません．
+    特定のエンドポイントクラスは対応しているアプリケーションオブジェクトにしか登録できません．例えば `WSGIEndpoint` クラスの場合は `WSGIApp` オブジェクト，`ASGIHTTPEndpoint` の場合は `ASGIApp` にしか登録することが出来ません．
 
 ## 実装の流れ
 bamboo による開発におけるほとんどの作業は，**エンドポイントクラスの実装**です．エンドポイントクラスは採用したサーバーアプリケーションのインターフェースとプロトコルによって，その元となるスーパークラスが異なります．上述したように今回は `WSGIEndpoint` を使用するので，このクラスのサブクラスを実装することでアプリケーションを実装していきます．
@@ -121,7 +121,7 @@ Web API (以下単に API) は「データの入力および出力はこうあ�
 という JSON データを扱いたいとしましょう．すると，上記のデータのキーと型は
 
 ```python
-from bamboo import JsonApiData
+from bamboo.api import JsonApiData
 
 class Account(JsonApiData):
 
@@ -137,7 +137,8 @@ class Account(JsonApiData):
 それではレスポンスメソッド `do_GET()` の実装に移っていきましょう．これまでのコールバックの命名規則，API の定義の議論を踏まえてコールバックを実装してみます．
 
 ```python
-from bamboo import WSGIApp, WSGIEndpoint, JsonApiData
+from bamboo import WSGIApp, WSGIEndpoint
+from bamboo.api import JsonApiData
 from bamboo.sticky.http import data_format
 
 app = WSGIApp()
@@ -155,7 +156,7 @@ class UpsideDownResponse(JsonApiData):
 class UpsideDownEndpoint(WSGIEndpoint):
 
     # 入出力データフォーマットの登録
-    @bamboo.data_format(input=UpsideDownRequest, output=UpsideDownResponse)
+    @data_format(input=UpsideDownRequest, output=UpsideDownResponse)
     def do_GET(self, req_body: UpsideDownRequest) -> None:
         # 反転処理
         result = req_body.token[::-1]
@@ -171,10 +172,11 @@ class UpsideDownEndpoint(WSGIEndpoint):
     `data_format()` デコレータの `input` および `output` 引数には `ApiData` クラスのサブクラスを指定することが出来ます．詳しくは [API ドキュメント](https://jjj999.github.io/api/bamboo/api/)を参照してください．
 
 ## サーバーを起動する
-最後にサーバーを起動します．今回はチュートリアルなので，デバッグモードでサーバーを起動しましょう．bamboo にはテスト用に `TestExecutor` というユーティリティクラスが定義されており，このクラスを用いて簡単にデバッグモードでサーバーアプリケーションを起動できます．以下は今回のチュートリアルで作成するサーバーサイドの完全なスクリプトです．
+最後にサーバーを起動します．今回はチュートリアルなので，デバッグモードでサーバーを起動しましょう．bamboo にはテスト用に `WSGITestExecutor` というユーティリティクラスが定義されており，このクラスを用いて簡単にデバッグモードでサーバーアプリケーションを起動できます．以下は今回のチュートリアルで作成するサーバーサイドの完全なスクリプトです．
 
 ```python
-from bamboo import WSGIApp, WSGIEndpoint, JsonApiData, TestExecutor
+from bamboo import WSGIApp, WSGIEndpoint, WSGITestExecutor
+from bamboo.api import JsonApiData
 from bamboo.sticky.http import data_format
 
 app = WSGIApp()
@@ -196,7 +198,7 @@ class UpsideDownEndpoint(WSGIEndpoint):
         self.send_json(body)
 
 if __name__ == "__main__":
-    TestExecutor.debug(app, "debug_app.log")
+    WSGITestExecutor.debug(app)
 ```
 
 ## クライアントサイドの処理
@@ -205,7 +207,7 @@ if __name__ == "__main__":
 ```python
 import sys
 
-from bamboo import JsonApiData
+from bamboo.api import JsonApiData
 from bamboo.request import http
 
 class UpsideDownResponse(JsonApiData):

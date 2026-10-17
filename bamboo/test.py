@@ -84,7 +84,7 @@ class WSGITestExecutor:
         """Add forms with information of server applications.
 
         Args:
-            *foms: Dataclass describing information of
+            *forms: Dataclass describing information of
                 the server application
         """
         for form in forms:
