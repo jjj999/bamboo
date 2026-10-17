@@ -12,3 +12,4 @@ poetry run ruff --version
 poetry run pyright --version
 codex --version
 claude --version
+gh --version

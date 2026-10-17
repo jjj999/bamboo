@@ -2,19 +2,30 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: ''
+labels: 'enhancement'
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-<!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when [...] -->
+## Background
 
-**Describe the solution you'd like**
-<!-- A clear and concise description of what you want to happen. -->
+<!-- What problem or opportunity motivates this request? -->
 
-**Describe alternatives you've considered**
-<!-- A clear and concise description of any alternative solutions or features you've considered. -->
+## Scope
 
-**Additional context**
-<!-- Add any other context or screenshots about the feature request here. -->
+<!-- What should be added or changed? -->
+
+## Implementation Notes
+
+<!-- Relevant modules, constraints, alternatives, or technical considerations. -->
+
+## Acceptance Criteria
+
+- [ ] The requested behavior is implemented.
+- [ ] Relevant tests are added or updated.
+- [ ] Existing tests pass.
+- [ ] Public API compatibility is maintained where applicable.
+
+## Additional Context
+
+<!-- Add alternatives, examples, screenshots, or other useful context. -->

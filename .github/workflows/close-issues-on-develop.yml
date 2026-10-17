@@ -1,0 +1,31 @@
+name: Close Issues on Develop
+
+on:
+  pull_request_target:
+    types: [closed]
+    branches: [develop]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  close-issues:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      # pull_request_target has a write-capable token. Check out only the
+      # trusted default branch, never code from the pull request head.
+      - name: Check out trusted automation
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - name: Close marked Issues
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { closeMarkedIssues } = require(
+              "./.github/scripts/close-issues-on-develop"
+            );
+            await closeMarkedIssues({ github, context, core });

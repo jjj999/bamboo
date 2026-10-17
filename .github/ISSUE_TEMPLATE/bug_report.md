@@ -2,37 +2,52 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
+labels: 'bug'
 assignees: ''
 
 ---
 
-**Describe the bug**
-<!-- A clear and concise description of what the bug is. -->
+## Background
 
-**To Reproduce**
-Steps to reproduce the behavior:
+<!-- What is wrong, and why does it need to be fixed? -->
+
+## Scope
+
+<!-- What behavior or component should be changed? -->
+
+### Steps to reproduce
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
+### Expected behavior
+
 <!-- A clear and concise description of what you expected to happen. -->
 
-**Screenshots**
-<!-- If applicable, add screenshots to help explain your problem. -->
+### Actual behavior
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+<!-- A clear and concise description of what happened instead. -->
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+## Implementation Notes
 
-**Additional context**
-<!-- Add any other context about the problem here. -->
+<!-- Relevant modules, constraints, logs, or technical considerations. -->
+
+### Environment
+
+- OS:
+- Python version:
+- Bamboo version or commit:
+- Other relevant software:
+
+## Acceptance Criteria
+
+- [ ] The reported behavior is corrected.
+- [ ] A regression test is added or updated.
+- [ ] Existing tests pass.
+- [ ] Public API compatibility is maintained where applicable.
+
+## Additional Context
+
+<!-- Add screenshots or other context when useful. -->

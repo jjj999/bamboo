@@ -20,8 +20,9 @@ repository.
    `bash .devcontainer/post-create.sh`.
 
 The container uses Debian Bookworm, Python 3.14, Node.js 24 LTS, Poetry 2.5.1,
-and a non-root `vscode` user. It does not use privileged mode or mount the
-Docker socket.
+GitHub CLI, and a non-root `vscode` user. It does not use privileged mode or
+mount the Docker socket. GitHub CLI is installed through the official
+`ghcr.io/devcontainers/features/github-cli` Dev Container Feature.
 
 Codex CLI is installed from the official `@openai/codex` npm package. Run
 `codex` and follow the interactive sign-in flow. Claude Code is installed by
@@ -30,6 +31,24 @@ interactive sign-in flow. Login is deliberately left to each developer. Do
 not put API keys or either tool's authentication files in this repository.
 Credentials are not mounted from the host, so rebuilding the container may
 require signing in again.
+
+Authenticate GitHub CLI interactively after creating the container:
+
+```console
+gh auth login --web --git-protocol https
+gh auth status
+```
+
+Choose `github.com` and sign in with an account that can read and write Issues
+and pull requests in this repository. Automation that also pushes branches
+needs repository Contents write access. For a fine-grained token, grant
+Contents, Issues, and Pull requests access only as required; a classic token
+needs the equivalent `repo` access. Run `gh auth setup-git` if Git should use
+the GitHub CLI credential helper. For non-interactive environments, pass a
+suitably scoped token through the `GH_TOKEN` environment variable instead of
+writing it to the repository. Never commit tokens, GitHub CLI configuration,
+or authentication files. Container-local credentials may need to be restored
+after rebuilding the container.
 
 The corresponding `openai.chatgpt` and `anthropic.claude-code` VS Code
 extensions are installed inside the container automatically.
@@ -128,14 +147,133 @@ The `gh-pages` branch is only for the site of the package hosted by the Github P
 
 ## New Issues
 
-If you have some issues, you can publish them using the templates:
+Development starts from a GitHub Issue. Before beginning implementation:
+
+1. Search open and closed Issues for the same task.
+2. Reuse an Issue when its scope matches the task.
+3. Create an Issue only when no matching Issue exists.
+4. Write the Issue title and body in English and apply an appropriate existing
+   label.
+
+Use GitHub CLI to search before creating an Issue:
+
+```console
+gh issue list --state all --search "route matching"
+gh issue view <issue-number>
+```
+
+Create Issues from a prepared Markdown body so that shell quoting does not
+alter their content:
+
+```console
+gh issue create --title "Correct overlapping route detection" \
+  --body-file /path/to/issue-body.md --label bug
+```
+
+Update an existing Issue from a prepared body in the same way:
+
+```console
+gh issue edit <issue-number> --body-file /path/to/issue-body.md
+```
+
+Use `--add-label` only after confirming that the label exists. Issue creation
+and updates must use GitHub CLI or the GitHub API.
+
+Use this body structure, adapting it to the task:
+
+```markdown
+## Background
+
+Why is this change necessary?
+
+## Scope
+
+What should be changed?
+
+## Implementation Notes
+
+Relevant modules, constraints, and technical considerations.
+
+## Acceptance Criteria
+
+- [ ] Required behavior is implemented.
+- [ ] Relevant tests are added or updated.
+- [ ] Existing tests pass.
+- [ ] Public API compatibility is maintained where applicable.
+```
+
+The repository provides these Issue templates:
 
 - Bug Reports --> [Click](https://github.com/jjj999/bamboo/issues/new?template=bug_report.md)
 - Suggestion for new features --> [Click](https://github.com/jjj999/bamboo/issues/new?template=feature_request.md)
+- Maintenance --> [Click](https://github.com/jjj999/bamboo/issues/new?template=maintenance.md)
+
+Use labels such as `bug`, `enhancement`, `refactor`, `testing`, `tooling`, and
+`documentation` when they exist and apply. Check the repository's current
+labels before adding one; do not create duplicates.
 
 ## New Pull Requests
 
-Developers should pull request if they want to merge their branch into the `main` or `develop` branches.
+Developers should pull request if they want to merge their branch into the
+`main` or `develop` branches. Titles and descriptions should be written in
+English.
+
+### Issue-based development workflow
+
+1. Search for and reuse a matching Issue, or create a new one.
+2. Create a branch containing the Issue number. Follow the existing
+   `feature-issXXX` or `hotfix-issXXX` naming and base-branch rules above.
+3. Implement the change and add or update relevant tests.
+4. Include the Issue number in each related Conventional Commit subject.
+5. Open a PR, reference the Issue, and identify any Issue completed by the PR.
+6. Complete review and CI, then merge the PR into `develop`.
+7. Treat the Issue as complete when the PR is merged into `develop`; the
+   close-Issues workflow closes explicitly marked Issues automatically.
+
+Release branches retain the existing `release-X.X` naming rule. They do not
+require an Issue number unless the release work itself tracks a specific
+Issue.
+
+After pushing the branch, create the PR with an English title and a prepared
+body based on the repository template:
+
+```console
+gh pr create --base develop --title "Correct overlapping route detection" \
+  --body-file /path/to/pull-request-body.md
+```
+
+### Relating and completing Issues
+
+Use `Refs` in the PR body for every related Issue:
+
+```text
+Refs #25
+```
+
+For an Issue that this PR completes, add a separate marker:
+
+```text
+Issue-Closure: #25
+```
+
+Add one marker per Issue when a PR completes multiple Issues. Omit the marker
+from partial or intermediate PRs and from Issues that are related but not
+completed. The marker is project metadata read by GitHub Actions; it is not a
+GitHub closing keyword.
+
+When a PR is merged into `develop`,
+`.github/workflows/close-issues-on-develop.yml` extracts valid markers,
+verifies that each number belongs to an open Issue in this repository rather
+than a pull request, and closes it as completed. A PR that is closed without
+merging, targets another branch, or contains only `Refs` does not close any
+Issue.
+
+The workflow uses the repository `GITHUB_TOKEN`; its permissions are limited
+to `contents: read` and `issues: write`, so it does not require a personal
+access token. The repository's Actions policy must allow that Issue write
+permission. Because `pull_request_target` workflows are loaded from the
+default branch, the workflow and its script must be present on `main` before
+this automation can run for PRs targeting `develop`.
 
 ## Commits
 
@@ -228,24 +366,25 @@ fix(router): correct overlapping route detection (#25)
 ```
 
 This reference records the relationship but does not request that the Issue
-be closed. Manage automatic closing in the pull request description instead:
+be closed. Do not use `Closes`, `Fixes`, `Resolves`, or other GitHub automatic
+closing keywords in commit messages.
 
 ```text
 Refs #25
 ```
 
-Use `Refs` when the PR relates to an Issue without closing it. Use a closing
-keyword only when merging the PR should complete the Issue:
+Use `Refs` when the PR relates to an Issue without completing it. When a PR
+into `develop` completes the Issue, add the project closure marker as a
+separate line:
 
 ```text
-Closes #25
+Issue-Closure: #25
 ```
 
-GitHub applies closing keywords when a PR is merged into the repository's
-default branch, `main`. Under this project's Git Flow, feature PRs normally
-target `develop`, so `Closes` in such a PR does not close the Issue at that
-time. Use `Refs` for those PRs, and place `Closes` in the later PR to `main`
-when that merge should close the Issue.
+The dedicated GitHub Actions workflow, rather than GitHub's default-branch
+closing behavior, processes this marker after a successful merge into
+`develop`. This keeps Issue completion aligned with the project's Git Flow and
+prevents a later merge into `main` from closing unrelated Issues.
 
 ### Breaking changes
 

@@ -49,3 +49,14 @@ jobs:
           poetry install --with dev
       - name: Ruff
         run: poetry run ruff check .
+
+  workflow-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - name: Test Issue closure automation
+        run: node --test .github/scripts/close-issues-on-develop.test.js
