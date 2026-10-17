@@ -45,6 +45,18 @@ class TestBufferedConcatIterator(unittest.TestCase):
             sum += len(i)
         self.assertEqual(sum, self.total)
 
+    def test_accepts_iterable_and_combines_chunks(self):
+        iterator = BufferedConcatIterator(
+            [b"ab", b"c"],
+            b"defgh",
+            bufsize=4,
+        )
+
+        self.assertEqual(list(iterator), [b"abcd", b"efgh"])
+
+    def test_empty_response(self):
+        self.assertEqual(list(BufferedConcatIterator(bufsize=4)), [])
+
 
 if __name__ == "__main__":
     unittest.main()

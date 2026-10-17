@@ -25,7 +25,7 @@ class _ASGIProtocols:
         websocket,
         lifespan,
     }
-    __instance: t.Optional[_ASGIHTTPEvents] = None
+    __instance: t.Optional[_ASGIProtocols] = None
 
     def __new__(cls) -> _ASGIProtocols:
         if cls.__instance is None:
@@ -79,14 +79,14 @@ class _ASGIWebSocketEvents:
     """Iterable for events of the ASGI WebSocket protocol.
     """
 
-    connect     = "websocket.connect"
-    accept      = "websocket.accept"
-    receive     = "websocket.receive"
-    send        = "websocket.send"
-    disconnect  = "websocket.disconnect"
-    close       = "websocket.close"
+    connect: str = "websocket.connect"
+    accept: str = "websocket.accept"
+    receive: str = "websocket.receive"
+    send: str = "websocket.send"
+    disconnect: str = "websocket.disconnect"
+    close: str = "websocket.close"
 
-    _events = {
+    _events: t.Set[str] = {
         connect,
         accept,
         receive,
@@ -94,7 +94,7 @@ class _ASGIWebSocketEvents:
         disconnect,
         close,
     }
-    __instance = None
+    __instance: t.Optional[_ASGIWebSocketEvents] = None
 
     def __new__(cls) -> _ASGIWebSocketEvents:
         if cls.__instance is None:
@@ -112,14 +112,14 @@ class _ASGILifespanEvents:
     """Iterable for events of the ASGI Lifespan protocol.
     """
 
-    startup             = "lifespan.startup"
-    startup_complete    = "lifespan.startup.complete"
-    startup_failed      = "lifespan.startup.failed"
-    shutdown            = "lifespan.shutdown"
-    shutdown_complete   = "lifespan.shutdown.complete"
-    shutdown_failed     = "lifespan.shutdown.failed"
+    startup: str = "lifespan.startup"
+    startup_complete: str = "lifespan.startup.complete"
+    startup_failed: str = "lifespan.startup.failed"
+    shutdown: str = "lifespan.shutdown"
+    shutdown_complete: str = "lifespan.shutdown.complete"
+    shutdown_failed: str = "lifespan.shutdown.failed"
 
-    _events = {
+    _events: t.Set[str] = {
         startup,
         startup_complete,
         startup_failed,
@@ -127,7 +127,7 @@ class _ASGILifespanEvents:
         shutdown_complete,
         shutdown_failed,
     }
-    __instance = None
+    __instance: t.Optional[_ASGILifespanEvents] = None
 
     def __new__(cls) -> _ASGILifespanEvents:
         if cls.__instance is None:
@@ -150,7 +150,10 @@ ASGILifespanEvenets = _ASGILifespanEvents()
 def _convert_headers_asgistyle(
     headers: t.Iterable[t.Tuple[str, str]]
 ) -> t.List[t.Tuple[bytes, bytes]]:
-    return [tuple(map(codecs.encode, h)) for h in headers]
+    return [
+        (codecs.encode(name), codecs.encode(value))
+        for name, value in headers
+    ]
 
 
 ASGIRecv_t = t.Callable[
@@ -171,14 +174,14 @@ HTTPSendBody_t = t.Callable[
     t.Awaitable[None]
 ]
 HTTPSendErrInfo_t = t.Callable[
-    [ErrInfo],
+    [ErrInfo, t.Iterable[t.Tuple[str, str]]],
     t.Awaitable[None]
 ]
 
 
 def format_http_sendstart_msg(
     status: HTTPStatus,
-    headers: t.Iterable[str, str],
+    headers: t.Iterable[t.Tuple[str, str]],
 ) -> t.Dict[str, t.Any]:
     return {
         "type": ASGIHTTPEvents.response_start,
@@ -270,7 +273,7 @@ WebSocketClose_t = t.Callable[
 
 
 def format_websock_accept_msg(
-    headers: t.Iterable[str, str],
+    headers: t.Iterable[t.Tuple[str, str]],
     subprotocol: t.Optional[str] = None,
 ) -> t.Dict[str, t.Any]:
     return {
@@ -304,7 +307,7 @@ def format_websock_close_msg(code: int = 1000) -> t.Dict[str, t.Any]:
 def get_websock_accept(send: ASGISend_t) -> WebSocketAccept_t:
 
     async def websock_accept(
-        headers: t.Iterable[str, str],
+        headers: t.Iterable[t.Tuple[str, str]],
         subprotocol: t.Optional[str] = None,
     ) -> None:
         msg = format_websock_accept_msg(headers, subprotocol)
@@ -315,7 +318,8 @@ def get_websock_accept(send: ASGISend_t) -> WebSocketAccept_t:
 
 def get_websock_recvmsg(recv: ASGIRecv_t) -> WebSocketRecvMsg_t:
 
-    async def websock_recvmsg() -> t.Tuple[str, bytes]:
+    async def websock_recvmsg(
+    ) -> t.Tuple[t.Optional[str], t.Optional[bytes]]:
         msg = await recv()
         if msg.get("type") == ASGIWebSocketEvents.disconnect:
             raise WebSocketDisconnectedError()
@@ -328,7 +332,7 @@ def get_websock_sendmsg(send: ASGISend_t) -> WebSocketSendMsg_t:
 
     async def websock_sendmsg(
         text: t.Optional[str] = None,
-        bin: t.Optional[str] = None,
+        bin: t.Optional[bytes] = None,
     ) -> None:
         msg = format_websock_send_msg(text, bin)
         await send(msg)

@@ -11,11 +11,11 @@ class ResponseBodyIteratorBase:
     """Base class of iterator for buffering response body.
     """
 
-    def __iter__(self) -> t.Iterable[bytes]:
+    def __iter__(self) -> t.Iterator[bytes]:
         return self
 
     def __next__(self) -> bytes:
-        pass
+        raise NotImplementedError
 
     def __del__(self) -> None:
         pass
@@ -55,9 +55,6 @@ class BufferedBinaryIterator(ResponseBodyIteratorBase):
         self._data.close()
 
 
-BinaryReadableStream_t = t.TypeVar("BinaryReadableStream_t")
-
-
 class BufferedStreamIterator(ResponseBodyIteratorBase):
     """Iterator of binary made with file-like object.
 
@@ -66,7 +63,7 @@ class BufferedStreamIterator(ResponseBodyIteratorBase):
 
     def __init__(
         self,
-        stream: BinaryReadableStream_t,
+        stream: t.BinaryIO,
         bufsize: int = 8192
     ) -> None:
         """
@@ -136,7 +133,7 @@ class BufferedIteratorWrapper(ResponseBodyIteratorBase):
     given iterator.
     """
 
-    def __init__(self, iter: t.Iterator[bytes], bufsize: int = 8192) -> None:
+    def __init__(self, iter: t.Iterable[bytes], bufsize: int = 8192) -> None:
         """
         Args:
             iter: Iterator wrapped.
@@ -144,7 +141,7 @@ class BufferedIteratorWrapper(ResponseBodyIteratorBase):
         """
         super().__init__()
 
-        self._iter = iter
+        self._iter = iter.__iter__()
         self._bufsize = bufsize
         self._buffer = io.BytesIO()
 
@@ -201,7 +198,7 @@ class BufferedConcatIterator(ResponseBodyIteratorBase):
 
     def __init__(
         self,
-        *items: t.Union[bytes, t.Iterator[bytes]],
+        *items: t.Union[bytes, t.Iterable[bytes]],
         bufsize: int = 8192
     ) -> None:
         """
@@ -212,14 +209,14 @@ class BufferedConcatIterator(ResponseBodyIteratorBase):
         super().__init__()
 
         self._iters: t.Deque[t.Iterator[bytes]] = deque()
-        self._current: t.Iterator[bytes] = None
+        self._current: t.Optional[t.Iterator[bytes]] = None
         self._bufsize = bufsize
         self._buffer = io.BytesIO()
 
         for item in items:
             self.append(item)
 
-    def append(self, item: t.Union[bytes, t.Iterator[bytes]]) -> None:
+    def append(self, item: t.Union[bytes, t.Iterable[bytes]]) -> None:
         """Add bytes or iterator yielding bytes inside.
 
         Args:

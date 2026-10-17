@@ -29,6 +29,11 @@ class TestBufferedIteratorWrapper(unittest.TestCase):
             sum += len(i)
         self.assertEqual(sum, self.total)
 
+    def test_accepts_reiterable_input(self):
+        iterator = BufferedIteratorWrapper([b"ab", b"cdef"], bufsize=4)
+
+        self.assertEqual(list(iterator), [b"abcd", b"ef"])
+
 
 if __name__ == "__main__":
     unittest.main()
