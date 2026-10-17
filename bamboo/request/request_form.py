@@ -28,11 +28,13 @@ def get_http_request_form(
     scheme: str,
     uri: str,
     method: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData, None] = None,
-    query: t.Dict[str, t.List[str]] = {}
+    query: t.Optional[t.Dict[str, t.List[str]]] = None
 ) -> HTTPRequestForm:
+    headers = dict(headers) if headers is not None else {}
+    query = dict(query) if query is not None else {}
     # method management
     method = method.upper()
     if method not in HTTPMethods:

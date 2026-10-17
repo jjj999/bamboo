@@ -27,16 +27,19 @@ __all__ = [
 def request(
     uri: str,
     method: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
+    headers = dict(headers) if headers is not None else {}
+    query = dict(query) if query is not None else {}
+    proxy_headers = dict(proxy_headers) if proxy_headers is not None else {}
     form = get_http_request_form(
         Schemes.HTTP,
         uri,
@@ -81,15 +84,15 @@ def request(
 
 def get(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
     """Request with the GET method on HTTP.
 
@@ -126,15 +129,15 @@ def get(
 
 def post(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
     """Request with the POST method on HTTP.
 
@@ -171,15 +174,15 @@ def post(
 
 def put(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
     """Request with the PUT method on HTTP.
 
@@ -216,15 +219,15 @@ def put(
 
 def delete(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
     """Request with the DELETE method on HTTP.
 
@@ -261,15 +264,15 @@ def delete(
 
 def head(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
     """Request with the HEAD method on HTTP.
 
@@ -306,15 +309,15 @@ def head(
 
 def options(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
     """Request with the OPTIONS method on HTTP.
 
@@ -351,15 +354,15 @@ def options(
 
 def patch(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
     """Request with the PATCH method on HTTP.
 
@@ -396,15 +399,15 @@ def patch(
 
 def trace(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
     """Request with the TRACE method on HTTP.
 
@@ -441,15 +444,15 @@ def trace(
 
 def connect(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
 ) -> Response[ResponseData_t]:
     """Request with the CONNECT method on HTTP.
 

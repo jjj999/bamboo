@@ -13,16 +13,16 @@ from ..request import ResponseData_t, Response
 async def request(
     uri: str,
     method: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     eloop = asyncio.get_event_loop()
@@ -46,16 +46,16 @@ async def request(
 
 async def get(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the GET method on HTTPS.
@@ -103,16 +103,16 @@ async def get(
 
 async def post(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the POST method on HTTPS.
@@ -160,16 +160,16 @@ async def post(
 
 async def put(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the PUT method on HTTPS.
@@ -217,16 +217,16 @@ async def put(
 
 async def delete(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the DELETE method on HTTPS.
@@ -274,16 +274,16 @@ async def delete(
 
 async def head(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the HEAD method on HTTPS.
@@ -331,16 +331,16 @@ async def head(
 
 async def options(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the OPTIONS method on HTTPS.
@@ -388,16 +388,16 @@ async def options(
 
 async def patch(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the PATCH method on HTTPS.
@@ -445,16 +445,16 @@ async def patch(
 
 async def trace(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the TRACE method on HTTPS.
@@ -502,16 +502,16 @@ async def trace(
 
 async def connect(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     context: t.Optional[ssl.SSLContext] = None,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the CONNECT method on HTTPS.

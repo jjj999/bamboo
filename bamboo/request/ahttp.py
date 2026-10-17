@@ -12,15 +12,15 @@ from ..request import ResponseData_t, Response
 async def request(
     uri: str,
     method: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     eloop = asyncio.get_event_loop()
@@ -42,15 +42,15 @@ async def request(
 
 async def get(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the GET method on HTTP asynchronously.
@@ -73,7 +73,6 @@ async def get(
         Response object generated with the response.
     """
     return await request(
-        executor,
         uri,
         HTTPMethods.GET,
         headers=headers,
@@ -85,20 +84,21 @@ async def get(
         datacls=datacls,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
+        executor=executor,
     )
 
 
 async def post(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the POST method on HTTP asynchronously.
@@ -121,7 +121,6 @@ async def post(
         Response object generated with the response.
     """
     return await request(
-        executor,
         uri,
         HTTPMethods.POST,
         headers=headers,
@@ -133,20 +132,21 @@ async def post(
         datacls=datacls,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
+        executor=executor,
     )
 
 
 async def put(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the PUT method on HTTP asynchronously.
@@ -169,7 +169,6 @@ async def put(
         Response object generated with the response.
     """
     return await request(
-        executor,
         uri,
         HTTPMethods.PUT,
         headers=headers,
@@ -181,20 +180,21 @@ async def put(
         datacls=datacls,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
+        executor=executor,
     )
 
 
 async def delete(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the DELETE method on HTTP asynchronously.
@@ -217,7 +217,6 @@ async def delete(
         Response object generated with the response.
     """
     return await request(
-        executor,
         uri,
         HTTPMethods.DELETE,
         headers=headers,
@@ -229,20 +228,21 @@ async def delete(
         datacls=datacls,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
+        executor=executor,
     )
 
 
 async def head(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the HEAD method on HTTP asynchronously.
@@ -265,7 +265,6 @@ async def head(
         Response object generated with the response.
     """
     return await request(
-        executor,
         uri,
         HTTPMethods.HEAD,
         headers=headers,
@@ -277,20 +276,21 @@ async def head(
         datacls=datacls,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
+        executor=executor,
     )
 
 
 async def options(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the OPTIONS method on HTTP asynchronously.
@@ -313,7 +313,6 @@ async def options(
         Response object generated with the response.
     """
     return await request(
-        executor,
         uri,
         HTTPMethods.OPTIONS,
         headers=headers,
@@ -325,20 +324,21 @@ async def options(
         datacls=datacls,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
+        executor=executor,
     )
 
 
 async def patch(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the PATCH method on HTTP asynchronously.
@@ -361,7 +361,6 @@ async def patch(
         Response object generated with the response.
     """
     return await request(
-        executor,
         uri,
         HTTPMethods.PATCH,
         headers=headers,
@@ -373,20 +372,21 @@ async def patch(
         datacls=datacls,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
+        executor=executor,
     )
 
 
 async def trace(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the TRACE method on HTTP asynchronously.
@@ -409,7 +409,6 @@ async def trace(
         Response object generated with the response.
     """
     return await request(
-        executor,
         uri,
         HTTPMethods.TRACE,
         headers=headers,
@@ -421,20 +420,21 @@ async def trace(
         datacls=datacls,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
+        executor=executor,
     )
 
 
 async def connect(
     uri: str,
-    headers: t.Dict[str, str] = {},
+    headers: t.Optional[t.Dict[str, str]] = None,
     body: t.Optional[bytes] = None,
     json: t.Union[t.Dict[str, t.Any], JsonApiData] = None,
-    query: t.Dict[str, t.List[str]] = {},
+    query: t.Optional[t.Dict[str, t.List[str]]] = None,
     timeout: t.Optional[float] = None,
     blocksize: int = 8192,
     datacls: t.Type[ResponseData_t] = BinaryApiData,
     use_proxy: t.Union[bool, t.Tuple[str, int]] = False,
-    proxy_headers: t.Dict[str, str] = {},
+    proxy_headers: t.Optional[t.Dict[str, str]] = None,
     executor: t.Optional[concurrent.futures.Executor] = None,
 ) -> Response[ResponseData_t]:
     """Request with the CONNECT method on HTTP asynchronously.
@@ -457,7 +457,6 @@ async def connect(
         Response object generated with the response.
     """
     return await request(
-        executor,
         uri,
         HTTPMethods.CONNECT,
         headers=headers,
@@ -469,4 +468,5 @@ async def connect(
         datacls=datacls,
         use_proxy=use_proxy,
         proxy_headers=proxy_headers,
+        executor=executor,
     )
