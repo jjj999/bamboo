@@ -139,14 +139,146 @@ Developers should pull request if they want to merge their branch into the `main
 
 ## Commits
 
-The project has the commit template, [.gitmessage file](https://github.com/jjj999/bamboo/blob/develop/.gitmessage) . The template is for unifying the commit message style such that all developers can read the message easily. Developers should do the commond in order to set the template to git:
+Commit messages must be written in English and follow
+[Conventional Commits](https://www.conventionalcommits.org/). This section is
+the source of truth for the project's commit message rules.
 
+### Format
+
+Use the following subject format:
+
+```text
+<type>(<scope>): <description> (#<issue>)
 ```
+
+The scope and issue reference are optional. Include the issue reference when
+the commit corresponds to an existing GitHub Issue. It may be omitted for a
+minor change that has no issue.
+
+### Types
+
+| Type | Purpose |
+|---|---|
+| `feat` | New features |
+| `fix` | Bug fixes |
+| `refactor` | Internal changes without behavioral changes |
+| `test` | Adding or modifying tests |
+| `docs` | Documentation changes |
+| `build` | Build system and dependency changes |
+| `ci` | CI/CD configuration changes |
+| `perf` | Performance improvements |
+| `chore` | Other maintenance tasks |
+
+These are the standard types. Additional types may be introduced when a clear
+project need arises.
+
+### Scope
+
+Use an optional scope to identify the module or component affected by the
+change. Examples include `app`, `asgi`, `endpoint`, `router`, `request`, `api`,
+and `devcontainer`. Omit the scope when no single, useful scope applies; do not
+force one.
+
+### Subject
+
+The subject must:
+
+1. Be written in English.
+2. Use the imperative mood.
+3. Start the description with a lowercase letter.
+4. Not end with a period.
+5. Be no more than 72 characters whenever practical.
+6. State clearly what the commit changes.
+7. Avoid vague descriptions such as `update files` or `fix bug`.
+
+Examples:
+
+```text
+fix(request): correct async HTTP argument forwarding (#12)
+refactor(endpoint): simplify response handling (#13)
+test(asgi): add WebSocket protocol tests (#14)
+build(devcontainer): update Python environment (#15)
+docs: improve installation instructions (#16)
+```
+
+### Commit body
+
+A simple change may use only the subject. Add a body after a blank line when
+the background, reason, or a technical decision needs to be recorded. Explain
+what changed and why, without repeating implementation details that are clear
+from the code. Wrap body lines at 72 characters whenever practical.
+
+```text
+fix(asgi): handle disconnected clients (#24)
+
+Prevent further body reads after receiving an ASGI
+disconnect event.
+
+This avoids waiting for additional messages after the
+client has already closed the connection.
+```
+
+### GitHub Issues and pull requests
+
+When a corresponding Issue exists, add its number to the commit subject, for
+example:
+
+```text
+fix(router): correct overlapping route detection (#25)
+```
+
+This reference records the relationship but does not request that the Issue
+be closed. Manage automatic closing in the pull request description instead:
+
+```text
+Refs #25
+```
+
+Use `Refs` when the PR relates to an Issue without closing it. Use a closing
+keyword only when merging the PR should complete the Issue:
+
+```text
+Closes #25
+```
+
+GitHub applies closing keywords when a PR is merged into the repository's
+default branch, `main`. Under this project's Git Flow, feature PRs normally
+target `develop`, so `Closes` in such a PR does not close the Issue at that
+time. Use `Refs` for those PRs, and place `Closes` in the later PR to `main`
+when that merge should close the Issue.
+
+### Breaking changes
+
+Mark a breaking change using `!` before the colon or a `BREAKING CHANGE:`
+footer, as defined by Conventional Commits. The footer must explain the impact
+and any required migration.
+
+```text
+feat(api)!: remove legacy request interface (#30)
+
+BREAKING CHANGE: use the request context API instead of the legacy
+interface.
+```
+
+### Commit scope and granularity
+
+Each commit should contain one logical change and be understandable on its
+own. Separate unrelated bug fixes, refactoring, development environment
+changes, and documentation changes whenever possible. Changes required for
+the same purpose, such as a bug fix and its regression test, may remain in one
+commit.
+
+### Commit template
+
+This repository provides [`.gitmessage`](.gitmessage) as a concise reminder of
+these rules. Configure Git to use it from the repository root:
+
+```console
 git config commit.template .gitmessage
 ```
 
-After the command, developers can commit with the command:
+Then open the template by running:
 
-```
+```console
 git commit
 ```

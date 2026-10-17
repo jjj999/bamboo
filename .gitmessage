@@ -1,33 +1,40 @@
+<type>(<scope>): <description> (#<issue>)
 
-# ==== Emojis ====
-# ✏️  :pencil2: Writing docs
-# 🐛  :bug: Fix bugs
-# 👍  :+1: Feature improvements
-# ✨  :sparkles: Additional partial feature
-# 🎉  :tada: Grand major features added to celebrate
-# ♻️   :recycle :Refactoring
-# 🚿  :shower: Removal of obsolete functions or features.
-# 💚  :green_heart: Modification and improvement of testing and CI
-# 👕  :shirt: Fixing of errors found by Lint.
-# 🚀  :rocket: Performance improvement
-# 🆙  :up: Updates, such as dependent package
-# 🔒  :lock: Limit of the range of new features
-# 👮  :cop: Security-related improvements
-
-# ==== Format ====
-# :emoji: Subject #issue No.
+# Optional body: explain what changed and why.
 #
-# Commit body...
-
-# ==== The Seven Rules ====
-# 1. Separate subject from body with a blank line
-# 2. Limit the subject line to 50 characters
-# 3. Capitalize the subject line
-# 4. Do not end the subject line with a period
-# 5. Use the imperative mood in the subject line
-# 6. Wrap the body at 72 characters
-# 7. Use the body to explain what and why vs. how
+# Format:
+#   <type>(<scope>): <description> (#<issue>)
 #
-# How to Write a Git Commit Message http://chris.beams.io/posts/git-commit/
-
-# for http://memo.goodpatch.co/2016/07/beautiful-commits-with-emojis/
+# Types:
+#   feat      New features
+#   fix       Bug fixes
+#   refactor  Internal changes without behavioral changes
+#   test      Adding or modifying tests
+#   docs      Documentation changes
+#   build     Build system and dependency changes
+#   ci        CI/CD configuration changes
+#   perf      Performance improvements
+#   chore     Other maintenance tasks
+#
+# Subject rules:
+#   - Write in English and use the imperative mood.
+#   - Start the description with a lowercase letter.
+#   - Do not end the subject with a period.
+#   - Keep the subject within 72 characters whenever practical.
+#   - Be specific; avoid descriptions such as "update files" or "fix bug".
+#   - Scope is optional; use it only when it identifies a useful component.
+#   - Include (#<issue>) when a corresponding GitHub Issue exists.
+#
+# Body rules:
+#   - Separate the body from the subject with a blank line.
+#   - Explain what changed and why, not obvious implementation details.
+#   - Wrap body lines at 72 characters whenever practical.
+#
+# Examples:
+#   fix(request): correct async HTTP argument forwarding (#12)
+#   docs: improve installation instructions
+#
+# Breaking changes:
+#   Use <type>(<scope>)!: ... or add a BREAKING CHANGE: footer.
+#
+# See CONTRIBUTING.md for the complete commit rules.
