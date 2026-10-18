@@ -83,7 +83,7 @@ class ErrInfo(Exception, ContentTypeHolder):
     ) -> t.Tuple[
         HTTPStatus,
         t.List[t.Tuple[str, str]],
-        t.Union[bytes, t.Iterable[bytes]]
+        BufferedConcatIterator,
     ]:
         """Get status code, headers and body of repsponse of the error.
 

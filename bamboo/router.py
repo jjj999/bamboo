@@ -95,15 +95,15 @@ class Router(t.Generic[Endpoint_t]):
             Pair of values of flexible locations and `Endpoint` if specified
             `uri` is valid.
         """
-        uri = tuple(uri[1:].split("/"))
-        if not uri[0]:
-            uri = ()
+        requested_uri = tuple(uri[1:].split("/"))
+        if not requested_uri[0]:
+            requested_uri = ()
 
-        endpoint = self.uri2endpoint.get(uri)
+        endpoint = self.uri2endpoint.get(requested_uri)
         if endpoint:
             return ((), endpoint)
 
-        depth = len(uri)
+        depth = len(requested_uri)
         for flexible in self.uris_flexible:
             if len(flexible) != depth:
                 continue
@@ -111,7 +111,7 @@ class Router(t.Generic[Endpoint_t]):
             flexibles_received = []
 
             # Judging each locations
-            for loc_req, loc_flex in zip(uri, flexible):
+            for loc_req, loc_flex in zip(requested_uri, flexible):
                 if isinstance(loc_flex, FlexibleLocation):
                     if not loc_flex.is_valid(loc_req):
                         break

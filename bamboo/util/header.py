@@ -9,6 +9,6 @@ def make_header(name: str, value: str, **params: str) -> t.Tuple[str, str]:
         value: Value of the field.
         **params: Directives added to the field.
     """
-    params = [f"; {header}={val}" for header, val in params.items()]
-    params = "".join(params)
-    return (name, value + params)
+    directives = [f"; {header}={val}" for header, val in params.items()]
+    suffix = "".join(directives)
+    return (name, value + suffix)

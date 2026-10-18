@@ -24,6 +24,16 @@ class TestBufferedBinaryIterator(unittest.TestCase):
             sum += len(i)
         self.assertEqual(sum, self.total)
 
+    def test_exact_buffer_boundary(self):
+        iterator = BufferedBinaryIterator(b"abcdefgh", bufsize=4)
+
+        self.assertEqual(list(iterator), [b"abcd", b"efgh"])
+
+    def test_empty_bytes(self):
+        iterator = BufferedBinaryIterator(b"", bufsize=4)
+
+        self.assertEqual(list(iterator), [])
+
 
 if __name__ == "__main__":
     unittest.main()

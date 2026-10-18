@@ -59,7 +59,7 @@ __all__ = []
 
 
 ATTR_VERSION = _get_bamboo_attr("version")
-Version_t = t.Tuple[int]
+Version_t = t.Tuple[int, ...]
 
 
 class VersionConfig:
@@ -78,7 +78,7 @@ class VersionConfig:
     def set(
         self,
         app: AppBase,
-        version: t.Union[int, t.Tuple[int], None] = None,
+        version: t.Union[int, Version_t, None] = None,
     ) -> None:
         """Set version of `Endpoint`.
 
@@ -257,7 +257,7 @@ class AppBase(t.Generic[Endpoint_t], metaclass=ABCMeta):
     def route(
         self,
         *locs: Location_t,
-        version: t.Union[int, t.Tuple[int], None] = None
+        version: t.Union[int, Version_t, None] = None
     ) -> t.Callable[[t.Type[Endpoint_t]], t.Type[Endpoint_t]]:
         """Register combination of URI and `Endpoint` for routing.
 
@@ -296,11 +296,17 @@ class AppBase(t.Generic[Endpoint_t], metaclass=ABCMeta):
             ver_config.set(self, version)
 
             # router setting
-            _version = ver_config.get(self)
-            assert _version is not None
-            if len(_version):
-                _version = tuple(f"{self.TAG_VERSION}{v}" for v in _version)
-            self._router.register(locs_normalized, endpoint, version=_version)
+            version_configured = ver_config.get(self)
+            assert version_configured is not None
+            version_path = tuple(
+                f"{self.TAG_VERSION}{value}"
+                for value in version_configured
+            )
+            self._router.register(
+                locs_normalized,
+                endpoint,
+                version=version_path,
+            )
 
             return endpoint
         return register_endpoint
@@ -407,11 +413,14 @@ class AppBase(t.Generic[Endpoint_t], metaclass=ABCMeta):
 
                 ver_config = VersionConfig(endpoint)
                 version = ver_config.get(app)
+                assert version is not None
                 ver_config.set(self, version=version)
-                if len(version):
-                    version = tuple(f"{self.TAG_VERSION}{v}" for v in version)
+                version_path = tuple(
+                    f"{self.TAG_VERSION}{value}"
+                    for value in version
+                )
 
-                self._router.register(locs, endpoint, version=version)
+                self._router.register(locs, endpoint, version=version_path)
 
 
 WSGIStartRespoint_t = t.Callable[
@@ -441,7 +450,7 @@ class WSGIApp(AppBase):
         self,
         environ: t.Dict[str, t.Any],
         start_response: WSGIStartRespoint_t,
-    ) -> t.List[bytes]:
+    ) -> t.Iterable[bytes]:
         method = environ.get("REQUEST_METHOD").upper()
         path = environ.get("PATH_INFO")
 
@@ -513,7 +522,7 @@ class WSGIApp(AppBase):
     def route(
         self,
         *locs: Location_t,
-        version: t.Union[int, t.Tuple[int], None] = None
+        version: t.Union[int, Version_t, None] = None
     ) -> t.Callable[[t.Type[WSGIEndpoint]], t.Type[WSGIEndpoint]]:
         return super().route(*locs, version=version)
 
@@ -755,7 +764,7 @@ class ASGIApp(AppBase):
     def route(
         self,
         *locs: Location_t,
-        version: t.Union[int, t.Tuple[int], None] = None,
+        version: t.Union[int, Version_t, None] = None,
     ) -> t.Callable[[t.Type[ASGIEndpointBase]], t.Type[ASGIEndpointBase]]:
         return super().route(*locs, version=version)
 
