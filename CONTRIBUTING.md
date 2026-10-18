@@ -261,19 +261,36 @@ from partial or intermediate PRs and from Issues that are related but not
 completed. The marker is project metadata read by GitHub Actions; it is not a
 GitHub closing keyword.
 
-When a PR is merged into `develop`,
-`.github/workflows/close-issues-on-develop.yml` extracts valid markers,
-verifies that each number belongs to an open Issue in this repository rather
-than a pull request, and closes it as completed. A PR that is closed without
-merging, targets another branch, or contains only `Refs` does not close any
-Issue.
+After a PR is merged into `develop`, the resulting push starts
+`.github/workflows/close-issues-on-develop.yml`. The workflow compares the
+push's before and after commits, uses the GitHub API to find pull requests
+associated with every introduced commit, and accepts only pull requests whose
+merge commit is in that push and whose base is this repository's `develop`
+branch. It then extracts valid markers, verifies that each number belongs to an
+open Issue in this repository rather than a pull request, and closes it as
+completed.
+
+The workflow uses `push` because a `pull_request_target` workflow is loaded
+from the default branch, while development automation is maintained on
+`develop`. A normal direct push, force push, PR closed without merging, merge
+into another branch, historical unrelated PR, or PR containing only `Refs`
+does not close any Issue.
 
 The workflow uses the repository `GITHUB_TOKEN`; its permissions are limited
-to `contents: read` and `issues: write`, so it does not require a personal
-access token. The repository's Actions policy must allow that Issue write
-permission. Because `pull_request_target` workflows are loaded from the
-default branch, the workflow and its script must be present on `main` before
-this automation can run for PRs targeting `develop`.
+to `contents: read`, `pull-requests: read`, and `issues: write`, so it does
+not require a personal access token. The repository's Actions policy must allow
+the Issue write permission.
+
+To confirm a closure, open the repository's **Actions** tab, select **Close
+Issues on Develop**, and inspect the run for the merge commit. The log records
+the pushed commit range, matched pull request, skipped markers or Issues, and
+each Issue closed as completed. If the workflow fails, first compare the run's
+`before` and `after` SHAs with the merge, then inspect API error messages,
+the pull request's `merged_at`, base branch, base repository, and
+`merge_commit_sha`. Also confirm the exact `Issue-Closure: #<number>` lines,
+the target Issue state, and the workflow's token permissions. A missing run
+usually means the updated workflow was not yet present on `develop` for that
+push or the repository Actions policy prevented the event.
 
 ## Commits
 
